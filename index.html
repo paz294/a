@@ -495,7 +495,8 @@
         <div class="navbar-brand" onclick="goHome()" style="cursor: pointer;">
         <span class="material-icons">code</span>
         <span>CodeChallenges</span>
-    </div>
+</div>
+
 
         <div class="nav-items">
             <a href="#" class="active">Problems</a>
@@ -734,6 +735,13 @@ function setupTabs() {
       document.getElementById('progress-bar').style.width = percentage + '%';
     }
     function goHome() {
+    // Show home page
+    document.getElementById('home-page').style.display = 'block';
+    // Hide challenge panel
+    document.getElementById('challenge-panel').style.display = 'none';
+    // Remove active highlight from sidebar
+    document.querySelectorAll('#challenge-list li').forEach(li => li.classList.remove('active'));
+    // Clear the hash
     location.hash = '';
 }
 
