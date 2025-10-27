@@ -664,6 +664,40 @@
         </div>
       `;
 
+      // Handle tab switching
+function setupTabs() {
+  const tabs = document.querySelectorAll('.tab');
+  const content = document.querySelector('.problem-content');
+
+  tabs.forEach(tab => {
+    tab.onclick = () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      switch (tab.textContent) {
+        case 'Description':
+          content.innerHTML = `
+            <p>${challenges.find(c => c.id === location.hash.slice(1)).description}</p>
+            <div class="example-section">
+                <h4>Example</h4>
+                <pre>${challenges.find(c => c.id === location.hash.slice(1)).example}</pre>
+            </div>
+          `;
+          break;
+        case 'Editorial':
+          content.innerHTML = `<p>Editorial content coming soon 📝</p>`;
+          break;
+        case 'Solutions':
+          content.innerHTML = `<p>Example solutions coming soon 💻</p>`;
+          break;
+        case 'Submissions':
+          content.innerHTML = `<p>Your submissions will appear here 📨</p>`;
+          break;
+      }
+    }
+  });
+}
+
       // Highlight active
       document.querySelectorAll('#challenge-list li').forEach(li => li.classList.remove('active'));
       const activeIndex = challenges.findIndex(c => c.id === hash);
