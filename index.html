@@ -1,71 +1,252 @@
-<script>
-const challenges = [
-  {
-    id: 'match-day',
-    theme: '⚽ Football',
-    difficulty: 'Easy',
-    title: 'Match Day Simulator',
-    description: 'Generate a random football match result between Team You and Team Him.',
-    example: 'Example Output:\nTeam Him 3 - 2 Team You\nCommentary: He scored a last-minute goal! ⚽',
-  },
-  {
-    id: 'love-encoder',
-    theme: '💕 Relationship',
-    difficulty: 'Easy',
-    title: 'Love Message Encoder',
-    description: 'Create a program that encodes a secret message only the two of you can decode.',
-    example: 'Input: I love you\nOutput: ❤️🌹#you#love#I',
-  }
-];
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coding Challenges</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
 
-// Populate sidebar
-const list = document.getElementById('challenge-list');
-challenges.forEach(c => {
-  const li = document.createElement('li');
-  li.textContent = c.title;
-  li.onclick = () => { location.hash = c.id; };
-  list.appendChild(li);
-});
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f7f9fc;
+        }
 
-// Listen for hash changes
-window.addEventListener('hashchange', loadChallengeFromHash);
-window.addEventListener('load', loadChallengeFromHash);
+        #sidebar {
+            width: 300px;
+            background-color: #ffffff;
+            border-right: 1px solid #e4e6e8;
+            padding: 20px 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
 
-function loadChallengeFromHash() {
-  const hash = location.hash.slice(1); // remove #
-  const challenge = challenges.find(c => c.id === hash);
-  const panel = document.getElementById('challenge-panel');
+        #main-content {
+            flex: 1;
+            padding: 20px;
+            height: 100vh;
+            overflow-y: auto;
+        }
 
-  if (!challenge) {
-    panel.innerHTML = '<p>Select a challenge from the left to start coding!</p>';
-    return;
-  }
+        #challenge-list {
+            list-style: none;
+        }
 
-  panel.innerHTML = `
-    <div class="challenge-title">${challenge.title}</div>
-    <div class="challenge-theme">${challenge.theme}</div>
-    <div class="challenge-difficulty ${challenge.difficulty.toLowerCase()}">${challenge.difficulty}</div>
-    <p>${challenge.description}</p>
-    <pre>${challenge.example}</pre>
-    <textarea placeholder="Write your code here..."></textarea>
-    <button onclick="markCompleted('${challenge.id}')">Mark Completed</button>
-  `;
+        #challenge-list li {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            color: #3c4043;
+            transition: all 0.2s ease;
+        }
 
-  // Highlight active
-  document.querySelectorAll('#challenge-list li').forEach(li => li.classList.remove('active'));
-  const activeIndex = challenges.findIndex(c => c.id === hash);
-  if (activeIndex >= 0) list.children[activeIndex].classList.add('active');
-}
+        #challenge-list li:hover {
+            background-color: #f8f9fa;
+        }
 
-function markCompleted(id) {
-  const challenge = challenges.find(c => c.id === id);
-  challenge.completed = true;
-  updateProgress();
-}
+        #challenge-list li.active {
+            background-color: #e7f3ff;
+            border-left-color: #1a73e8;
+            color: #1a73e8;
+        }
 
-function updateProgress() {
-  const completedCount = challenges.filter(c => c.completed).length;
-  const percentage = (completedCount / challenges.length) * 100;
-  document.getElementById('progress-bar').style.width = percentage + '%';
-}
-</script>
+        .challenge-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2d323a;
+            margin-bottom: 16px;
+        }
+
+        .challenge-theme {
+            display: inline-block;
+            padding: 4px 8px;
+            background-color: #e8f0fe;
+            color: #1967d2;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .challenge-difficulty {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-left: 8px;
+        }
+
+        .challenge-difficulty.easy {
+            background-color: #e7f6e7;
+            color: #0d652d;
+        }
+
+        .challenge-difficulty.medium {
+            background-color: #fff7e6;
+            color: #b95000;
+        }
+
+        .challenge-difficulty.hard {
+            background-color: #fce8e8;
+            color: #c11;
+        }
+
+        p {
+            color: #3c4043;
+            line-height: 1.6;
+            margin: 16px 0;
+        }
+
+        pre {
+            background-color: #f6f8fa;
+            padding: 16px;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            margin: 16px 0;
+            white-space: pre-wrap;
+        }
+
+        textarea {
+            width: 100%;
+            height: 300px;
+            padding: 16px;
+            border: 1px solid #e4e6e8;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            resize: vertical;
+            margin: 16px 0;
+            background-color: #ffffff;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.1);
+        }
+
+        button {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #1557b0;
+        }
+
+        #progress-container {
+            position: fixed;
+            bottom: 0;
+            left: 300px;
+            right: 0;
+            height: 4px;
+            background-color: #f1f3f4;
+        }
+
+        #progress-bar {
+            height: 100%;
+            background-color: #1a73e8;
+            width: 0;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <ul id="challenge-list"></ul>
+    </div>
+    <div id="main-content">
+        <div id="challenge-panel">
+            <p>Select a challenge from the left to start coding!</p>
+        </div>
+    </div>
+    <div id="progress-container">
+        <div id="progress-bar"></div>
+    </div>
+
+    <script>
+    const challenges = [
+      {
+        id: 'match-day',
+        theme: '⚽ Football',
+        difficulty: 'Easy',
+        title: 'Match Day Simulator',
+        description: 'Generate a random football match result between Team You and Team Him.',
+        example: 'Example Output:\nTeam Him 3 - 2 Team You\nCommentary: He scored a last-minute goal! ⚽',
+      },
+      {
+        id: 'love-encoder',
+        theme: '💕 Relationship',
+        difficulty: 'Easy',
+        title: 'Love Message Encoder',
+        description: 'Create a program that encodes a secret message only the two of you can decode.',
+        example: 'Input: I love you\nOutput: ❤️🌹#you#love#I',
+      }
+    ];
+
+    // Populate sidebar
+    const list = document.getElementById('challenge-list');
+    challenges.forEach(c => {
+      const li = document.createElement('li');
+      li.textContent = c.title;
+      li.onclick = () => { location.hash = c.id; };
+      list.appendChild(li);
+    });
+
+    // Listen for hash changes
+    window.addEventListener('hashchange', loadChallengeFromHash);
+    window.addEventListener('load', loadChallengeFromHash);
+
+    function loadChallengeFromHash() {
+      const hash = location.hash.slice(1); // remove #
+      const challenge = challenges.find(c => c.id === hash);
+      const panel = document.getElementById('challenge-panel');
+
+      if (!challenge) {
+        panel.innerHTML = '<p>Select a challenge from the left to start coding!</p>';
+        return;
+      }
+
+      panel.innerHTML = `
+        <div class="challenge-title">${challenge.title}</div>
+        <div class="challenge-theme">${challenge.theme}</div>
+        <div class="challenge-difficulty ${challenge.difficulty.toLowerCase()}">${challenge.difficulty}</div>
+        <p>${challenge.description}</p>
+        <pre>${challenge.example}</pre>
+        <textarea placeholder="Write your code here..."></textarea>
+        <button onclick="markCompleted('${challenge.id}')">Submit</button>
+      `;
+
+      // Highlight active
+      document.querySelectorAll('#challenge-list li').forEach(li => li.classList.remove('active'));
+      const activeIndex = challenges.findIndex(c => c.id === hash);
+      if (activeIndex >= 0) list.children[activeIndex].classList.add('active');
+    }
+
+    function markCompleted(id) {
+      const challenge = challenges.find(c => c.id === id);
+      challenge.completed = true;
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const completedCount = challenges.filter(c => c.completed).length;
+      const percentage = (completedCount / challenges.length) * 100;
+      document.getElementById('progress-bar').style.width = percentage + '%';
+    }
+    </script>
+</body>
+</html>
