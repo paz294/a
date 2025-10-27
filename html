@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code & Goal - Couple Challenges</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        background-color: #f0f2f5;
+        color: #333;
+    }
+
+    header {
+        background-color: #4a90e2;
+        color: white;
+        padding: 1rem;
+        text-align: center;
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 2rem;
+    }
+
+    nav {
+        background-color: #f8f9fa;
+        padding: 0.5rem 1rem;
+        display: flex;
+        justify-content: space-around;
+        border-bottom: 1px solid #ddd;
+    }
+
+    nav a {
+        text-decoration: none;
+        color: #333;
+        font-weight: bold;
+    }
+
+    nav a:hover {
+        color: #4a90e2;
+    }
+
+    main {
+        padding: 2rem;
+        max-width: 900px;
+        margin: auto;
+    }
+
+    .challenge {
+        background-color: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .challenge h2 {
+        margin-top: 0;
+        color: #4a90e2;
+    }
+
+    .challenge .theme {
+        font-size: 0.9rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .challenge .difficulty {
+        font-size: 0.85rem;
+        color: #666;
+        margin-bottom: 1rem;
+    }
+
+    pre {
+        background-color: #f6f8fa;
+        padding: 1rem;
+        border-radius: 5px;
+        overflow-x: auto;
+    }
+
+    .completed {
+        background-color: #d4edda;
+        border-left: 5px solid #28a745;
+        padding-left: 1rem;
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>Code & Goal 💻⚽</h1>
+    <p>Your personal couples coding challenge hub</p>
+</header>
+
+<nav>
+    <a href="#home">Home</a>
+    <a href="#challenges">Challenges</a>
+    <a href="#about">About</a>
+</nav>
+
+<main>
+    <section id="home">
+        <h2>Welcome to your Challenge Hub!</h2>
+        <p>Track your progress, solve challenges, and unlock fun surprises related to football, games, dates, and our relationship ❤️</p>
+        <p>Challenges Completed: <span id="completed-count">0</span> / <span id="total-count">0</span></p>
+    </section>
+
+    <section id="challenges">
+        <h2>Challenges</h2>
+
+        <div class="challenge" data-completed="false">
+            <div class="theme">Theme: ⚽ Football</div>
+            <div class="difficulty">Difficulty: Easy</div>
+            <h2>Challenge #1: Match Day Simulator</h2>
+            <p>Generate a random football match result between Team You and Team Him. Add commentary!</p>
+            <pre>
+Example Output:
+Team Him 3 - 2 Team You
+Commentary: He scored a late penalty and took the win! ⚽
+            </pre>
+            <button onclick="markCompleted(this)">Mark Completed</button>
+        </div>
+
+        <div class="challenge" data-completed="false">
+            <div class="theme">Theme: 💕 Relationship</div>
+            <div class="difficulty">Difficulty: Easy</div>
+            <h2>Challenge #2: Love Message Encoder</h2>
+            <p>Create a program that encodes a secret message that only the two of you can decode.</p>
+            <pre>
+Example Input: I love you
+Example Output: ❤️🌹#you#love#I
+            </pre>
+            <button onclick="markCompleted(this)">Mark Completed</button>
+        </div>
+
+        <!-- More challenges can be added here -->
+    </section>
+
+    <section id="about">
+        <h2>About</h2>
+        <p>This is your private couples coding challenge hub. Solve challenges in Python, C, or any language you like. Each challenge is a fun way to code together and celebrate your relationship ❤️</p>
+    </section>
+</main>
+
+<script>
+    const challenges = document.querySelectorAll('.challenge');
+    const totalCount = challenges.length;
+    document.getElementById('total-count').textContent = totalCount;
+
+    function markCompleted(button) {
+        const challengeDiv = button.parentElement;
+        if(challengeDiv.dataset.completed === "false") {
+            challengeDiv.classList.add('completed');
+            challengeDiv.dataset.completed = "true";
+            updateCompletedCount();
+        }
+    }
+
+    function updateCompletedCount() {
+        const completed = document.querySelectorAll('.challenge[data-completed="true"]').length;
+        document.getElementById('completed-count').textContent = completed;
+    }
+</script>
+
+</body>
+</html>
