@@ -3,87 +3,91 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Code & Goal - Couple Challenges</title>
+<title>Code & Goal 💻⚽</title>
 <style>
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        margin: 0;
-        background-color: #f0f2f5;
-        color: #333;
-    }
+    /* Base */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f8; color: #333; }
 
+    /* Header */
     header {
         background-color: #4a90e2;
         color: white;
-        padding: 1rem;
-        text-align: center;
-    }
-
-    header h1 {
-        margin: 0;
-        font-size: 2rem;
-    }
-
-    nav {
-        background-color: #f8f9fa;
-        padding: 0.5rem 1rem;
+        padding: 1rem 2rem;
         display: flex;
-        justify-content: space-around;
-        border-bottom: 1px solid #ddd;
+        align-items: center;
+        justify-content: space-between;
     }
+    header h1 { font-size: 1.8rem; }
+    nav a { color: white; text-decoration: none; margin-left: 1.5rem; font-weight: bold; }
+    nav a:hover { text-decoration: underline; }
 
-    nav a {
-        text-decoration: none;
-        color: #333;
-        font-weight: bold;
+    /* Layout */
+    .container { display: flex; min-height: 100vh; }
+
+    /* Sidebar */
+    aside {
+        width: 220px;
+        background-color: #fff;
+        border-right: 1px solid #ddd;
+        padding: 2rem 1rem;
     }
+    aside h2 { margin-bottom: 1rem; color: #4a90e2; font-size: 1.2rem; }
+    aside ul { list-style: none; }
+    aside li { margin-bottom: 0.8rem; cursor: pointer; padding: 0.3rem 0.5rem; border-radius: 5px; }
+    aside li:hover, aside li.active { background-color: #e1f0ff; }
 
-    nav a:hover {
-        color: #4a90e2;
-    }
+    /* Main content */
+    main { flex: 1; padding: 2rem; }
 
-    main {
-        padding: 2rem;
-        max-width: 900px;
-        margin: auto;
-    }
+    .progress { margin-bottom: 1.5rem; font-weight: bold; }
+    
+    .challenges { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
 
-    .challenge {
+    .challenge-card {
         background-color: white;
         border-radius: 8px;
         padding: 1.5rem;
-        margin-bottom: 1.5rem;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
     }
+    .challenge-card:hover { transform: translateY(-5px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
 
-    .challenge h2 {
-        margin-top: 0;
-        color: #4a90e2;
-    }
-
-    .challenge .theme {
-        font-size: 0.9rem;
-        font-weight: bold;
-        margin-bottom: 0.5rem;
-    }
-
-    .challenge .difficulty {
-        font-size: 0.85rem;
-        color: #666;
-        margin-bottom: 1rem;
-    }
+    .challenge-card h3 { color: #4a90e2; margin-bottom: 0.5rem; }
+    .challenge-card .theme { font-size: 0.85rem; font-weight: bold; margin-bottom: 0.3rem; }
+    .challenge-card .difficulty { font-size: 0.8rem; margin-bottom: 0.8rem; font-weight: bold; }
+    .difficulty.easy { color: #28a745; }
+    .difficulty.medium { color: #fd7e14; }
+    .difficulty.hard { color: #dc3545; }
 
     pre {
         background-color: #f6f8fa;
         padding: 1rem;
         border-radius: 5px;
         overflow-x: auto;
+        font-size: 0.9rem;
     }
 
-    .completed {
-        background-color: #d4edda;
-        border-left: 5px solid #28a745;
-        padding-left: 1rem;
+    button {
+        margin-top: 1rem;
+        padding: 0.5rem 1rem;
+        border: none;
+        background-color: #4a90e2;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    button:hover { background-color: #357ABD; }
+    .completed { background-color: #d4edda; border-left: 5px solid #28a745; padding-left: 1rem; }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 1rem;
+        background-color: #fff;
+        border-top: 1px solid #ddd;
+        margin-top: 2rem;
     }
 </style>
 </head>
@@ -91,76 +95,104 @@
 
 <header>
     <h1>Code & Goal 💻⚽</h1>
-    <p>Your personal couples coding challenge hub</p>
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#challenges">Challenges</a>
+        <a href="#about">About</a>
+    </nav>
 </header>
 
-<nav>
-    <a href="#home">Home</a>
-    <a href="#challenges">Challenges</a>
-    <a href="#about">About</a>
-</nav>
+<div class="container">
+    <aside>
+        <h2>Categories</h2>
+        <ul>
+            <li class="active" onclick="filterChallenges('all')">All</li>
+            <li onclick="filterChallenges('Football')">⚽ Football</li>
+            <li onclick="filterChallenges('Relationship')">💕 Relationship</li>
+            <li onclick="filterChallenges('Games')">🎮 Games</li>
+        </ul>
+    </aside>
 
-<main>
-    <section id="home">
-        <h2>Welcome to your Challenge Hub!</h2>
-        <p>Track your progress, solve challenges, and unlock fun surprises related to football, games, dates, and our relationship ❤️</p>
-        <p>Challenges Completed: <span id="completed-count">0</span> / <span id="total-count">0</span></p>
-    </section>
+    <main>
+        <div class="progress">Challenges Completed: <span id="completed-count">0</span> / <span id="total-count">0</span></div>
 
-    <section id="challenges">
-        <h2>Challenges</h2>
+        <div class="challenges">
 
-        <div class="challenge" data-completed="false">
-            <div class="theme">Theme: ⚽ Football</div>
-            <div class="difficulty">Difficulty: Easy</div>
-            <h2>Challenge #1: Match Day Simulator</h2>
-            <p>Generate a random football match result between Team You and Team Him. Add commentary!</p>
-            <pre>
+            <div class="challenge-card" data-theme="Football" data-completed="false">
+                <div class="theme">⚽ Football</div>
+                <div class="difficulty easy">Easy</div>
+                <h3>Challenge #1: Match Day Simulator</h3>
+                <p>Generate a random football match result between Team You and Team Him. Add fun commentary!</p>
+                <pre>
 Example Output:
 Team Him 3 - 2 Team You
-Commentary: He scored a late penalty and took the win! ⚽
-            </pre>
-            <button onclick="markCompleted(this)">Mark Completed</button>
+Commentary: He scored a last-minute goal! ⚽
+                </pre>
+                <button onclick="markCompleted(this)">Mark Completed</button>
+            </div>
+
+            <div class="challenge-card" data-theme="Relationship" data-completed="false">
+                <div class="theme">💕 Relationship</div>
+                <div class="difficulty easy">Easy</div>
+                <h3>Challenge #2: Love Message Encoder</h3>
+                <p>Create a program that encodes a secret message only the two of you can decode.</p>
+                <pre>
+Input: I love you
+Output: ❤️🌹#you#love#I
+                </pre>
+                <button onclick="markCompleted(this)">Mark Completed</button>
+            </div>
+
+            <div class="challenge-card" data-theme="Games" data-completed="false">
+                <div class="theme">🎮 Games</div>
+                <div class="difficulty medium">Medium</div>
+                <h3>Challenge #3: Rock Paper Scissors – Love Edition</h3>
+                <p>Add fun or romantic outcomes depending on who wins each round.</p>
+                <pre>
+Input: Rock
+Output: You win! 💘
+                </pre>
+                <button onclick="markCompleted(this)">Mark Completed</button>
+            </div>
+
         </div>
+    </main>
+</div>
 
-        <div class="challenge" data-completed="false">
-            <div class="theme">Theme: 💕 Relationship</div>
-            <div class="difficulty">Difficulty: Easy</div>
-            <h2>Challenge #2: Love Message Encoder</h2>
-            <p>Create a program that encodes a secret message that only the two of you can decode.</p>
-            <pre>
-Example Input: I love you
-Example Output: ❤️🌹#you#love#I
-            </pre>
-            <button onclick="markCompleted(this)">Mark Completed</button>
-        </div>
-
-        <!-- More challenges can be added here -->
-    </section>
-
-    <section id="about">
-        <h2>About</h2>
-        <p>This is your private couples coding challenge hub. Solve challenges in Python, C, or any language you like. Each challenge is a fun way to code together and celebrate your relationship ❤️</p>
-    </section>
-</main>
+<footer>
+    💻 Made with ❤️ for you two | 2025
+</footer>
 
 <script>
-    const challenges = document.querySelectorAll('.challenge');
+    const challenges = document.querySelectorAll('.challenge-card');
     const totalCount = challenges.length;
     document.getElementById('total-count').textContent = totalCount;
 
     function markCompleted(button) {
-        const challengeDiv = button.parentElement;
-        if(challengeDiv.dataset.completed === "false") {
-            challengeDiv.classList.add('completed');
-            challengeDiv.dataset.completed = "true";
+        const card = button.parentElement;
+        if(card.dataset.completed === "false") {
+            card.classList.add('completed');
+            card.dataset.completed = "true";
             updateCompletedCount();
         }
     }
 
     function updateCompletedCount() {
-        const completed = document.querySelectorAll('.challenge[data-completed="true"]').length;
+        const completed = document.querySelectorAll('.challenge-card[data-completed="true"]').length;
         document.getElementById('completed-count').textContent = completed;
+    }
+
+    function filterChallenges(category) {
+        challenges.forEach(c => {
+            if(category === 'all' || c.dataset.theme === category) {
+                c.style.display = 'block';
+            } else {
+                c.style.display = 'none';
+            }
+        });
+        document.querySelectorAll('aside li').forEach(li => li.classList.remove('active'));
+        const activeLi = Array.from(document.querySelectorAll('aside li')).find(li => li.textContent.includes(category) || (category==='all' && li.textContent.includes('All')));
+        if(activeLi) activeLi.classList.add('active');
     }
 </script>
 
