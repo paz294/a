@@ -426,6 +426,66 @@
             font-size: 18px;
         }
 
+        .welcome-banner {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(45deg, #282828, #333333);
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .welcome-banner h1 {
+            color: #ffa116;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .welcome-banner p {
+            color: #d4d4d4;
+            font-size: 16px;
+        }
+
+        .challenge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        .challenge-card {
+            background-color: #282828;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid #404040;
+        }
+
+        .challenge-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .challenge-card h3 {
+            color: #ffffff;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .card-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .card-description {
+            color: #d4d4d4;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
         #progress-container {
             position: fixed;
             bottom: 0;
@@ -477,7 +537,16 @@
         </div>
         
         <div id="main-content">
-            <div id="challenge-panel">
+            <div id="home-page">
+                <div class="welcome-banner">
+                    <h1>Welcome to Coding Challenges</h1>
+                    <p>Choose a challenge from our curated list and start coding!</p>
+                </div>
+                <div class="challenge-grid">
+                    <!-- Challenges will be populated here -->
+                </div>
+            </div>
+            <div id="challenge-panel" style="display: none;">
                 <p class="welcome-message">Select a challenge from the list to start coding!</p>
             </div>
         </div>
@@ -528,13 +597,30 @@
       }
     ];
 
-    // Populate sidebar
+    // Populate sidebar and challenge grid
     const list = document.getElementById('challenge-list');
+    const grid = document.querySelector('.challenge-grid');
+    
     challenges.forEach(c => {
+      // Create sidebar item
       const li = document.createElement('li');
       li.textContent = c.title;
       li.onclick = () => { location.hash = c.id; };
       list.appendChild(li);
+
+      // Create challenge card
+      const card = document.createElement('div');
+      card.className = 'challenge-card';
+      card.onclick = () => { location.hash = c.id; };
+      card.innerHTML = `
+        <h3>${c.title}</h3>
+        <div class="card-meta">
+            <div class="challenge-theme">${c.theme}</div>
+            <div class="challenge-difficulty ${c.difficulty.toLowerCase()}">${c.difficulty}</div>
+        </div>
+        <div class="card-description">${c.description}</div>
+      `;
+      grid.appendChild(card);
     });
 
     // Listen for hash changes
@@ -545,11 +631,16 @@
       const hash = location.hash.slice(1); // remove #
       const challenge = challenges.find(c => c.id === hash);
       const panel = document.getElementById('challenge-panel');
+      const homePage = document.getElementById('home-page');
 
       if (!challenge) {
-        panel.innerHTML = '<p>Select a challenge from the left to start coding!</p>';
+        panel.style.display = 'none';
+        homePage.style.display = 'block';
         return;
       }
+
+      panel.style.display = 'block';
+      homePage.style.display = 'none';
 
       panel.innerHTML = `
         <div class="problem-header">
