@@ -608,61 +608,78 @@
     window.addEventListener('load', loadChallengeFromHash);
 
     function loadChallengeFromHash() {
-      const hash = location.hash.slice(1); // remove #
-      const challenge = challenges.find(c => c.id === hash);
-      const panel = document.getElementById('challenge-panel');
-      const homePage = document.getElementById('home-page');
+  const hash = location.hash.slice(1); // remove #
+  const challenge = challenges.find(c => c.id === hash);
+  const panel = document.getElementById('challenge-panel');
+  const homePage = document.getElementById('home-page');
 
-      if (!challenge) {
-        panel.style.display = 'none';
-        homePage.style.display = 'block';
-        return;
-      }
+  if (!challenge) {
+    // Show home page if no hash or hash not found
+    panel.style.display = 'none';
+    homePage.style.display = 'block';
+    return;
+  }
 
-      panel.style.display = 'block';
-      homePage.style.display = 'none';
+  // Show challenge panel
+  panel.style.display = 'block';
+  homePage.style.display = 'none';
 
-      panel.innerHTML = `
-        <div class="problem-header">
-            <div class="challenge-title">${challenge.title}</div>
-            <div class="header-right">
-                <div class="challenge-theme">${challenge.theme}</div>
-                <div class="challenge-difficulty ${challenge.difficulty.toLowerCase()}">${challenge.difficulty}</div>
-                <button class="icon-button"><span class="material-icons">bookmark_border</span></button>
-                <button class="icon-button"><span class="material-icons">thumb_up_off_alt</span></button>
-                <button class="icon-button"><span class="material-icons">share</span></button>
-            </div>
+  panel.innerHTML = `
+    <div class="problem-header">
+        <div class="challenge-title">${challenge.title}</div>
+        <div class="header-right">
+            <div class="challenge-theme">${challenge.theme}</div>
+            <div class="challenge-difficulty ${challenge.difficulty.toLowerCase()}">${challenge.difficulty}</div>
+            <button class="icon-button" onclick="goHome()"><span class="material-icons">arrow_back</span></button>
+            <button class="icon-button"><span class="material-icons">bookmark_border</span></button>
+            <button class="icon-button"><span class="material-icons">thumb_up_off_alt</span></button>
+            <button class="icon-button"><span class="material-icons">share</span></button>
         </div>
-        <div class="tabs">
-            <button class="tab active">Description</button>
-            <button class="tab">Editorial</button>
-            <button class="tab">Solutions</button>
-            <button class="tab">Submissions</button>
+    </div>
+    <div class="tabs">
+        <button class="tab active">Description</button>
+        <button class="tab">Editorial</button>
+        <button class="tab">Solutions</button>
+        <button class="tab">Submissions</button>
+    </div>
+    <div class="problem-content">
+        <p>${challenge.description}</p>
+        <div class="example-section">
+            <h4>Example</h4>
+            <pre>${challenge.example}</pre>
         </div>
-        <div class="problem-content">
-            <p>${challenge.description}</p>
-            <div class="example-section">
-                <h4>Example</h4>
-                <pre>${challenge.example}</pre>
-            </div>
+    </div>
+    <div class="code-section">
+        <div class="code-header">
+            <select class="language-select">
+                <option>Python3</option>
+                <option>JavaScript</option>
+                <option>Java</option>
+                <option>C++</option>
+            </select>
+            <button class="icon-button"><span class="material-icons">settings</span></button>
         </div>
-        <div class="code-section">
-            <div class="code-header">
-                <select class="language-select">
-                    <option>Python3</option>
-                    <option>JavaScript</option>
-                    <option>Java</option>
-                    <option>C++</option>
-                </select>
-                <button class="icon-button"><span class="material-icons">settings</span></button>
-            </div>
-            <textarea placeholder="Write your code here..."></textarea>
-            <div class="button-row">
-                <button class="run-button">Run Code</button>
-                <button class="submit-button" onclick="markCompleted('${challenge.id}')">Submit</button>
-            </div>
+        <textarea placeholder="Write your code here..."></textarea>
+        <div class="button-row">
+            <button class="run-button">Run Code</button>
+            <button class="submit-button" onclick="markCompleted('${challenge.id}')">Submit</button>
         </div>
-      `;
+    </div>
+  `;
+
+  setupTabs();
+
+  // Highlight active sidebar item
+  document.querySelectorAll('#challenge-list li').forEach(li => li.classList.remove('active'));
+  const activeIndex = challenges.findIndex(c => c.id === hash);
+  if (activeIndex >= 0) list.children[activeIndex].classList.add('active');
+}
+
+// Back to home page
+function goHome() {
+  location.hash = '';
+}
+
 
       // Handle tab switching
 function setupTabs() {
