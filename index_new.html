@@ -1,345 +1,302 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>LeetCode-style Challenges</title>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,sans-serif}
+body{min-height:100vh;background:#1e1e1e;color:#fff}
+.navbar{display:flex;align-items:center;justify-content:space-between;background:#282828;padding:0 20px;height:50px;border-bottom:1px solid #404040;position:fixed;top:0;left:0;right:0;z-index:1000}
+.navbar-brand{display:flex;align-items:center;gap:8px;color:#a5d8ff;font-weight:600;font-size:18px;margin-left:32px}
+.nav-right{display:flex;align-items:center;gap:16px}
+.user-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#666;color:#fff;font-weight:600}
+.main-container{display:flex;margin-top:50px;height:calc(100vh - 50px)}
+#sidebar{width:300px;background:#282828;border-right:1px solid #404040;height:100%;overflow-y:auto;transition:transform .3s ease}
+.sidebar-toggle{display:none;position:fixed;left:10px;top:10px;z-index:1001;background:none;border:none;color:#a5d8ff;cursor:pointer}
+@media (max-width:768px){
+  .sidebar-toggle{display:block}
+  #sidebar{position:fixed;left:-300px;top:50px;bottom:0;z-index:100}
+  #sidebar.active{transform:translateX(300px)}
+  .main-container{margin-left:0!important}
 }
+.sidebar-header{padding:20px;border-bottom:1px solid #404040}
+.sidebar-header h3{color:#a5d8ff;display:flex;align-items:center;gap:8px}
+.section-button{width:100%;padding:12px 20px;background:none;border:none;color:#d4d4d4;text-align:left;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-size:14px;transition:.2s}
+.section-button:hover{background:#333}
+.section-button.active{color:#a5d8ff}
+.section-content{display:none;background:#1e1e1e}
+.section-content.active{display:block}
+.challenge-item{padding:10px 20px 10px 40px;cursor:pointer;color:#d4d4d4;display:flex;align-items:center;gap:8px;transition:.2s}
+.challenge-item:hover{background:#333}
+.challenge-item.active{color:#a5d8ff;background:#333}
 
-body {
-    min-height: 100vh;
-    background-color: #1e1e1e;
-    color: #ffffff;
-}
+.user-login-bar{display:flex;align-items:center;justify-content:flex-start;background:#282828;padding:0 20px;height:50px;border-top:1px solid #404040;position:fixed;top:0;right:0;left:300px;z-index:1000}
+.user-login-bar label{color:#d4d4d4;margin-right:10px}
+.user-login-bar button{padding:5px 10px;border-radius:4px;border:none;background:#a5d8ff;color:#1e1e1e;cursor:pointer;transition:.2s}
+.user-login-bar button:hover{background:#90cfff}
 
-.navbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #282828;
-    padding: 0 20px;
-    height: 50px;
-    border-bottom: 1px solid #404040;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-}
+#main-content{flex:1;padding:20px}
+#home-page h1{margin-bottom:8px}
+#game-board{margin-top:20px;display:grid;gap:10px;max-width:420px}
+.player-row{display:flex;align-items:center;gap:10px;background:#282828;border:1px solid #404040;border-radius:8px;padding:10px}
+.player-label{color:#bbb;width:80px}
+.player-name{padding:4px 8px;border-radius:6px;background:#1e1e1e;border:1px solid #333;min-width:120px;display:inline-flex;align-items:center;gap:6px}
+.player-name[contenteditable="true"]{outline:none;border-color:#a5d8ff;box-shadow:0 0 0 2px rgba(165,216,255,.15)}
+.rename-btn{background:none;border:none;color:#a5d8ff;cursor:pointer;display:inline-flex;align-items:center}
+.rename-btn:hover{color:#90cfff}
 
-.navbar-brand {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #a5d8ff;
-    font-weight: 600;
-    font-size: 18px;
-    margin-left: 32px;
-}
-
-.nav-right {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.user-avatar {
-    width: 32px;
-    height: 32px;
-    background-color: #a5d8ff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-}
-
-.main-container {
-    display: flex;
-    margin-top: 50px;
-    height: calc(100vh - 50px);
-}
-
-#sidebar {
-    width: 300px;
-    background-color: #282828;
-    border-right: 1px solid #404040;
-    height: 100%;
-    overflow-y: auto;
-    transition: transform 0.3s ease;
-}
-
-.sidebar-toggle {
-    display: none;
-    position: fixed;
-    left: 10px;
-    top: 10px;
-    z-index: 1001;
-    background: none;
-    border: none;
-    color: #a5d8ff;
-    cursor: pointer;
-}
-
-@media (max-width: 768px) {
-    .sidebar-toggle { display: block; }
-    #sidebar { position: fixed; left: -300px; top: 50px; bottom: 0; z-index: 100; }
-    #sidebar.active { transform: translateX(300px); }
-    .main-container { margin-left: 0 !important; }
-}
-
-.sidebar-header {
-    padding: 20px;
-    border-bottom: 1px solid #404040;
-}
-
-.sidebar-header h3 {
-    color: #a5d8ff;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.section-button {
-    width: 100%;
-    padding: 12px 20px;
-    background: none;
-    border: none;
-    color: #d4d4d4;
-    text-align: left;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 14px;
-    transition: all 0.2s ease;
-}
-
-.section-button:hover { background-color: #333333; }
-.section-button.active { color: #a5d8ff; }
-
-.section-content { display: none; background-color: #1e1e1e; }
-.section-content.active { display: block; }
-
-.challenge-item {
-    padding: 10px 20px 10px 40px;
-    cursor: pointer;
-    color: #d4d4d4;
-    display: flex;
-    align-items: center;
-    transition: all 0.2s ease;
-}
-
-.challenge-item:hover { background-color: #333333; }
-.challenge-item.active { color: #a5d8ff; background-color: #333333; }
-
-.user-login-bar {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    background-color: #282828;
-    padding: 0 20px;
-    height: 50px;
-    border-top: 1px solid #404040;
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 300px;
-    z-index: 1000;
-}
-
-.user-login-bar label { color: #d4d4d4; margin-right: 10px; }
-.user-login-bar button {
-    padding: 5px 10px;
-    border-radius: 4px;
-    border: none;
-    background-color: #a5d8ff;
-    color: #1e1e1e;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-.user-login-bar button:hover { background-color: #90cfff; }
-
+.badge{font-size:12px;background:#333;border:1px solid #404040;border-radius:999px;padding:2px 8px;color:#bbb;margin-left:auto}
 </style>
 </head>
 <body>
 
 <nav class="navbar">
-    <div class="navbar-brand">
-        <span class="material-icons">code</span>
-        LeetCode-style Challenges
-    </div>
-    <div class="nav-right" id="navbar-user-info"></div>
+  <div class="navbar-brand">
+    <span class="material-icons">code</span>
+    LeetCode-style Challenges
+  </div>
+  <div class="nav-right" id="navbar-user-info"></div>
 </nav>
 
 <div class="user-login-bar">
-    <label>Users:</label>
-    <div id="user-list-bar" style="display:flex;gap:8px;"></div>
-    <button id="add-user-btn">Add User</button>
-    <span id="user-score" style="margin-left:20px;color:#a5d8ff;font-weight:bold;">Score: 0</span>
+  <label>Users:</label>
+  <div id="user-list-bar" style="display:flex;gap:8px;"></div>
+  <button id="add-user-btn">Add User</button>
+  <span id="user-score" style="margin-left:20px;color:#a5d8ff;font-weight:bold;">Score: 0</span>
 </div>
 
-<button class="sidebar-toggle">
-    <span class="material-icons">menu</span>
+<button class="sidebar-toggle" onclick="document.getElementById('sidebar').classList.toggle('active')">
+  <span class="material-icons">menu</span>
 </button>
 
 <div class="main-container">
-    <div id="sidebar">
-        <div class="sidebar-header">
-            <h3><span class="material-icons">code</span>Challenges</h3>
-        </div>
-        <div id="sections-list"></div>
+  <div id="sidebar">
+    <div class="sidebar-header">
+      <h3><span class="material-icons">code</span>Challenges</h3>
+    </div>
+    <div id="sections-list"><!-- your accordion/categories go here when you add challenges --></div>
+  </div>
+
+  <div id="main-content">
+    <div id="home-page">
+      <h1>Welcome to LeetCode-style Challenges</h1>
+      <p>Select a challenge from the sidebar to get started.</p>
     </div>
 
-    <div id="main-content" style="flex-grow: 1; padding: 20px;">
-        <div id="home-page">
-            <h1>Welcome to LeetCode-style Challenges</h1>
-            <p>Select a challenge from the sidebar to get started.</p>
-        </div>
-        <div id="challenge-panel" style="display: none;"></div>
+    <div id="challenge-panel" style="display:none"></div>
 
-        <div id="game-board" style="margin-top:20px;">
-            <div>Player 1: <span id="player1-name"></span></div>
-            <div>Player 2: <span id="player2-name"></span></div>
-        </div>
+    <!-- Inline renameable player names -->
+    <div id="game-board">
+      <div class="player-row">
+        <div class="player-label">Player 1</div>
+        <div class="player-name" id="player1-name" contenteditable="false"></div>
+        <button class="rename-btn" title="Rename Player 1" onclick="startInlineRename(0)">
+          <span class="material-icons">edit</span>
+        </button>
+        <span class="badge">dbl-click to edit</span>
+      </div>
+      <div class="player-row">
+        <div class="player-label">Player 2</div>
+        <div class="player-name" id="player2-name" contenteditable="false"></div>
+        <button class="rename-btn" title="Rename Player 2" onclick="startInlineRename(1)">
+          <span class="material-icons">edit</span>
+        </button>
+        <span class="badge">dbl-click to edit</span>
+      </div>
     </div>
+  </div>
 </div>
 
 <script>
-// --- User Management ---
+// ---------------- User storage helpers ----------------
 const USER_LIST_KEY = 'challengeUserList';
-let currentUser = null;
+const CURRENT_USER_KEY = 'challengeCurrentUser';
+const DISPLAY_NAMES_KEY = 'challengeUserDisplayNames';
 
-function getUserList() {
-    return JSON.parse(localStorage.getItem(USER_LIST_KEY) || '["Player1","Player2"]');
+function getUserList(){
+  return JSON.parse(localStorage.getItem(USER_LIST_KEY) || '["Player1","Player2"]');
 }
-function saveUserList(list) {
-    localStorage.setItem(USER_LIST_KEY, JSON.stringify(list));
+function saveUserList(list){
+  localStorage.setItem(USER_LIST_KEY, JSON.stringify(list));
 }
-function setCurrentUser(user) {
-    currentUser = user;
-    localStorage.setItem('challengeCurrentUser', user);
-    renderUserListBar();
-    renderNavbarUser();
-    renderCurrentPlayers();
-    updateUserScore();
+function getCurrentUser(){
+  return localStorage.getItem(CURRENT_USER_KEY) || getUserList()[0];
 }
-function getCurrentUser() {
-    return localStorage.getItem('challengeCurrentUser') || getUserList()[0];
+function setCurrentUser(user){
+  localStorage.setItem(CURRENT_USER_KEY, user);
+  renderAll();
 }
 
-// Display Names
-function getDisplayNames() {
-    return JSON.parse(localStorage.getItem('challengeUserDisplayNames') || '{}');
+function getDisplayNames(){
+  return JSON.parse(localStorage.getItem(DISPLAY_NAMES_KEY) || '{}');
 }
-function saveDisplayNames(obj) {
-    localStorage.setItem('challengeUserDisplayNames', JSON.stringify(obj));
+function saveDisplayNames(obj){
+  localStorage.setItem(DISPLAY_NAMES_KEY, JSON.stringify(obj));
 }
-function getDisplayName(user) {
-    const names = getDisplayNames();
-    return names[user] || user;
+function getDisplayName(user){
+  const names = getDisplayNames();
+  return names[user] || user;
 }
-function setDisplayName(user, displayName) {
-    const names = getDisplayNames();
-    names[user] = displayName;
-    saveDisplayNames(names);
-}
-
-// Render Navbar Users
-function renderNavbarUser() {
-    const nav = document.getElementById('navbar-user-info');
-    nav.innerHTML = '';
-    getUserList().forEach(user => {
-        const avatar = document.createElement('div');
-        avatar.className = 'user-avatar';
-        avatar.textContent = getDisplayName(user)[0].toUpperCase();
-        avatar.title = getDisplayName(user);
-        avatar.style.marginRight = '8px';
-        if(user === getCurrentUser()) avatar.style.backgroundColor = '#a5d8ff';
-        nav.appendChild(avatar);
-
-        const nameSpan = document.createElement('span');
-        nameSpan.textContent = getDisplayName(user);
-        nameSpan.style.marginRight = '16px';
-        nameSpan.style.color = user === getCurrentUser() ? '#222' : '#fff';
-        nav.appendChild(nameSpan);
-    });
+function setDisplayName(user, name){
+  const names = getDisplayNames();
+  names[user] = name;
+  saveDisplayNames(names);
 }
 
-// Render User List Bar
-function renderUserListBar() {
-    const bar = document.getElementById('user-list-bar');
-    bar.innerHTML = '';
-    getUserList().forEach(user => {
-        const btn = document.createElement('button');
-        btn.textContent = getDisplayName(user);
-        btn.style.padding = '4px 12px';
-        btn.style.borderRadius = '16px';
-        btn.style.border = 'none';
-        btn.style.background = user === getCurrentUser() ? '#a5d8ff' : '#444';
-        btn.style.color = user === getCurrentUser() ? '#222' : '#fff';
-        btn.style.cursor = 'pointer';
-        btn.style.fontWeight = user === getCurrentUser() ? 'bold' : 'normal';
+// ---------------- UI renderers ----------------
+function renderNavbarUser(){
+  const nav = document.getElementById('navbar-user-info');
+  nav.innerHTML = '';
+  const users = getUserList();
+  users.forEach(u=>{
+    const avatar = document.createElement('div');
+    avatar.className = 'user-avatar';
+    avatar.textContent = (getDisplayName(u)[0] || '?').toUpperCase();
+    if(u===getCurrentUser()) avatar.style.backgroundColor = '#a5d8ff';
+    nav.appendChild(avatar);
 
-        btn.onclick = () => setCurrentUser(user);
-        btn.ondblclick = () => {
-            const newName = prompt('Enter new display name:', getDisplayName(user));
-            if (!newName || newName === getDisplayName(user)) return;
-            setDisplayName(user, newName);
-            renderUserListBar();
-            renderNavbarUser();
-            renderCurrentPlayers();
-        };
-
-        bar.appendChild(btn);
-    });
+    const name = document.createElement('span');
+    name.textContent = getDisplayName(u);
+    name.style.marginRight = '16px';
+    name.style.color = u===getCurrentUser() ? '#a5d8ff' : '#fff';
+    nav.appendChild(name);
+  });
 }
 
-// Add User
-function addUser() {
-    const name = prompt('Enter new user name:');
-    if (!name) return;
-    const list = getUserList();
-    if (!list.includes(name)) {
-        list.push(name);
-        saveUserList(list);
-    }
-    setCurrentUser(name);
+function renderUserListBar(){
+  const bar = document.getElementById('user-list-bar');
+  bar.innerHTML = '';
+  getUserList().forEach(u=>{
+    const btn = document.createElement('button');
+    btn.textContent = getDisplayName(u);
+    btn.style.padding='4px 12px';
+    btn.style.borderRadius='16px';
+    btn.style.border='none';
+    btn.style.background = u===getCurrentUser() ? '#a5d8ff' : '#444';
+    btn.style.color = u===getCurrentUser() ? '#222' : '#fff';
+    btn.style.cursor='pointer';
+    btn.style.fontWeight = u===getCurrentUser() ? '700' : '400';
+
+    btn.onclick = ()=> setCurrentUser(u);
+    btn.ondblclick = ()=>{
+      const newName = prompt('Rename player:', getDisplayName(u));
+      if(!newName || newName.trim()===getDisplayName(u)) return;
+      setDisplayName(u, newName.trim());
+      renderAll();
+    };
+    bar.appendChild(btn);
+  });
 }
 
-// Render Players on Board
-function renderCurrentPlayers() {
-    const users = getUserList();
-    document.getElementById('player1-name').textContent = users[0] ? getDisplayName(users[0]) : '';
-    document.getElementById('player2-name').textContent = users[1] ? getDisplayName(users[1]) : '';
+function renderCurrentPlayers(){
+  const users = getUserList();
+  const p1 = document.getElementById('player1-name');
+  const p2 = document.getElementById('player2-name');
+  p1.textContent = users[0] ? getDisplayName(users[0]) : '';
+  p2.textContent = users[1] ? getDisplayName(users[1]) : '';
+
+  // enable dblclick inline editing too
+  p1.ondblclick = ()=> startInlineRename(0);
+  p2.ondblclick = ()=> startInlineRename(1);
 }
 
-// User Score
-function updateUserScore() {
-    const score = localStorage.getItem(`${getCurrentUser()}_score`) || 0;
-    document.getElementById('user-score').textContent = `Score: ${score}`;
+function updateUserScore(){
+  const score = localStorage.getItem(`${getCurrentUser()}_score`) || 0;
+  const el = document.getElementById('user-score');
+  if(el) el.textContent = `Score: ${score}`;
 }
 
-// Sidebar Toggle
-document.querySelector('.sidebar-toggle').addEventListener('click', () => {
-    const sidebar = document.getElementById('sidebar');
-    sidebar.classList.toggle('active');
+function renderAll(){
+  renderNavbarUser();
+  renderUserListBar();
+  renderCurrentPlayers();
+  updateUserScore();
+}
+
+// ---------------- Add user ----------------
+document.getElementById('add-user-btn').addEventListener('click', ()=>{
+  const name = prompt('Enter new user name:');
+  if(!name) return;
+  const list = getUserList();
+  if(!list.includes(name)){
+    list.push(name);
+    saveUserList(list);
+    // default display name = provided name
+    setDisplayName(name, name);
+  }
+  setCurrentUser(name);
 });
 
-// Initialize
-document.addEventListener('DOMContentLoaded', () => {
-    renderUserListBar();
-    renderNavbarUser();
-    renderCurrentPlayers();
-    document.getElementById('add-user-btn').addEventListener('click', addUser);
-    if (!getCurrentUser()) setCurrentUser(getUserList()[0]);
+// ---------------- Inline rename on board ----------------
+function startInlineRename(index){
+  const users = getUserList();
+  const userId = users[index];
+  if(!userId) return;
+
+  const span = document.getElementById(index===0 ? 'player1-name' : 'player2-name');
+  // Make editable
+  span.setAttribute('contenteditable','true');
+  span.focus();
+
+  // Place caret at end
+  document.getSelection().selectAllChildren(span);
+  document.getSelection().collapseToEnd();
+
+  const finish = (save)=>{
+    span.removeAttribute('contenteditable');
+    if(save){
+      const newName = span.textContent.trim();
+      if(newName && newName !== getDisplayName(userId)){
+        setDisplayName(userId, newName);
+      }else{
+        // revert to saved display name if no change
+        span.textContent = getDisplayName(userId);
+      }
+    }else{
+      // cancel, revert
+      span.textContent = getDisplayName(userId);
+    }
+    renderAll();
+  };
+
+  // Save on Enter, cancel on Escape, save on blur
+  const keyHandler = (e)=>{
+    if(e.key==='Enter'){
+      e.preventDefault();
+      span.removeEventListener('blur', blurHandler);
+      span.removeEventListener('keydown', keyHandler);
+      finish(true);
+    }else if(e.key==='Escape'){
+      e.preventDefault();
+      span.removeEventListener('blur', blurHandler);
+      span.removeEventListener('keydown', keyHandler);
+      finish(false);
+    }
+  };
+  const blurHandler = ()=>{
+    span.removeEventListener('keydown', keyHandler);
+    span.removeEventListener('blur', blurHandler);
+    finish(true);
+  };
+
+  span.addEventListener('keydown', keyHandler);
+  span.addEventListener('blur', blurHandler);
+}
+
+// ---------------- Init ----------------
+document.addEventListener('DOMContentLoaded', ()=>{
+  // Seed default display names if empty
+  const users = getUserList();
+  const names = getDisplayNames();
+  users.forEach(u=>{
+    if(!names[u]) names[u]=u;
+  });
+  saveDisplayNames(names);
+
+  if(!localStorage.getItem(CURRENT_USER_KEY)) setCurrentUser(users[0]);
+  renderAll();
 });
 </script>
 
