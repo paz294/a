@@ -257,6 +257,7 @@
         <label for="user-select">User:</label>
         <select id="user-select"></select>
         <button id="add-user-btn">Add User</button>
+        <button id="rename-user-btn">Rename</button>
         <span id="user-score" style="margin-left:20px;color:#a5d8ff;font-weight:bold;">Score: 0</span>
     </div>
 
@@ -341,10 +342,40 @@
             setCurrentUser(name);
         }
     }
+    function renameUser() {
+        const oldName = getCurrentUser();
+        if (!oldName) return;
+        const newName = prompt('Enter new username:', oldName);
+        if (!newName || newName === oldName) return;
+        const list = getUserList();
+        if (list.includes(newName)) {
+            alert('That username already exists.');
+            return;
+        }
+        // Update user list
+        const idx = list.indexOf(oldName);
+        if (idx !== -1) list[idx] = newName;
+        saveUserList(list);
+        // Move all localStorage keys for this user
+        ['codes','progress'].forEach(suffix => {
+            const oldKey = `${oldName}_${suffix}`;
+            const newKey = `${newName}_${suffix}`;
+            const val = localStorage.getItem(oldKey);
+            if (val !== null) {
+                localStorage.setItem(newKey, val);
+                localStorage.removeItem(oldKey);
+            }
+        });
+        // Update current user
+        setCurrentUser(newName);
+        renderUserSelect();
+        updateUserScore();
+    }
     document.addEventListener('DOMContentLoaded', () => {
         renderUserSelect();
         document.getElementById('user-select').addEventListener('change', e => setCurrentUser(e.target.value));
         document.getElementById('add-user-btn').addEventListener('click', addUser);
+        document.getElementById('rename-user-btn').addEventListener('click', renameUser);
         if (!getCurrentUser() && getUserList().length) setCurrentUser(getUserList()[0]);
         updateUserScore();
     });
