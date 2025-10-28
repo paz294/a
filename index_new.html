@@ -266,7 +266,6 @@
         <label for="user-select">User:</label>
         <select id="user-select"></select>
         <button id="add-user-btn">Add User</button>
-        <button id="rename-user-btn">Rename</button>
         <span id="user-score" style="margin-left:20px;color:#a5d8ff;font-weight:bold;">Score: 0</span>
     </div>
 
@@ -374,54 +373,123 @@
         renderUserSelect();
         document.getElementById('user-select').addEventListener('change', e => setCurrentUser(e.target.value));
         document.getElementById('add-user-btn').addEventListener('click', addUser);
-        document.getElementById('rename-user-btn').addEventListener('click', renameUser);
-        if (!getCurrentUser() && getUserList().length) setCurrentUser(getUserList()[0]);
-        updateUserScore();
+        // Double-click to rename
+        document.getElementById('user-select').addEventListener('dblclick', function(e) {
+            const user = this.value;
+            if (!user) return;
+            const newName = prompt('Enter new username:', user);
+            if (!newName || newName === user) return;
+            const list = getUserList();
+            if (list.includes(newName)) {
+                alert('That username already exists.');
+                return;
+            }
+            // Update user list
+            const idx = list.indexOf(user);
+            if (idx !== -1) list[idx] = newName;
+            saveUserList(list);
+            // Move all localStorage keys for this user
+            ['codes','progress'].forEach(suffix => {
+                const oldKey = `${user}_${suffix}`;
+                const newKey = `${newName}_${suffix}`;
+                const val = localStorage.getItem(oldKey);
+                if (val !== null) {
+                    localStorage.setItem(newKey, val);
+                    localStorage.removeItem(oldKey);
+                }
+            });
+            // Update current user
+            setCurrentUser(newName);
+            renderUserSelect();
+            updateUserScore();
+        });
     });
+    // --- Challenge Management ---
+    const CHALLENGE_LIST_KEY = 'challengeList';
+    const challengeSections = {};
 
-    // --- Per-user code/progress ---
-    function userKey(key) {
-        return `${getCurrentUser() || 'default'}_${key}`;
+    function getChallengeList() {
+        return JSON.parse(localStorage.getItem(CHALLENGE_LIST_KEY) || '[]');
     }
-    function saveUserCode(challengeId, code, lang) {
-        const all = JSON.parse(localStorage.getItem(userKey('codes')) || '{}');
-        if (!all[challengeId]) all[challengeId] = {};
-        all[challengeId][lang] = code;
-        localStorage.setItem(userKey('codes'), JSON.stringify(all));
+    function saveChallengeList(list) {
+        localStorage.setItem(CHALLENGE_LIST_KEY, JSON.stringify(list));
     }
-    function loadUserCode(challengeId, lang) {
-        const all = JSON.parse(localStorage.getItem(userKey('codes')) || '{}');
-        return (all[challengeId] && all[challengeId][lang]) || '';
+    function loadChallenges() {
+        const list = getChallengeList();
+        const container = document.getElementById('sections-list');
+        container.innerHTML = '';
+        list.forEach((challenge, idx) => {
+            const sectionId = `section_${idx}`;
+            const div = document.createElement('div');
+            div.className = 'section-button';
+            div.innerHTML = `
+                <span class="material-icons section-icon">folder_open</span>
+                ${challenge.title}
+                <span class="material-icons" style="font-size:16px;">keyboard_arrow_right</span>
+            `;
+            div.addEventListener('click', () => {
+                const content = document.getElementById('challenge-panel');
+                content.style.display = 'block';
+                content.innerHTML = `
+                    <h2>${challenge.title}</h2>
+                    <pre style="background:#111;padding:10px;border-radius:4px;">${challenge.code}</pre>
+                    <div style="margin-top:10px;">
+                        <button class="run-code" style="padding:5px 10px;border:none;border-radius:4px;background:#a5d8ff;color:#1e1e1e;cursor:pointer;">Run Code</button>
+                    </div>
+                `;
+                // Highlight.js
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js';
+                script.onload = () => {
+                    hljs.highlightAll();
+                };
+                document.head.appendChild(script);
+                // Run code button
+                document.querySelector('.run-code').addEventListener('click', () => {
+                    const userCode = prompt('Enter your code:');
+                    if (userCode !== null) {
+                        // Save user code
+                        localStorage.setItem(`${getCurrentUser()}_codes`, userCode);
+                        alert('Code saved! You can now run it in your local environment.');
+                    }
+                });
+            });
+            container.appendChild(div);
+            challengeSections[sectionId] = challenge;
+        });
     }
-    function saveUserProgress(challengeId, status) {
-        const all = JSON.parse(localStorage.getItem(userKey('progress')) || '{}');
-        all[challengeId] = status;
-        localStorage.setItem(userKey('progress'), JSON.stringify(all));
-        updateUserScore();
+    document.addEventListener('DOMContentLoaded', () => {
+        loadChallenges();
+    });
+    // --- Hash Management ---
+    function loadChallengeFromHash() {
+        const hash = location.hash.substring(1);
+        if (!hash) return;
+        const challenge = document.getElementById(hash);
+        if (challenge) {
+            challenge.scrollIntoView({ behavior: 'smooth' });
+            setTimeout(() => {
+                const evt = new Event('click');
+                challenge.dispatchEvent(evt);
+            }, 300);
+        }
     }
-    function loadUserProgress(challengeId) {
-        const all = JSON.parse(localStorage.getItem(userKey('progress')) || '{}');
-        return all[challengeId] || null;
-    }
-    function getUserScore() {
-        const all = JSON.parse(localStorage.getItem(userKey('progress')) || '{}');
-        return Object.values(all).filter(status => status === 'completed').length;
-    }
+    window.addEventListener('hashchange', loadChallengeFromHash);
+    // --- User Score ---
     function updateUserScore() {
-        document.getElementById('user-score').textContent = 'Score: ' + getUserScore();
+        const score = localStorage.getItem(`${getCurrentUser()}_score`) || 0;
+        document.getElementById('user-score').textContent = `Score: ${score}`;
     }
-    // --- Patch challenge panel logic to use per-user code/progress ---
-    // Example for marking a challenge as completed:
-    function markCompleted(challengeId) {
-        saveUserProgress(challengeId, 'completed');
-        updateUserScore();
-        loadChallengeFromHash();
-    }
-    // Example for saving code:
-    // saveUserCode(challengeId, code, language);
-    // Example for loading code:
-    // loadUserCode(challengeId, language);
-    // ...existing code...
+    // --- Sidebar Toggle ---
+    document.querySelector('.sidebar-toggle').addEventListener('click', () => {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('active');
+    });
+    // --- Initial Load ---
+    document.addEventListener('DOMContentLoaded', () => {
+        setCurrentUser(getCurrentUser() || 'Guest');
+        loadChallenges();
+    });
     </script>
 </body>
 </html>
