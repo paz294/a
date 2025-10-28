@@ -359,8 +359,8 @@
                 const idx = list.indexOf(user);
                 if (idx !== -1) list[idx] = newName;
                 saveUserList(list);
-                // Move all localStorage keys for this user
-                ['codes','progress'].forEach(suffix => {
+                // Move all localStorage keys for this user (codes, progress, score)
+                ['codes','progress','score'].forEach(suffix => {
                     const oldKey = `${user}_${suffix}`;
                     const newKey = `${newName}_${suffix}`;
                     const val = localStorage.getItem(oldKey);
@@ -369,11 +369,14 @@
                         localStorage.removeItem(oldKey);
                     }
                 });
-                // Update current user
-                setCurrentUser(newName);
-                renderUserListBar();
-                renderNavbarUser();
-                updateUserScore();
+                // If this was the current user, update current user key
+                if (getCurrentUser() === user) {
+                    setCurrentUser(newName);
+                } else {
+                    renderUserListBar();
+                    renderNavbarUser();
+                    updateUserScore();
+                }
             };
             bar.appendChild(btn);
         });
