@@ -258,8 +258,8 @@
             <span class="material-icons">code</span>
             LeetCode-style Challenges
         </div>
-        <div class="nav-right">
-            <div class="user-avatar">U</div>
+        <div class="nav-right" id="navbar-user-info">
+            <!-- Will be filled by JS -->
         </div>
     </nav>
     <div class="user-login-bar" style="display:flex;align-items:center;gap:10px;padding:10px 20px;background:#222;margin-top:50px;">
@@ -310,6 +310,7 @@
         currentUser = user;
         localStorage.setItem('challengeCurrentUser', user);
         renderUserListBar();
+        renderNavbarUser();
         updateUserScore();
         loadChallengeFromHash();
     }
@@ -355,6 +356,7 @@
                 // Update current user
                 setCurrentUser(newName);
                 renderUserListBar();
+                renderNavbarUser();
                 updateUserScore();
             };
             bar.appendChild(btn);
@@ -375,6 +377,7 @@
     }
     document.addEventListener('DOMContentLoaded', () => {
         renderUserListBar();
+        renderNavbarUser();
         document.getElementById('add-user-btn').addEventListener('click', addUser);
         if (!getCurrentUser() && getUserList().length) setCurrentUser(getUserList()[0]);
         updateUserScore();
