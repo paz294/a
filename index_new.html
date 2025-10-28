@@ -373,68 +373,11 @@
             setCurrentUser(name);
         }
     }
-    function renameUser() {
-        const oldName = getCurrentUser();
-        if (!oldName) return;
-        const newName = prompt('Enter new username:', oldName);
-        if (!newName || newName === oldName) return;
-        const list = getUserList();
-        if (list.includes(newName)) {
-            alert('That username already exists.');
-            return;
-        }
-        // Update user list
-        const idx = list.indexOf(oldName);
-        if (idx !== -1) list[idx] = newName;
-        saveUserList(list);
-        // Move all localStorage keys for this user
-        ['codes','progress'].forEach(suffix => {
-            const oldKey = `${oldName}_${suffix}`;
-            const newKey = `${newName}_${suffix}`;
-            const val = localStorage.getItem(oldKey);
-            if (val !== null) {
-                localStorage.setItem(newKey, val);
-                localStorage.removeItem(oldKey);
-            }
-        });
-        // Update current user
-        setCurrentUser(newName);
-        renderUserListBar();
-        updateUserScore();
-    }
     document.addEventListener('DOMContentLoaded', () => {
         renderUserListBar();
         document.getElementById('add-user-btn').addEventListener('click', addUser);
-        // Double-click to rename
-        document.getElementById('user-select').addEventListener('dblclick', function(e) {
-            const user = this.value;
-            if (!user) return;
-            const newName = prompt('Enter new username:', user);
-            if (!newName || newName === user) return;
-            const list = getUserList();
-            if (list.includes(newName)) {
-                alert('That username already exists.');
-                return;
-            }
-            // Update user list
-            const idx = list.indexOf(user);
-            if (idx !== -1) list[idx] = newName;
-            saveUserList(list);
-            // Move all localStorage keys for this user
-            ['codes','progress'].forEach(suffix => {
-                const oldKey = `${user}_${suffix}`;
-                const newKey = `${newName}_${suffix}`;
-                const val = localStorage.getItem(oldKey);
-                if (val !== null) {
-                    localStorage.setItem(newKey, val);
-                    localStorage.removeItem(oldKey);
-                }
-            });
-            // Update current user
-            setCurrentUser(newName);
-            renderUserListBar();
-            updateUserScore();
-        });
+        if (!getCurrentUser() && getUserList().length) setCurrentUser(getUserList()[0]);
+        updateUserScore();
     });
     // --- Challenge Management ---
     const CHALLENGE_LIST_KEY = 'challengeList';
