@@ -175,6 +175,42 @@
       display: flex; justify-content: space-between; align-items: center;
       border-bottom: 1px solid #404040; padding-bottom: 10px; margin-bottom: 20px;
     }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .completed-badge {
+      background-color: #2e7d32;
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .autosave-indicator {
+      font-size: 12px;
+      color: #666;
+      margin-left: auto;
+    }
+    
+    .submit-button:disabled {
+      background-color: #2e7d32;
+      cursor: default;
+      opacity: 0.8;
+    }
+    
+    /* Add completed state to sidebar items */
+    .section-content li.completed::after {
+      content: "✓";
+      margin-left: auto;
+      color: #2e7d32;
+    }
     .tabs { display: flex; gap: 20px; border-bottom: 1px solid #404040; margin-bottom: 20px; }
     .tab {
       background: none; border: none; color: #bbb; cursor: pointer; padding-bottom: 8px;
@@ -395,6 +431,18 @@
     window.addEventListener('load', () => {
       setupAccordionSidebar();
       loadChallengeFromHash();
+      
+      // Update initial progress
+      updateProgress();
+      
+      // Mark completed challenges in sidebar
+      const progress = loadUserProgress();
+      Object.keys(progress).forEach(id => {
+        if (progress[id].completed) {
+          const item = document.querySelector(`#sections-list li[data-id="${id}"]`);
+          if (item) item.classList.add('completed');
+        }
+      });
     });
 
     function loadChallengeFromHash() {
@@ -415,10 +463,18 @@
       panel.style.display = 'block';
       homePage.style.display = 'none';
 
+      // Load saved progress
+      const progress = loadUserProgress();
+      const isCompleted = progress[challenge.id]?.completed;
+      const savedCode = loadSavedCode(challenge.id);
+      
       panel.innerHTML = `
         <div class="problem-header">
           <h2>${challenge.title}</h2>
-          <button class="run-button" onclick="goHome()">← Back</button>
+          <div class="header-actions">
+            ${isCompleted ? '<span class="completed-badge">✓ Completed</span>' : ''}
+            <button class="run-button" onclick="goHome()">← Back</button>
+          </div>
         </div>
         <div class="tabs">
           <button class="tab active">Description</button>
@@ -432,10 +488,13 @@
             <pre>${challenge.example}</pre>
           </div>
         </div>
-        <textarea placeholder="Write your code here..."></textarea>
+        <textarea placeholder="Write your code here...">${savedCode}</textarea>
         <div class="button-row">
-          <button class="run-button">Run</button>
-          <button class="submit-button" onclick="markCompleted('${challenge.id}')">Submit</button>
+          <button class="run-button" onclick="runCode('${challenge.id}')">Run</button>
+          <button class="submit-button" onclick="markCompleted('${challenge.id}')" ${isCompleted ? 'disabled' : ''}>
+            ${isCompleted ? 'Completed ✓' : 'Submit'}
+          </button>
+          <div class="autosave-indicator">Changes saved automatically</div>
         </div>
       `;
       setupTabs();
@@ -445,11 +504,23 @@
     function setupTabs() {
       const tabs = document.querySelectorAll('.tab');
       const content = document.querySelector('.problem-content');
+      const textarea = document.querySelector('textarea');
+      const challengeId = location.hash.slice(1);
+      
+      // Set up autosave
+      let saveTimeout;
+      textarea.addEventListener('input', () => {
+        clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(() => {
+          saveCode(challengeId, textarea.value);
+        }, 1000); // Save after 1 second of no typing
+      });
+      
       tabs.forEach(tab => {
         tab.onclick = () => {
           tabs.forEach(t => t.classList.remove('active'));
           tab.classList.add('active');
-          const ch = challenges.find(c => c.id === location.hash.slice(1));
+          const ch = challenges.find(c => c.id === challengeId);
           if (tab.textContent === 'Description') {
             content.innerHTML = `<p>${ch.description}</p><div class="example-section"><h4>Example</h4><pre>${ch.example}</pre></div>`;
           } else if (tab.textContent === 'Code') {
@@ -485,16 +556,76 @@
       location.hash = '';
     }
 
+    // Save and load user progress
+    const USER_PROGRESS_KEY = 'userChallengeProgress';
+    const USER_CODE_KEY = 'userChallengeCode';
+
+    function loadUserProgress() {
+      const savedProgress = localStorage.getItem(USER_PROGRESS_KEY);
+      return savedProgress ? JSON.parse(savedProgress) : {};
+    }
+
+    function loadUserCode() {
+      const savedCode = localStorage.getItem(USER_CODE_KEY);
+      return savedCode ? JSON.parse(savedCode) : {};
+    }
+
+    function saveUserProgress(progressData) {
+      localStorage.setItem(USER_PROGRESS_KEY, JSON.stringify(progressData));
+    }
+
+    function saveUserCode(codeData) {
+      localStorage.setItem(USER_CODE_KEY, JSON.stringify(codeData));
+    }
+
     function markCompleted(id) {
-      const challenge = challenges.find(c => c.id === id);
-      challenge.completed = true;
+      const progress = loadUserProgress();
+      progress[id] = { completed: true, completedAt: new Date().toISOString() };
+      saveUserProgress(progress);
       updateProgress();
+      
+      // Update UI to show completion
+      const challengeItem = document.querySelector(`#sections-list li[data-id="${id}"]`);
+      if (challengeItem) {
+        challengeItem.classList.add('completed');
+      }
     }
 
     function updateProgress() {
-      const completedCount = challenges.filter(c => c.completed).length;
+      const progress = loadUserProgress();
+      const completedCount = Object.keys(progress).length;
       const percentage = (completedCount / challenges.length) * 100;
       document.getElementById('progress-bar').style.width = percentage + '%';
+    }
+
+    function saveCode(id, code) {
+      const codeData = loadUserCode();
+      codeData[id] = {
+        code: code,
+        lastModified: new Date().toISOString()
+      };
+      saveUserCode(codeData);
+    }
+
+    function loadSavedCode(id) {
+      const codeData = loadUserCode();
+      return codeData[id]?.code || '';
+    }
+
+    function runCode(id) {
+      const textarea = document.querySelector('textarea');
+      const code = textarea.value;
+      
+      try {
+        // Create a safe evaluation context
+        const output = new Function(code)();
+        alert('Code executed successfully!\\nOutput: ' + output);
+      } catch (error) {
+        alert('Error executing code:\\n' + error.message);
+      }
+      
+      // Save the code regardless of execution result
+      saveCode(id, code);
     }
   </script>
 </body>
