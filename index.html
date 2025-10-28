@@ -1,314 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Our Coding Challenges</title>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif; }
-    body { background-color: #1e1e1e; color: #fff; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodeChallenges</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f5f5f5;
+    color: #333;
+  }
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff;
+    padding: 0 20px;
+    height: 50px;
+    border-bottom: 1px solid #ddd;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+  }
+  .navbar-brand {
+    font-weight: bold;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .main-container {
+    display: flex;
+    margin-top: 50px;
+    height: calc(100vh - 50px);
+  }
+  #sidebar {
+    width: 280px;
+    background-color: #fff;
+    border-right: 1px solid #ddd;
+    overflow-y: auto;
+    padding: 10px;
+  }
+  .accordion {
+    cursor: pointer;
+    padding: 12px;
+    text-align: left;
+    border: none;
+    outline: none;
+    transition: background-color 0.2s ease;
+    width: 100%;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .accordion:hover {
+    background-color: #f0f0f0;
+  }
+  .accordion.active {
+    background-color: #e0e0e0;
+  }
+  .panel {
+    padding-left: 20px;
+    display: none;
+    overflow: hidden;
+  }
+  .challenge-item {
+    padding: 8px 0;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+  }
+  .challenge-item:hover {
+    color: #007bff;
+  }
+  .difficulty {
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #fff;
+  }
+  .easy { background-color: #4caf50; }
+  .medium { background-color: #ff9800; }
+  .hard { background-color: #f44336; }
 
-    /* Navbar */
-    .navbar {
-      display: flex; align-items: center; justify-content: space-between;
-      background-color: #282828; padding: 0 20px; height: 50px;
-      border-bottom: 1px solid #404040; position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-    }
-    .navbar-brand { display: flex; align-items: center; gap: 8px; color: #a5d8ff; font-weight: 600; cursor: pointer; }
-    .navbar-brand:hover { color: #74c0fc; }
+  #main-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+  }
 
-    /* Main layout */
-    .main-container { display: flex; margin-top: 50px; height: calc(100vh - 50px); }
-    #sidebar {
-      width: 250px; background-color: #282828; border-right: 1px solid #404040;
-      padding: 20px; overflow-y: auto;
-    }
-    #sidebar h3 { color: #60a5fa; margin-bottom: 15px; }
-    #challenge-list { list-style: none; }
-    #challenge-list li {
-      padding: 10px; border-radius: 6px; cursor: pointer; transition: 0.2s;
-    }
-    #challenge-list li:hover, #challenge-list li.active {
-      background-color: #333; color: #60a5fa;
-    }
-
-    #main-content { flex: 1; padding: 20px; overflow-y: auto; }
-
-    /* Home Page */
-    .welcome-banner {
-      text-align: center; padding: 40px; background: linear-gradient(45deg, #282828, #333);
-      border-radius: 10px; margin-bottom: 30px;
-    }
-    .welcome-banner h1 { color: #60a5fa; margin-bottom: 10px; }
-
-    /* Challenge Sections */
-    .section {
-      margin-bottom: 40px;
-    }
-    .section h2 {
-      color: #60a5fa; margin-bottom: 20px; border-bottom: 1px solid #404040; padding-bottom: 5px;
-    }
-
-    .challenge-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px;
-    }
-    .challenge-card {
-      background-color: #282828; border: 1px solid #404040; border-radius: 10px; padding: 20px;
-      cursor: pointer; transition: 0.2s; position: relative;
-    }
-    .challenge-card:hover {
-      transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
-    .challenge-card h3 { margin-bottom: 8px; color: #fff; }
-    .card-description { font-size: 14px; color: #bbb; }
-
-    .difficulty {
-      position: absolute; top: 10px; right: 10px;
-      padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600;
-    }
-    .easy { background-color: #2e7d32; color: #a5d6a7; }
-    .medium { background-color: #ef6c00; color: #ffcc80; }
-    .hard { background-color: #b71c1c; color: #ef9a9a; }
-
-    /* Challenge Page */
-    .problem-header {
-      display: flex; justify-content: space-between; align-items: center;
-      border-bottom: 1px solid #404040; padding-bottom: 10px; margin-bottom: 20px;
-    }
-    .tabs { display: flex; gap: 20px; border-bottom: 1px solid #404040; margin-bottom: 20px; }
-    .tab {
-      background: none; border: none; color: #bbb; cursor: pointer; padding-bottom: 8px;
-    }
-    .tab.active { color: #60a5fa; border-bottom: 2px solid #60a5fa; }
-    .example-section { background: #282828; border-radius: 8px; padding: 16px; margin: 20px 0; }
-    pre { background: #1e1e1e; padding: 10px; border-radius: 6px; color: #ccc; }
-
-    textarea {
-      width: 100%; height: 200px; background: #282828; color: #fff;
-      border: 1px solid #404040; border-radius: 6px; padding: 10px;
-      font-family: monospace; resize: vertical;
-    }
-    .button-row { display: flex; gap: 10px; margin-top: 10px; }
-    .run-button, .submit-button {
-      padding: 8px 14px; border-radius: 6px; font-weight: 500; cursor: pointer;
-    }
-    .run-button {
-      background: transparent; color: #a5d8ff; border: 1px solid #a5d8ff;
-    }
-    .submit-button {
-      background: #a5d8ff; border: none; color: #000;
-    }
-    #progress-container {
-      position: fixed; bottom: 0; left: 250px; right: 0; height: 4px; background-color: #282828;
-    }
-    #progress-bar {
-      height: 100%; background-color: #60a5fa; width: 0; transition: 0.3s ease;
-    }
-  </style>
+  .challenge-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 12px;
+  }
+  .challenge-description {
+    margin-bottom: 16px;
+  }
+</style>
 </head>
 <body>
-  <nav class="navbar">
-    <div class="navbar-brand" onclick="goHome()">
-      <span class="material-icons">favorite</span>
-      <span>Our Code Challenges</span>
-    </div>
-  </nav>
+<nav class="navbar">
+  <div class="navbar-brand" onclick="goHome()">
+    <span class="material-icons">code</span>
+    CodeChallenges
+  </div>
+</nav>
 
-  <div class="main-container">
-    <div id="sidebar">
-      <h3>Challenges</h3>
-      <ul id="challenge-list"></ul>
-    </div>
-
-    <div id="main-content">
-      <div id="home-page">
-        <div class="welcome-banner">
-          <h1>Welcome 💻❤️⚽</h1>
-          <p>Our little coding space — where love meets logic and fun challenges.</p>
-        </div>
-        <div id="sections"></div>
+<div class="main-container">
+  <div id="sidebar">
+    <button class="accordion">⚽ Football <span class="material-icons">expand_more</span></button>
+    <div class="panel">
+      <div class="challenge-item" onclick="openChallenge('match-day')">
+        Match Day Simulator <span class="difficulty easy">Easy</span>
       </div>
+      <div class="challenge-item" onclick="openChallenge('penalty-shootout')">
+        Penalty Shootout <span class="difficulty medium">Medium</span>
+      </div>
+    </div>
 
-      <div id="challenge-panel" style="display: none;"></div>
+    <button class="accordion">💕 Relationship <span class="material-icons">expand_more</span></button>
+    <div class="panel">
+      <div class="challenge-item" onclick="openChallenge('love-encoder')">
+        Love Message Encoder <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="challenge-item" onclick="openChallenge('date-planner')">
+        Date Planner <span class="difficulty medium">Medium</span>
+      </div>
+    </div>
+
+    <button class="accordion">🎮 Games <span class="material-icons">expand_more</span></button>
+    <div class="panel">
+      <div class="challenge-item" onclick="openChallenge('mini-chess')">
+        Mini Chess <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="challenge-item" onclick="openChallenge('tic-tac-toe')">
+        Tic-Tac-Toe <span class="difficulty easy">Easy</span>
+      </div>
     </div>
   </div>
 
-  <div id="progress-container"><div id="progress-bar"></div></div>
+  <div id="main-content">
+    <div id="home-page">
+      <h1>Welcome to CodeChallenges!</h1>
+      <p>Click a category on the left to explore challenges.</p>
+    </div>
+    <div id="challenge-panel" style="display: none;">
+      <!-- Challenge content will appear here -->
+    </div>
+  </div>
+</div>
 
-  <script>
-    const challenges = [
-      {
-        id: 'match-day',
-        category: 'Football',
-        difficulty: 'Easy',
-        title: 'Match Day Simulator',
-        description: 'Generate a random football match result between Team You and Team Him.',
-        example: 'Example Output:\nTeam Him 3 - 2 Team You\nCommentary: He scored a last-minute goal! ⚽'
-      },
-      {
-        id: 'penalty-shooter',
-        category: 'Football',
-        difficulty: 'Medium',
-        title: 'Penalty Shootout Game',
-        description: 'Simulate a 5-shot penalty shootout — see who wins the cup!',
-        example: 'Example Output:\nYou ⚽⚽❌⚽⚽\nHim ⚽❌⚽⚽❌\nYou win 4–3! 🏆'
-      },
-      {
-        id: 'love-encoder',
-        category: 'Relationship',
-        difficulty: 'Easy',
-        title: 'Love Message Encoder',
-        description: 'Create a program that encodes a secret message only the two of you can decode.',
-        example: 'Input: I love you\nOutput: ❤️🌹#you#love#I'
-      },
-      {
-        id: 'anniversary-planner',
-        category: 'Relationship',
-        difficulty: 'Medium',
-        title: 'Anniversary Date Planner',
-        description: 'Build a random date generator using your favorite activities and restaurants.',
-        example: 'Output: 🎥 Movie night + 🍝 Italian dinner'
-      },
-      {
-        id: 'game-night',
-        category: 'Games',
-        difficulty: 'Medium',
-        title: 'Game Night Score Tracker',
-        description: 'Build a small scoreboard that keeps track of who wins more rounds in your favorite games.',
-        example: 'Input: You - 5, Him - 7\nOutput: Him wins tonight! 🎉'
-      },
-      {
-        id: 'guess-the-song',
-        category: 'Games',
-        difficulty: 'Hard',
-        title: 'Guess The Song Challenge',
-        description: 'Play random snippets of songs and code a way to guess the title!',
-        example: 'Input: 🎶 "da da da daaaa" Output: "Star Wars Theme!"'
-      }
-    ];
+<script>
+const accordions = document.querySelectorAll('.accordion');
+accordions.forEach(acc => {
+  acc.addEventListener('click', () => {
+    acc.classList.toggle('active');
+    const panel = acc.nextElementSibling;
+    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+  });
+});
 
-    const sectionsContainer = document.getElementById('sections');
-    const sidebarList = document.getElementById('challenge-list');
+const challenges = {
+  'match-day': { title: 'Match Day Simulator', description: 'Generate a random football match result.' },
+  'penalty-shootout': { title: 'Penalty Shootout', description: 'Simulate a penalty shootout game.' },
+  'love-encoder': { title: 'Love Message Encoder', description: 'Encode a secret message for your partner.' },
+  'date-planner': { title: 'Date Planner', description: 'Plan romantic dates together.' },
+  'mini-chess': { title: 'Mini Chess', description: 'Play a simplified chess game.' },
+  'tic-tac-toe': { title: 'Tic-Tac-Toe', description: 'Classic Tic-Tac-Toe game.' },
+};
 
-    const categories = [...new Set(challenges.map(c => c.category))];
+function openChallenge(id) {
+  const panel = document.getElementById('challenge-panel');
+  const home = document.getElementById('home-page');
+  home.style.display = 'none';
+  panel.style.display = 'block';
+  const ch = challenges[id];
+  panel.innerHTML = `
+    <div class="challenge-title">${ch.title}</div>
+    <div class="challenge-description">${ch.description}</div>
+    <textarea placeholder="Write your code here..." style="width:100%; height:200px;"></textarea>
+    <button style="margin-top:10px;">Submit</button>
+  `;
+}
 
-    categories.forEach(cat => {
-      const section = document.createElement('div');
-      section.className = 'section';
-      section.innerHTML = `<h2>${cat}</h2><div class="challenge-grid"></div>`;
-      const grid = section.querySelector('.challenge-grid');
-
-      challenges.filter(c => c.category === cat).forEach(ch => {
-        const card = document.createElement('div');
-        card.className = 'challenge-card';
-        card.onclick = () => { location.hash = ch.id; };
-        card.innerHTML = `
-          <h3>${ch.title}</h3>
-          <p class="card-description">${ch.description}</p>
-          <span class="difficulty ${ch.difficulty.toLowerCase()}">${ch.difficulty}</span>
-        `;
-        grid.appendChild(card);
-
-        const li = document.createElement('li');
-        li.textContent = `${ch.title} (${ch.difficulty})`;
-        li.onclick = () => { location.hash = ch.id; };
-        sidebarList.appendChild(li);
-      });
-
-      sectionsContainer.appendChild(section);
-    });
-
-    window.addEventListener('hashchange', loadChallengeFromHash);
-    window.addEventListener('load', loadChallengeFromHash);
-
-    function loadChallengeFromHash() {
-      const hash = location.hash.slice(1);
-      const challenge = challenges.find(c => c.id === hash);
-      const panel = document.getElementById('challenge-panel');
-      const homePage = document.getElementById('home-page');
-
-      if (!challenge) {
-        panel.style.display = 'none';
-        homePage.style.display = 'block';
-        sidebarList.querySelectorAll('li').forEach(li => li.classList.remove('active'));
-        return;
-      }
-
-      panel.style.display = 'block';
-      homePage.style.display = 'none';
-
-      panel.innerHTML = `
-        <div class="problem-header">
-          <h2>${challenge.title}</h2>
-          <button class="run-button" onclick="goHome()">← Back</button>
-        </div>
-        <div class="tabs">
-          <button class="tab active">Description</button>
-          <button class="tab">Code</button>
-          <button class="tab">Notes</button>
-        </div>
-        <div class="problem-content">
-          <p>${challenge.description}</p>
-          <div class="example-section">
-            <h4>Example</h4>
-            <pre>${challenge.example}</pre>
-          </div>
-        </div>
-        <textarea placeholder="Write your code here..."></textarea>
-        <div class="button-row">
-          <button class="run-button">Run</button>
-          <button class="submit-button" onclick="markCompleted('${challenge.id}')">Submit</button>
-        </div>
-      `;
-      setupTabs();
-      highlightActive(hash);
-    }
-
-    function setupTabs() {
-      const tabs = document.querySelectorAll('.tab');
-      const content = document.querySelector('.problem-content');
-      tabs.forEach(tab => {
-        tab.onclick = () => {
-          tabs.forEach(t => t.classList.remove('active'));
-          tab.classList.add('active');
-          const ch = challenges.find(c => c.id === location.hash.slice(1));
-          if (tab.textContent === 'Description') {
-            content.innerHTML = `<p>${ch.description}</p><div class="example-section"><h4>Example</h4><pre>${ch.example}</pre></div>`;
-          } else if (tab.textContent === 'Code') {
-            content.innerHTML = `<p>Write or view your solution here ✨</p>`;
-          } else {
-            content.innerHTML = `<p>Notes, hints, or memories related to this challenge 💭</p>`;
-          }
-        };
-      });
-    }
-
-    function highlightActive(hash) {
-      sidebarList.querySelectorAll('li').forEach(li => {
-        li.classList.toggle('active', li.textContent.startsWith(challenges.find(c => c.id === hash).title));
-      });
-    }
-
-    function goHome() {
-      document.getElementById('home-page').style.display = 'block';
-      document.getElementById('challenge-panel').style.display = 'none';
-      sidebarList.querySelectorAll('li').forEach(li => li.classList.remove('active'));
-      location.hash = '';
-    }
-
-    function markCompleted(id) {
-      const challenge = challenges.find(c => c.id === id);
-      challenge.completed = true;
-      updateProgress();
-    }
-
-    function updateProgress() {
-      const completedCount = challenges.filter(c => c.completed).length;
-      const percentage = (completedCount / challenges.length) * 100;
-      document.getElementById('progress-bar').style.width = percentage + '%';
-    }
-  </script>
+function goHome() {
+  document.getElementById('home-page').style.display = 'block';
+  document.getElementById('challenge-panel').style.display = 'none';
+}
+</script>
 </body>
 </html>
 
