@@ -1,86 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Our Coding Challenges</title>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
-    body { min-height: 100vh; background:#1e1e1e; color:#fff; }
+    *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,sans-serif}
+    body{min-height:100vh;background:#1e1e1e;color:#fff}
 
     /* Navbar */
-    .navbar { display:flex; align-items:center; justify-content:space-between; background:#282828; padding:0 20px; height:50px; border-bottom:1px solid #404040; position:fixed; top:0; left:0; right:0; z-index:1000; }
-    .navbar-brand { display:flex; align-items:center; gap:8px; color:#a5d8ff; font-weight:600; cursor:pointer; }
-    .navbar-brand:hover { color:#74c0fc; }
-    .nav-right { display:flex; align-items:center; gap:16px; }
+    .navbar{display:flex;align-items:center;justify-content:space-between;background:#282828;padding:0 16px;height:56px;border-bottom:1px solid #404040;position:fixed;top:0;left:0;right:0;z-index:1000}
+    .navbar-brand{display:flex;align-items:center;gap:8px;color:#a5d8ff;font-weight:600;cursor:pointer}
+    .navbar-brand:hover{color:#74c0fc}
+    .nav-right{display:flex;align-items:center;gap:16px}
 
-    /* Player profiles */
-    .user-profiles { display:flex; align-items:center; gap:16px; }
-    .user-profile { display:flex; align-items:center; gap:8px; padding:4px 10px; border-radius:18px; background:#333; }
-    .user-avatar { width:28px; height:28px; border-radius:50%; background:#a5d8ff; color:#1e1e1e; display:flex; align-items:center; justify-content:center; font-weight:700; }
-    .user-info { display:flex; align-items:center; gap:6px; }
-    .user-name { padding:2px 6px; border-radius:6px; background:#1e1e1e; border:1px solid #333; min-width:80px; outline:none; }
-    .user-name[contenteditable="true"] { border-color:#a5d8ff; box-shadow:0 0 0 2px rgba(165,216,255,.15); }
-    .edit-icon { font-size:18px; opacity:.8; cursor:pointer; }
-    .edit-icon:hover { opacity:1; }
+    /* Player chips */
+    .user-profiles{display:flex;align-items:center;gap:12px}
+    .user-profile{display:flex;align-items:center;gap:8px;background:#333;border:1px solid #3c3c3c;padding:6px 10px;border-radius:999px}
+    .user-avatar{width:28px;height:28px;border-radius:50%;background:#a5d8ff;color:#111;display:flex;align-items:center;justify-content:center;font-weight:700}
+    .user-info{display:flex;align-items:center;gap:6px}
+    .user-name{padding:2px 6px;border-radius:6px;background:#1e1e1e;border:1px solid #333;min-width:90px;outline:none}
+    .user-name[contenteditable="true"]{border-color:#a5d8ff;box-shadow:0 0 0 2px rgba(165,216,255,.15)}
+    .edit-icon{font-size:18px;opacity:.8;cursor:pointer}
+    .edit-icon:hover{opacity:1}
 
     /* Layout */
-    .main-container { display:flex; margin-top:50px; height:calc(100vh - 50px); }
-    #sidebar { width:250px; background:#282828; border-right:1px solid #404040; padding:20px; overflow-y:auto; }
-    #main-content { flex:1; padding:20px; overflow-y:auto; }
+    .main-container{display:flex;margin-top:56px;height:calc(100vh - 56px)}
+    #sidebar{width:270px;background:#282828;border-right:1px solid #404040;padding:16px;overflow-y:auto;transition:transform .3s ease}
+    #main-content{flex:1;padding:20px;overflow-y:auto}
 
-    /* Sidebar accordion */
-    #sidebar h3 { color:#60a5fa; margin-bottom:15px; display:flex; align-items:center; gap:8px; }
-    .section-accordion { margin-bottom:10px; }
-    .section-header { display:flex; align-items:center; justify-content:space-between; padding:10px; background:#333; border-radius:6px; cursor:pointer; }
-    .section-header:hover { background:#404040; }
-    .section-header .title { display:flex; align-items:center; gap:8px; font-weight:500; }
-    .section-content { max-height:0; overflow:hidden; transition:max-height .3s ease-out; }
-    .section-accordion.active .section-content { max-height:600px; }
-    .section-content ul { list-style:none; padding:10px; }
-    .section-content li { padding:8px 10px; margin:4px 0; border-radius:4px; cursor:pointer; display:flex; align-items:center; gap:8px; transition:.2s; }
-    .section-content li:hover { background:#333; }
-    .section-content li.active { background:#404040; color:#a5d8ff; }
-    .section-content li.completed::after { content:"✓"; margin-left:auto; color:#2e7d32; }
+    /* Sidebar: accordion */
+    #sidebar h3{color:#60a5fa;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+    .section-accordion{margin-bottom:10px;border:1px solid #3a3a3a;border-radius:8px;overflow:hidden}
+    .section-header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#333;cursor:pointer}
+    .section-header:hover{background:#3a3a3a}
+    .section-header .title{display:flex;align-items:center;gap:8px;font-weight:600}
+    .section-content{max-height:0;overflow:hidden;transition:max-height .28s ease}
+    .section-accordion.active .section-content{max-height:600px}
+    .section-content ul{list-style:none}
+    .section-content li{display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer}
+    .section-content li:hover{background:#333}
+    .section-content li.active{background:#404040;color:#a5d8ff}
+    .section-content li.completed::after{content:"✓";margin-left:auto;color:#2e7d32}
 
-    /* Home page */
-    .welcome-banner { text-align:center; padding:40px; background:linear-gradient(45deg,#282828,#333); border-radius:10px; margin-bottom:30px; }
-    .welcome-banner h1 { color:#60a5fa; margin-bottom:10px; }
-    .challenge-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap:20px; }
-    .challenge-card { background:#282828; border:1px solid #404040; border-radius:10px; padding:20px; cursor:pointer; transition:.2s; position:relative; }
-    .challenge-card:hover { transform:translateY(-3px); box-shadow:0 4px 12px rgba(0,0,0,.3); }
-    .challenge-card h3 { margin-bottom:8px; color:#fff; }
-    .card-description { font-size:14px; color:#bbb; }
-    .difficulty { position:absolute; top:10px; right:10px; padding:2px 8px; border-radius:12px; font-size:12px; font-weight:600; }
-    .easy{ background:#2e7d32; color:#a5d6a7; } .medium{ background:#ef6c00; color:#ffcc80; } .hard{ background:#b71c1c; color:#ef9a9a; }
+    /* Mobile sidebar toggle */
+    .sidebar-toggle{display:none;position:fixed;left:12px;top:64px;z-index:1100;background:#a5d8ff;border:none;border-radius:50%;width:40px;height:40px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+    .sidebar-toggle .material-icons{color:#111}
+    @media (max-width: 900px){
+      #sidebar{position:fixed;left:0;top:56px;bottom:4px;transform:translateX(-100%);z-index:1050}
+      #sidebar.active{transform:translateX(0)}
+      .sidebar-toggle{display:flex;align-items:center;justify-content:center}
+      #progress-container{left:0!important}
+    }
 
-    /* Challenge Page */
-    .problem-header { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #404040; padding-bottom:10px; margin-bottom:20px; }
-    .header-actions { display:flex; align-items:center; gap:12px; }
-    .completed-badge { background:#2e7d32; color:#fff; padding:4px 8px; border-radius:4px; font-size:14px; display:inline-flex; gap:4px; align-items:center; }
+    /* Home */
+    .welcome-banner{text-align:center;padding:40px;background:linear-gradient(45deg,#282828,#333);border:1px solid #3a3a3a;border-radius:12px;margin-bottom:24px}
+    .welcome-banner h1{color:#60a5fa;margin-bottom:8px}
+    .section{margin-bottom:36px}
+    .section h2{color:#60a5fa;margin-bottom:14px;border-bottom:1px solid #404040;padding-bottom:6px}
+    .challenge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+    .challenge-card{background:#282828;border:1px solid #404040;border-radius:10px;padding:16px;cursor:pointer;transition:.18s;position:relative}
+    .challenge-card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.35)}
+    .challenge-card h3{margin-bottom:6px}
+    .card-description{font-size:14px;color:#bbb}
+    .difficulty{position:absolute;top:10px;right:10px;padding:2px 8px;border-radius:12px;font-size:12px;font-weight:700}
+    .easy{background:#2e7d32;color:#a5d6a7}.medium{background:#ef6c00;color:#ffcc80}.hard{background:#b71c1c;color:#ef9a9a}
 
-    .language-selector { display:flex; align-items:center; gap:10px; margin:20px 0; padding:10px; background:#282828; border-radius:6px; }
-    .language-select { background:#1e1e1e; color:#fff; border:1px solid #404040; padding:6px 12px; border-radius:4px; font-size:14px; cursor:pointer; }
+    /* Challenge page */
+    .problem-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #404040;padding-bottom:10px;margin-bottom:16px}
+    .header-actions{display:flex;align-items:center;gap:10px}
+    .completed-badge{background:#2e7d32;color:#fff;padding:4px 8px;border-radius:6px;display:inline-flex;gap:6px;align-items:center}
 
-    .tabs { display:flex; gap:20px; border-bottom:1px solid #404040; margin-bottom:20px; }
-    .tab { background:none; border:none; color:#bbb; cursor:pointer; padding-bottom:8px; font-size:15px; }
-    .tab.active { color:#60a5fa; border-bottom:2px solid #60a5fa; }
+    .tabs{display:flex;gap:18px;border-bottom:1px solid #404040;margin-bottom:12px}
+    .tab{background:none;border:none;color:#bbb;cursor:pointer;padding:10px 2px;font-size:15px}
+    .tab.active{color:#60a5fa;border-bottom:2px solid #60a5fa}
 
-    textarea { width:100%; height:220px; background:#282828; color:#fff; border:1px solid #404040; border-radius:6px; padding:10px; font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; resize:vertical; }
-    .button-row { display:flex; gap:10px; margin-top:10px; }
-    .run-button { background:transparent; color:#a5d8ff; border:1px solid #a5d8ff; padding:8px 14px; border-radius:6px; font-weight:600; cursor:pointer; }
-    .submit-button { background:#a5d8ff; color:#000; border:none; padding:8px 14px; border-radius:6px; font-weight:600; cursor:pointer; }
-    .autosave-indicator { font-size:12px; color:#888; margin-left:auto; align-self:center; }
+    .language-selector{display:flex;align-items:center;gap:10px;margin:14px 0;padding:10px;background:#282828;border:1px solid #3a3a3a;border-radius:8px}
+    .language-select{background:#1e1e1e;color:#fff;border:1px solid #404040;padding:6px 10px;border-radius:6px}
+    .example-section{background:#282828;border:1px solid #3a3a3a;border-radius:8px;padding:12px;margin:14px 0}
+    pre{background:#111;padding:12px;border-radius:6px;color:#ccc;overflow:auto}
 
-    #run-output { margin-top:12px; padding:12px; background:#151515; border:1px solid #383838; border-radius:6px; min-height:64px; color:#d7d7d7; white-space:pre-wrap; }
+    textarea{width:100%;min-height:220px;background:#282828;color:#fff;border:1px solid #404040;border-radius:8px;padding:12px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;resize:vertical}
+    .button-row{display:flex;gap:10px;margin-top:10px}
+    .run-button{background:transparent;color:#a5d8ff;border:1px solid #a5d8ff;padding:8px 14px;border-radius:8px;font-weight:600;cursor:pointer}
+    .submit-button{background:#a5d8ff;color:#111;border:none;padding:8px 14px;border-radius:8px;font-weight:700;cursor:pointer}
+    .autosave-indicator{font-size:12px;color:#9a9a9a;align-self:center;margin-left:auto}
 
-    #progress-container { position:fixed; bottom:0; left:250px; right:0; height:4px; background:#282828; }
-    #progress-bar { height:100%; background:#60a5fa; width:0; transition:width .3s ease; }
+    #run-output{margin-top:12px;padding:12px;background:#151515;border:1px solid #383838;border-radius:8px;min-height:64px;color:#d7d7d7;white-space:pre-wrap}
+
+    /* Progress bar */
+    #progress-container{position:fixed;bottom:0;left:270px;right:0;height:4px;background:#282828}
+    #progress-bar{height:100%;background:#60a5fa;width:0;transition:width .3s ease}
   </style>
 </head>
 <body>
 
+  <!-- NAVBAR -->
   <nav class="navbar">
     <div class="navbar-brand" onclick="goHome()">
       <span class="material-icons">favorite</span>
@@ -107,13 +123,21 @@
     </div>
   </nav>
 
+  <!-- Mobile toggle -->
+  <button class="sidebar-toggle" onclick="document.getElementById('sidebar').classList.toggle('active')">
+    <span class="material-icons">menu</span>
+  </button>
+
+  <!-- MAIN -->
   <div class="main-container">
-    <div id="sidebar">
+    <!-- SIDEBAR -->
+    <aside id="sidebar">
       <h3><span class="material-icons">code</span> Challenges</h3>
       <div id="sections-list"></div>
-    </div>
+    </aside>
 
-    <div id="main-content">
+    <!-- CONTENT -->
+    <main id="main-content">
       <div id="home-page">
         <div class="welcome-banner">
           <h1>Welcome 💻❤️⚽</h1>
@@ -121,157 +145,368 @@
         </div>
         <div id="sections"></div>
       </div>
+
       <div id="challenge-panel" style="display:none;"></div>
-    </div>
+    </main>
   </div>
 
   <div id="progress-container"><div id="progress-bar"></div></div>
 
+  <!-- Pyodide for Python execution -->
   <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 
   <script>
-    /* Simplified core JS with Python-only run and toggle completion */
-
-    const PLAYER_KEY = 'player_names';
+    /* ========= Data & Storage Keys ========= */
+    const PLAYER_KEY   = 'player_names';
     const PROGRESS_KEY = 'challenge_progress';
-    const CODE_KEY = 'challenge_code';
+    const CODE_KEY     = 'challenge_code';
+    const NOTES_KEY    = 'challenge_notes';
 
     const challenges = [
-      {id:'match-day', category:'Football', difficulty:'Easy', title:'Match Day Simulator', description:'Generate a random football match result.', example:'Output: Team Him 3 - 2 Team You ⚽', languages:['python']},
-      {id:'love-encoder', category:'Relationship', difficulty:'Easy', title:'Love Message Encoder', description:'Encode a secret love message.', example:'Input: I love you → ❤️🌹#you#love#I', languages:['python']},
-      {id:'game-night', category:'Games', difficulty:'Medium', title:'Game Night Tracker', description:'Track scores for your favorite games.', example:'You 5 - Him 7 → Him wins 🎉', languages:['python']}
+      {
+        id:'match-day',
+        category:'Football',
+        difficulty:'Easy',
+        title:'Match Day Simulator',
+        description:'Generate a random football match result for You vs. Him.',
+        example:'Example Output:\nTeam Him 3 - 2 Team You\nCommentary: last-minute goal! ⚽',
+        languages:['python']
+      },
+      {
+        id:'penalty-shooter',
+        category:'Football',
+        difficulty:'Medium',
+        title:'Penalty Shootout',
+        description:'Simulate a 5-shot penalty shootout — highest goals wins.',
+        example:'You: ⚽⚽❌⚽⚽\nHim: ⚽❌⚽⚽❌\nYou win 4–3 🏆',
+        languages:['python']
+      },
+      {
+        id:'love-encoder',
+        category:'Relationship',
+        difficulty:'Easy',
+        title:'Love Message Encoder',
+        description:'Encode a secret message only you two can read.',
+        example:'Input: I love you\nOutput: ❤️🌹#you#love#I',
+        languages:['python']
+      },
+      {
+        id:'anniversary-planner',
+        category:'Relationship',
+        difficulty:'Medium',
+        title:'Anniversary Date Planner',
+        description:'Generate a random date plan from your favorites.',
+        example:'Output: 🎥 Movie night + 🍝 Italian dinner',
+        languages:['python']
+      },
+      {
+        id:'game-night',
+        category:'Games',
+        difficulty:'Medium',
+        title:'Game Night Score Tracker',
+        description:'Track scores and announce the winner.',
+        example:'You 5 — Him 7 → Him wins! 🎉',
+        languages:['python']
+      },
+      {
+        id:'guess-the-song',
+        category:'Games',
+        difficulty:'Hard',
+        title:'Guess The Song',
+        description:'Play little snippets & guess titles — code the logic.',
+        example:'Input: 🎶 "da da da daaaa"\nOutput: "Star Wars Theme!"',
+        languages:['python']
+      }
     ];
 
-    function getNames(){return JSON.parse(localStorage.getItem(PLAYER_KEY)||'{"p1":"Player 1","p2":"Player 2"}')}
-    function saveNames(n){localStorage.setItem(PLAYER_KEY,JSON.stringify(n))}
-    function updateNamesUI(){const n=getNames();p1_name.textContent=n.p1;p2_name.textContent=n.p2;p1_avatar.textContent=n.p1[0].toUpperCase();p2_avatar.textContent=n.p2[0].toUpperCase();}
-    function enableRename(id){const el=id==='p1'?p1_name:p2_name;el.setAttribute('contenteditable','true');el.focus();el.onblur=()=>{el.removeAttribute('contenteditable');const n=getNames();n[id]=el.textContent.trim()||n[id];saveNames(n);updateNamesUI();}}
+    /* ========= Player Names (persistent) ========= */
+    function getNames(){
+      return JSON.parse(localStorage.getItem(PLAYER_KEY) || '{"p1":"Player 1","p2":"Player 2"}');
+    }
+    function saveNames(n){ localStorage.setItem(PLAYER_KEY, JSON.stringify(n)); }
+    function updateNamesUI(){
+      const n=getNames();
+      const p1 = document.getElementById('p1-name');
+      const p2 = document.getElementById('p2-name');
+      const a1 = document.getElementById('p1-avatar');
+      const a2 = document.getElementById('p2-avatar');
+      p1.textContent = n.p1; p2.textContent = n.p2;
+      a1.textContent = (n.p1?.[0]||'P').toUpperCase();
+      a2.textContent = (n.p2?.[0]||'P').toUpperCase();
+    }
+    function enableRename(id){
+      const el = id==='p1' ? document.getElementById('p1-name') : document.getElementById('p2-name');
+      el.setAttribute('contenteditable','true');
+      el.focus();
+      const finish = (save)=>{
+        el.removeAttribute('contenteditable');
+        if(save){
+          const val = el.textContent.trim();
+          const names = getNames();
+          if(val) { names[id]=val; saveNames(names); }
+        }
+        updateNamesUI();
+      };
+      el.onkeydown = (e)=>{ if(e.key==='Enter'){ e.preventDefault(); finish(true);} if(e.key==='Escape'){ e.preventDefault(); finish(false);} };
+      el.onblur = ()=>finish(true);
+    }
 
+    /* ========= Sidebar & Home ========= */
     function setupSidebar(){
-      const cats=[...new Set(challenges.map(c=>c.category))];
-      sections_list.innerHTML='';
+      const container = document.getElementById('sections-list');
+      const cats = [...new Set(challenges.map(c=>c.category))];
+      const progress = JSON.parse(localStorage.getItem(PROGRESS_KEY)||'{}');
+      container.innerHTML = '';
+
       cats.forEach(cat=>{
-        const div=document.createElement('div');
-        div.innerHTML=`<div class='section-header'><div>${cat}</div><span class='material-icons'>expand_more</span></div><div class='section-content'><ul>${challenges.filter(c=>c.category===cat).map(c=>`<li data-id="${c.id}">${c.title}</li>`).join('')}</ul></div>`;
-        div.className='section-accordion';
-        div.querySelector('.section-header').onclick=()=>div.classList.toggle('active');
-        div.querySelectorAll('li').forEach(li=>li.onclick=()=>location.hash=li.dataset.id);
-        sections_list.appendChild(div);
+        const sec = document.createElement('div');
+        sec.className='section-accordion';
+        const items = challenges.filter(c=>c.category===cat);
+
+        sec.innerHTML = `
+          <div class="section-header">
+            <div class="title"><span class="material-icons">folder_open</span>${cat}</div>
+            <span class="material-icons">expand_more</span>
+          </div>
+          <div class="section-content">
+            <ul>
+              ${items.map(c=>`
+                <li data-id="${c.id}" class="${progress[c.id]?.completed?'completed':''}">
+                  <span class="material-icons">
+                    ${c.difficulty==='Easy'?'assignment':(c.difficulty==='Medium'?'assignment_late':'assignment_turned_in')}
+                  </span>
+                  ${c.title}
+                </li>`).join('')}
+            </ul>
+          </div>
+        `;
+
+        sec.querySelector('.section-header').onclick = ()=> sec.classList.toggle('active');
+        sec.querySelectorAll('li').forEach(li=>{
+          li.onclick = (e)=>{ e.stopPropagation(); location.hash = li.dataset.id; };
+        });
+        container.appendChild(sec);
       });
     }
 
     function buildHome(){
+      const wrap = document.getElementById('sections');
+      wrap.innerHTML='';
       const cats=[...new Set(challenges.map(c=>c.category))];
-      sections.innerHTML='';
       cats.forEach(cat=>{
-        const s=document.createElement('div');
-        s.className='section';
-        s.innerHTML=`<h2>${cat}</h2><div class='challenge-grid'>${challenges.filter(c=>c.category===cat).map(ch=>`<div class='challenge-card' onclick="location.hash='${ch.id}'"><h3>${ch.title}</h3><p>${ch.description}</p><span class='difficulty ${ch.difficulty.toLowerCase()}'>${ch.difficulty}</span></div>`).join('')}</div>`;
-        sections.appendChild(s);
+        const section=document.createElement('div');
+        section.className='section';
+        section.innerHTML = `
+          <h2>${cat}</h2>
+          <div class="challenge-grid">
+            ${challenges.filter(c=>c.category===cat).map(ch=>`
+              <div class="challenge-card" onclick="location.hash='${ch.id}'">
+                <h3>${ch.title}</h3>
+                <p class="card-description">${ch.description}</p>
+                <span class="difficulty ${ch.difficulty.toLowerCase()}">${ch.difficulty}</span>
+              </div>`).join('')}
+          </div>
+        `;
+        wrap.appendChild(section);
       });
     }
 
-    const pyReady=loadPyodide();
-    async function runCode(id){
-      const code=document.querySelector('textarea').value;
-      document.getElementById('run-output').textContent='Running...';
-      try{
-        const py=await pyReady;
-        const wrapped=`import sys,io\n_buffer=io.StringIO()\nsys.stdout=_buffer\n${code}\ntry:\n if 'solution' in globals():\n  r=solution()\n  if r!=None:print(r)\nfinally:\n sys.stdout=sys.__stdout__\n_result=_buffer.getvalue()`;
-        await py.runPythonAsync(wrapped);
-        const out=py.runPython('_result');
-        document.getElementById('run-output').textContent=out||'✔ Ran (no output)';
-      }catch(e){document.getElementById('run-output').textContent='❌ Error: '+e.message;}
-      const store=JSON.parse(localStorage.getItem(CODE_KEY)||'{}');store[id]=code;localStorage.setItem(CODE_KEY,JSON.stringify(store));
+    function highlightActive(hash){
+      document.querySelectorAll('#sections-list li').forEach(li=>{
+        li.classList.toggle('active', li.dataset.id===hash);
+      });
+      if(hash){
+        const li=document.querySelector(`#sections-list li[data-id="${hash}"]`);
+        if(li){ li.closest('.section-accordion')?.classList.add('active'); }
+      }
+    }
+
+    /* ========= Progress ========= */
+    function updateProgress(){
+      const p=JSON.parse(localStorage.getItem(PROGRESS_KEY)||'{}');
+      const done = Object.values(p).filter(v=>v.completed).length;
+      const pct = (done / challenges.length) * 100;
+      document.getElementById('progress-bar').style.width = pct + '%';
+
+      document.querySelectorAll('#sections-list li').forEach(li=>{
+        li.classList.toggle('completed', !!p[li.dataset.id]?.completed);
+      });
     }
 
     function markToggle(id){
       const p=JSON.parse(localStorage.getItem(PROGRESS_KEY)||'{}');
-      if(p[id]?.completed){delete p[id];}
-      else{p[id]={completed:true};}
-      localStorage.setItem(PROGRESS_KEY,JSON.stringify(p));
-      loadFromHash();
+      if(p[id]?.completed){ delete p[id]; }
+      else { p[id]={completed:true, completedAt:new Date().toISOString()}; }
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify(p));
+      // Refresh panel & sidebar/progress
+      if(location.hash.slice(1)===id) loadFromHash();
+      setupSidebar();
       updateProgress();
     }
 
-    function updateProgress(){
-      const p=JSON.parse(localStorage.getItem(PROGRESS_KEY)||'{}');
-      const ratio=Object.keys(p).length/challenges.length*100;
-      progress_bar.style.width=ratio+'%';
-      document.querySelectorAll('#sections-list li').forEach(li=>{
-        li.classList.toggle('completed',!!p[li.dataset.id]);
-      });
+    /* ========= Code & Notes persistence ========= */
+    function saveCode(id, code){
+      const store=JSON.parse(localStorage.getItem(CODE_KEY)||'{}');
+      store[id]=code;
+      localStorage.setItem(CODE_KEY, JSON.stringify(store));
+    }
+    function loadCode(id){
+      const store=JSON.parse(localStorage.getItem(CODE_KEY)||'{}');
+      return store[id] ?? '# Write your Python solution here\n# Define a function named solution(), the runner will call it.\n\ndef solution():\n    print("Hello from", __name__)\n';
     }
 
-    function goHome(){challenge_panel.style.display='none';home_page.style.display='block';location.hash='';}
+    function saveNotes(id, text){
+      const store=JSON.parse(localStorage.getItem(NOTES_KEY)||'{}');
+      store[id]=text;
+      localStorage.setItem(NOTES_KEY, JSON.stringify(store));
+    }
+    function loadNotes(id){
+      const store=JSON.parse(localStorage.getItem(NOTES_KEY)||'{}');
+      return store[id] ?? '';
+    }
 
+    /* ========= Pyodide (Python runner) ========= */
+    const pyReady = loadPyodide();
+    async function runCode(id){
+      const code = document.querySelector('#code-workspace textarea').value;
+      const outEl = document.getElementById('run-output');
+      outEl.textContent = 'Running...';
+      try{
+        const py = await pyReady;
+        const wrapped =
+`import sys, io
+_buffer = io.StringIO()
+_sysout = sys.stdout
+sys.stdout = _buffer
+# ----- USER CODE START -----
+${code}
+# ----- USER CODE END -----
+try:
+    # If a function named solution exists, call it
+    if 'solution' in globals():
+        r = solution()
+        if r is not None:
+            print(r)
+finally:
+    sys.stdout = _sysout
+_result = _buffer.getvalue()`;
+        await py.runPythonAsync(wrapped);
+        const output = py.runPython('_result');
+        outEl.textContent = output || '✔ Ran (no output)';
+      }catch(err){
+        outEl.textContent = '❌ Error: ' + (err?.message || String(err));
+      }
+      saveCode(id, code);
+    }
+
+    /* ========= Tabs & Panel Renderer ========= */
     function setupTabs(id){
-      const tabs=document.querySelectorAll('.tab');
-      const desc=document.getElementById('desc-content');
-      const notes=document.getElementById('notes-content');
-      const codeDiv=document.getElementById('code-workspace');
-      tabs.forEach(t=>t.onclick=()=>{
-        tabs.forEach(x=>x.classList.remove('active'));
-        t.classList.add('active');
-        desc.style.display=t.textContent==='Description'?'block':'none';
-        notes.style.display=t.textContent==='Notes'?'block':'none';
-        codeDiv.style.display=t.textContent==='Code'?'block':'none';
+      const tabs = document.querySelectorAll('.tab');
+      const desc = document.getElementById('desc-content');
+      const code = document.getElementById('code-workspace');
+      const notes= document.getElementById('notes-content');
+
+      tabs.forEach(t=>{
+        t.onclick = ()=>{
+          tabs.forEach(x=>x.classList.remove('active'));
+          t.classList.add('active');
+          const name = t.textContent.trim();
+          desc.style.display  = name==='Description' ? 'block' : 'none';
+          code.style.display  = name==='Code' ? 'block' : 'none';
+          notes.style.display = name==='Notes' ? 'block' : 'none';
+        };
       });
     }
 
     function loadFromHash(){
-      const id=location.hash.slice(1);
-      const ch=challenges.find(c=>c.id===id);
-      if(!ch){goHome();return;}
-      home_page.style.display='none';challenge_panel.style.display='block';
-      const codeStore=JSON.parse(localStorage.getItem(CODE_KEY)||'{}');
-      const saved=codeStore[id]||'# Write your Python solution here\ndef solution():\n    print("hi")\n';
-      const p=JSON.parse(localStorage.getItem(PROGRESS_KEY)||'{}');
-      const completed=!!p[id]?.completed;
+      const id = location.hash.slice(1);
+      const ch = challenges.find(c=>c.id===id);
+      const panel = document.getElementById('challenge-panel');
+      const home = document.getElementById('home-page');
 
-      challenge_panel.innerHTML=`
-        <div class='problem-header'>
+      highlightActive(id);
+
+      if(!ch){ panel.style.display='none'; home.style.display='block'; return; }
+
+      home.style.display='none';
+      panel.style.display='block';
+
+      const progress = JSON.parse(localStorage.getItem(PROGRESS_KEY)||'{}');
+      const completed = !!progress[id]?.completed;
+      const savedCode = loadCode(id);
+      const savedNotes= loadNotes(id);
+
+      panel.innerHTML = `
+        <div class="problem-header">
           <h2>${ch.title}</h2>
-          <div class='header-actions'>
-            ${completed?'<span class="completed-badge"><span class="material-icons" style="font-size:16px;">check_circle</span> Completed</span>':''}
-            <button class='run-button' onclick='goHome()'>← Back</button>
+          <div class="header-actions">
+            ${completed ? '<span class="completed-badge"><span class="material-icons" style="font-size:18px;">check_circle</span> Completed</span>' : ''}
+            <button class="run-button" onclick="goHome()">← Back</button>
           </div>
         </div>
 
-        <div class='tabs'>
-          <button class='tab active'>Description</button>
-          <button class='tab'>Code</button>
-          <button class='tab'>Notes</button>
+        <div class="tabs">
+          <button class="tab active">Description</button>
+          <button class="tab">Code</button>
+          <button class="tab">Notes</button>
         </div>
 
-        <div id='desc-content' style='display:block;'>
+        <div id="desc-content" style="display:block;">
+          <div class="language-selector">
+            <span class="material-icons">terminal</span>
+            <strong>Language:</strong> Python (Pyodide)
+          </div>
           <p>${ch.description}</p>
-          <div class='example-section'><h4>Example</h4><pre>${ch.example}</pre></div>
-        </div>
-
-        <div id='code-workspace' style='display:none;'>
-          <textarea>${saved}</textarea>
-          <div class='button-row'>
-            <button class='run-button' onclick='runCode("${ch.id}")'>Run</button>
-            <button class='submit-button' onclick='markToggle("${ch.id}")'>${completed?'Mark Incomplete':'Mark Completed'}</button>
-            <div class='autosave-indicator'>Autosaved</div>
+          <div class="example-section">
+            <h4>Example</h4>
+            <pre>${ch.example}</pre>
           </div>
-          <div id='run-output'></div>
         </div>
 
-        <div id='notes-content' style='display:none;'>
-          <p>Write any notes or hints here 💭</p>
+        <div id="code-workspace" style="display:none;">
+          <textarea id="code-editor">${savedCode}</textarea>
+          <div class="button-row">
+            <button class="run-button" onclick="runCode('${ch.id}')">Run</button>
+            <button class="submit-button" onclick="markToggle('${ch.id}')">${completed?'Mark Incomplete':'Mark Completed'}</button>
+            <div class="autosave-indicator" id="autosave-ind">Autosave on</div>
+          </div>
+          <div id="run-output"></div>
+        </div>
+
+        <div id="notes-content" style="display:none;">
+          <textarea id="notes-editor" placeholder="Notes, hints, ideas…">${savedNotes}</textarea>
         </div>
       `;
+
       setupTabs(id);
-      updateNamesUI();
-      const ta=document.querySelector('textarea');
-      let t;ta.oninput=()=>{clearTimeout(t);t=setTimeout(()=>{const c=JSON.parse(localStorage.getItem(CODE_KEY)||'{}');c[id]=ta.value;localStorage.setItem(CODE_KEY,JSON.stringify(c));},800)};
+      // Autosave code
+      const codeTA = document.getElementById('code-editor');
+      let codeTimer; codeTA.oninput = ()=>{ clearTimeout(codeTimer); codeTimer=setTimeout(()=>saveCode(id, codeTA.value), 700); };
+
+      // Autosave notes
+      const notesTA = document.getElementById('notes-editor');
+      let notesTimer; notesTA.oninput = ()=>{ clearTimeout(notesTimer); notesTimer=setTimeout(()=>saveNotes(id, notesTA.value), 700); };
     }
 
-    window.onload=()=>{updateNamesUI();setupSidebar();buildHome();updateProgress();if(location.hash)loadFromHash();window.onhashchange=loadFromHash;}
+    function goHome(){
+      document.getElementById('challenge-panel').style.display='none';
+      document.getElementById('home-page').style.display='block';
+      location.hash='';
+      highlightActive('');
+    }
+
+    /* ========= Init ========= */
+    function init(){
+      updateNamesUI();
+      setupSidebar();
+      buildHome();
+      updateProgress();
+      if(location.hash){ loadFromHash(); }
+      window.onhashchange = loadFromHash;
+    }
+
+    window.onload = init;
   </script>
 </body>
 </html>
-
 
