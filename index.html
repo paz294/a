@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +8,8 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif; }
     body { background-color: #1e1e1e; color: #fff; }
+
+    /* Navbar */
     .navbar {
       display: flex; align-items: center; justify-content: space-between;
       background-color: #282828; padding: 0 20px; height: 50px;
@@ -16,6 +17,138 @@
     }
     .navbar-brand { display: flex; align-items: center; gap: 8px; color: #a5d8ff; font-weight: 600; cursor: pointer; }
     .navbar-brand:hover { color: #74c0fc; }
+    
+    /* User profiles */
+    .user-profiles {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: #333;
+      cursor: pointer;
+    }
+    
+    .user-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #a5d8ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: #1e1e1e;
+    }
+    
+    .user-score {
+      font-size: 14px;
+      color: #bbb;
+    }
+    
+    /* Competition modes */
+    .competition-modes {
+      display: flex;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    
+    .mode-button {
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid #404040;
+      background: #282828;
+      color: #bbb;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .mode-button:hover {
+      border-color: #60a5fa;
+      color: #60a5fa;
+    }
+    
+    .mode-button.active {
+      background: #60a5fa;
+      color: #fff;
+      border-color: #60a5fa;
+    }
+    
+    /* Split screen for collaborative mode */
+    .split-screen {
+      display: none;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    
+    .split-screen.active {
+      display: flex;
+    }
+    
+    .code-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .code-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      background: #282828;
+      border-radius: 6px 6px 0 0;
+    }
+    
+    .user-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #bbb;
+    }
+    
+    .winner-badge {
+      background: #2e7d32;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Sidebar Toggle */
+    .sidebar-toggle {
+      display: none; /* Hidden by default, shown on mobile */
+      position: fixed;
+      left: 10px;
+      top: 60px;
+      z-index: 1001;
+      background: #a5d8ff;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .sidebar-toggle .material-icons {
+      color: #1e1e1e;
+      font-size: 24px;
+    }
+
+    /* Main layout */
     .main-container { display: flex; margin-top: 50px; height: calc(100vh - 50px); }
     #sidebar {
       width: 250px; background-color: #282828; border-right: 1px solid #404040;
@@ -29,41 +162,103 @@
       align-items: center;
       gap: 8px;
     }
-    .sidebar-categories {
-      margin-top: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+    
+    /* Accordion Sections */
+    .section-accordion {
+      margin-bottom: 10px;
     }
-    .sidebar-category {
-      color: #a5d8ff;
-      font-size: 16px;
-      padding: 8px 12px;
-      border-radius: 8px;
-      background: #23272e;
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      background: #333;
+      border-radius: 6px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .section-header:hover {
+      background: #404040;
+    }
+    .section-header .title {
       display: flex;
       align-items: center;
       gap: 8px;
-      cursor: default;
       font-weight: 500;
-      transition: background 0.2s;
     }
-    .sidebar-category.easy { border-left: 4px solid #81c784; }
-    .sidebar-category.medium { border-left: 4px solid #ffb74d; }
-    .sidebar-category.hard { border-left: 4px solid #e57373; }
+    .section-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
     }
+    .section-accordion.active .section-content {
+      max-height: 500px; /* Adjust based on content */
+    }
+    .section-content ul {
+      list-style: none;
+      padding: 10px;
+    }
+    .section-content li {
+      padding: 8px 10px;
+      margin: 4px 0;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-content li:hover {
+      background: #333;
+    }
+    .section-content li.active {
+      background: #404040;
+      color: #a5d8ff;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .sidebar-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #sidebar {
+        position: fixed;
+        left: 0;
+        top: 50px;
+        bottom: 0;
+        transform: translateX(-100%);
+        z-index: 1000;
+      }
+      #sidebar.active {
+        transform: translateX(0);
+      }
+      .main-container {
+        margin-left: 0;
+      }
+      #main-content {
+        padding: 20px;
+      }
+    }
+
     #main-content { flex: 1; padding: 20px; overflow-y: auto; }
+
+    /* Home Page */
     .welcome-banner {
       text-align: center; padding: 40px; background: linear-gradient(45deg, #282828, #333);
       border-radius: 10px; margin-bottom: 30px;
     }
     .welcome-banner h1 { color: #60a5fa; margin-bottom: 10px; }
+
+    /* Challenge Sections */
     .section {
       margin-bottom: 40px;
     }
     .section h2 {
       color: #60a5fa; margin-bottom: 20px; border-bottom: 1px solid #404040; padding-bottom: 5px;
     }
+
     .challenge-grid {
       display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px;
     }
@@ -76,88 +271,506 @@
     }
     .challenge-card h3 { margin-bottom: 8px; color: #fff; }
     .card-description { font-size: 14px; color: #bbb; }
+
     .difficulty {
       position: absolute; top: 10px; right: 10px;
       padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600;
     }
     .easy { background-color: #2e7d32; color: #a5d6a7; }
     .medium { background-color: #ef6c00; color: #ffcc80; }
-    .hard { background-color: #b71c1c; color: #ef9a9a; }
-  </style>
-</head>
-<body>
-  <nav class="navbar">
-    <div class="navbar-brand">
-      <span class="material-icons">favorite</span>
-      <span>Our Code Challenges</span>
-    </div>
-  </nav>
-  <div class="main-container">
-    <div id="sidebar">
-      <h3>
-        <span class="material-icons">code</span>
-        Challenges
-      </h3>
-      <div class="sidebar-categories">
-        <div class="sidebar-category easy"><span class="material-icons" style="font-size:18px;vertical-align:middle;color:#81c784;">check_circle</span> Easy Challenges</div>
-        <div class="sidebar-category medium"><span class="material-icons" style="font-size:18px;vertical-align:middle;color:#ffb74d;">star_half</span> Medium Challenges</div>
-        <div class="sidebar-category hard"><span class="material-icons" style="font-size:18px;vertical-align:middle;color:#e57373;">whatshot</span> Hard Challenges</div>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>LeetCode-style Challenges</title>
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+          min-height: 100vh;
+          background-color: #1e1e1e;
+          color: #ffffff;
+        }
+
+        .navbar {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background-color: #282828;
+          padding: 0 20px;
+          height: 50px;
+          border-bottom: 1px solid #404040;
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          z-index: 1000;
+        }
+
+        .navbar-brand {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          color: #a5d8ff;
+          font-weight: 600;
+          font-size: 18px;
+          margin-left: 32px;
+        }
+
+        @media (max-width: 768px) {
+          .navbar-brand {
+            margin-left: 48px;
+          }
+        }
+
+        .nav-items {
+          display: flex;
+          gap: 20px;
+        }
+
+        .nav-items a {
+          color: #d4d4d4;
+          text-decoration: none;
+          padding: 5px 10px;
+          border-radius: 4px;
+          transition: all 0.2s ease;
+        }
+
+        .nav-items a.active {
+          color: #a5d8ff;
+        }
+
+        .nav-right {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+        }
+
+        .user-avatar {
+          width: 32px;
+          height: 32px;
+          background-color: #a5d8ff;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 600;
+        }
+
+        .main-container {
+          display: flex;
+          margin-top: 50px;
+          height: calc(100vh - 50px);
+        }
+
+        #sidebar {
+          width: 300px;
+          background-color: #282828;
+          border-right: 1px solid #404040;
+          height: 100%;
+          overflow-y: auto;
+          transition: transform 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+          #sidebar {
+            position: fixed;
+            left: -300px;
+            top: 50px;
+            bottom: 0;
+            z-index: 100;
+          }
+
+          #sidebar.active {
+            transform: translateX(300px);
+          }
+
+          .main-container {
+            margin-left: 0 !important;
+          }
+
+          #progress-container {
+            left: 0 !important;
+          }
+        }
+
+        .sidebar-toggle {
+          display: none;
+          position: fixed;
+          left: 10px;
+          top: 10px;
+          z-index: 1001;
+          background: none;
+          border: none;
+          color: #a5d8ff;
+          cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+          .sidebar-toggle {
+            display: block;
+          }
+        }
+
+        .sidebar-header {
+          padding: 20px;
+          border-bottom: 1px solid #404040;
+        }
+
+        .sidebar-header h3 {
+          color: #a5d8ff;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .section-button {
+          width: 100%;
+          padding: 12px 20px;
+          background: none;
+          border: none;
+          color: #d4d4d4;
+          text-align: left;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          font-size: 14px;
+          transition: all 0.2s ease;
+        }
+
+        .section-button:hover {
+          background-color: #333333;
+        }
+
+        .section-button.active {
+          color: #a5d8ff;
+        }
+
+        .section-icon {
+          margin-right: 8px;
+        }
+
+        .section-content {
+          display: none;
+          background-color: #1e1e1e;
+        }
+
+        .section-content.active {
+          display: block;
+        }
+
+        .challenge-item {
+          padding: 10px 20px 10px 40px;
+          cursor: pointer;
+          color: #d4d4d4;
+          display: flex;
+          align-items: center;
+          transition: all 0.2s ease;
+        }
+
+        .challenge-item:hover {
+          background-color: #333333;
+        }
+
+        .challenge-item.active {
+          color: #a5d8ff;
+          background-color: #333333;
+        }
+
+        .user-login-bar {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          background-color: #282828;
+          padding: 0 20px;
+          height: 50px;
+          border-top: 1px solid #404040;
+          position: fixed;
+          top: 0;
+          right: 0;
+          left: 300px;
+          z-index: 1000;
+        }
+
+        .user-login-bar label {
+          color: #d4d4d4;
+          margin-right: 10px;
+        }
+
+        .user-login-bar select {
+          padding: 5px;
+          border-radius: 4px;
+          border: 1px solid #404040;
+          background-color: #1e1e1e;
+          color: #ffffff;
+          margin-right: 10px;
+        }
+
+        .user-login-bar button {
+          padding: 5px 10px;
+          border-radius: 4px;
+          border: none;
+          background-color: #a5d8ff;
+          color: #1e1e1e;
+          cursor: pointer;
+          transition: background-color 0.2s ease;
+        }
+
+        .user-login-bar button:hover {
+          background-color: #90cfff;
+        }
+
+        /* Add your existing styles here... */
+
+      </style>
+    </head>
+    <body>
+      <nav class="navbar">
+        <div class="navbar-brand">
+          <span class="material-icons">code</span>
+          LeetCode-style Challenges
+        </div>
+        <div class="nav-right" id="navbar-user-info"></div>
+      </nav>
+      <div class="user-login-bar" style="display:flex;align-items:center;gap:10px;padding:10px 20px;background:#222;margin-top:50px;">
+        <label>Users:</label>
+        <div id="user-list-bar" style="display:flex;gap:8px;"></div>
+        <button id="add-user-btn">Add User</button>
+        <span id="user-score" style="margin-left:20px;color:#a5d8ff;font-weight:bold;">Score: 0</span>
       </div>
-    </div>
-    <div id="main-content">
-      <div id="home-page">
-        <div class="welcome-banner">
-          <h1>Welcome 💻❤️⚽</h1>
-          <p>Our little coding space — where love meets logic and fun challenges.</p>
-        </div>
-        <div class="section">
-          <h2>Easy Challenges</h2>
-          <div class="challenge-grid">
-            <div class="challenge-card">
-              <h3>Sum of Two Numbers</h3>
-              <div class="card-description">Write a function that returns the sum of two numbers.</div>
-              <div class="difficulty easy">Easy</div>
-            </div>
-            <div class="challenge-card">
-              <h3>Reverse a String</h3>
-              <div class="card-description">Reverse the given string and return it.</div>
-              <div class="difficulty easy">Easy</div>
-            </div>
+
+      <button class="sidebar-toggle">
+        <span class="material-icons">menu</span>
+      </button>
+
+      <div class="main-container">
+        <div id="sidebar">
+          <div class="sidebar-header">
+            <h3>
+              <span class="material-icons">code</span>
+              Challenges
+            </h3>
           </div>
+          <div id="sections-list"></div>
         </div>
-        <div class="section">
-          <h2>Medium Challenges</h2>
-          <div class="challenge-grid">
-            <div class="challenge-card">
-              <h3>Fibonacci Sequence</h3>
-              <div class="card-description">Return the nth Fibonacci number.</div>
-              <div class="difficulty medium">Medium</div>
-            </div>
-            <div class="challenge-card">
-              <h3>Valid Parentheses</h3>
-              <div class="card-description">Check if the input string has valid parentheses.</div>
-              <div class="difficulty medium">Medium</div>
-            </div>
+        
+        <div id="main-content" style="flex-grow: 1; padding: 20px;">
+          <div id="home-page">
+            <h1>Welcome to LeetCode-style Challenges</h1>
+            <p>Select a challenge from the sidebar to get started.</p>
           </div>
-        </div>
-        <div class="section">
-          <h2>Hard Challenges</h2>
-          <div class="challenge-grid">
-            <div class="challenge-card">
-              <h3>Word Ladder</h3>
-              <div class="card-description">Find the shortest transformation sequence from beginWord to endWord.</div>
-              <div class="difficulty hard">Hard</div>
-            </div>
-            <div class="challenge-card">
-              <h3>Sudoku Solver</h3>
-              <div class="card-description">Write a program to solve a Sudoku puzzle by filling the empty cells.</div>
-              <div class="difficulty hard">Hard</div>
-            </div>
+          <div id="challenge-panel" style="display: none;">
+            <!-- Challenge panel content will be injected here -->
           </div>
         </div>
       </div>
-      <div id="challenge-panel" style="display: none;"></div>
-    </div>
-  </div>
-</body>
-</html>
+
+      <script>
+      // --- User Management ---
+      const USER_LIST_KEY = 'challengeUserList';
+      let currentUser = null;
+
+      function getUserList() {
+        return JSON.parse(localStorage.getItem(USER_LIST_KEY) || '[]');
+      }
+      function saveUserList(list) {
+        localStorage.setItem(USER_LIST_KEY, JSON.stringify(list));
+      }
+      function setCurrentUser(user) {
+        currentUser = user;
+        localStorage.setItem('challengeCurrentUser', user);
+        renderUserListBar();
+        renderNavbarUser();
+        updateUserScore();
+        loadChallengeFromHash();
+      }
+      function getCurrentUser() {
+        return localStorage.getItem('challengeCurrentUser') || null;
+      }
+      function getDisplayNames() {
+        return JSON.parse(localStorage.getItem('challengeUserDisplayNames') || '{}');
+      }
+      function saveDisplayNames(obj) {
+        localStorage.setItem('challengeUserDisplayNames', JSON.stringify(obj));
+      }
+      function getDisplayName(user) {
+        const names = getDisplayNames();
+        return names[user] || user;
+      }
+      function setDisplayName(user, displayName) {
+        const names = getDisplayNames();
+        names[user] = displayName;
+        saveDisplayNames(names);
+      }
+      function renderNavbarUser() {
+        const nav = document.getElementById('navbar-user-info');
+        if (!nav) return;
+        const user = getCurrentUser();
+        nav.innerHTML = '';
+        if (user) {
+          const avatar = document.createElement('div');
+          avatar.className = 'user-avatar';
+          avatar.textContent = getDisplayName(user)[0].toUpperCase();
+          avatar.title = getDisplayName(user);
+          const name = document.createElement('span');
+          name.textContent = getDisplayName(user);
+          name.style.marginLeft = '8px';
+          name.style.color = '#a5d8ff';
+          nav.appendChild(avatar);
+          nav.appendChild(name);
+        }
+      }
+      function renderUserListBar() {
+        const bar = document.getElementById('user-list-bar');
+        bar.innerHTML = '';
+        getUserList().forEach(user => {
+          const btn = document.createElement('button');
+          btn.textContent = getDisplayName(user);
+          btn.style.padding = '4px 12px';
+          btn.style.borderRadius = '16px';
+          btn.style.border = 'none';
+          btn.style.background = user === getCurrentUser() ? '#a5d8ff' : '#444';
+          btn.style.color = user === getCurrentUser() ? '#222' : '#fff';
+          btn.style.cursor = 'pointer';
+          btn.style.fontWeight = user === getCurrentUser() ? 'bold' : 'normal';
+          btn.onclick = () => setCurrentUser(user);
+          btn.ondblclick = () => {
+            const newDisplayName = prompt('Enter new display name for this player:', getDisplayName(user));
+            if (!newDisplayName || newDisplayName === getDisplayName(user)) return;
+            setDisplayName(user, newDisplayName);
+            renderUserListBar();
+            renderNavbarUser();
+          };
+          bar.appendChild(btn);
+        });
+      }
+      function addUser() {
+        const name = prompt('Enter new user name:');
+        if (!name) return;
+        const list = getUserList();
+        if (!list.includes(name)) {
+          list.push(name);
+          saveUserList(list);
+          renderUserListBar();
+          setCurrentUser(name);
+        } else {
+          setCurrentUser(name);
+        }
+      }
+      document.addEventListener('DOMContentLoaded', () => {
+        // Set display name for first user to 'Paula' if not already set
+        const users = getUserList();
+        if (users.length > 0) {
+          const displayNames = getDisplayNames();
+          if (getDisplayName(users[0]) !== 'Paula') {
+            setDisplayName(users[0], 'Paula');
+          }
+        }
+        renderUserListBar();
+        renderNavbarUser();
+        document.getElementById('add-user-btn').addEventListener('click', addUser);
+        if (!getCurrentUser() && getUserList().length) setCurrentUser(getUserList()[0]);
+        updateUserScore();
+      });
+      // --- Challenge Management ---
+      const CHALLENGE_LIST_KEY = 'challengeList';
+      const challengeSections = {};
+
+      function getChallengeList() {
+        return JSON.parse(localStorage.getItem(CHALLENGE_LIST_KEY) || '[]');
+      }
+      function saveChallengeList(list) {
+        localStorage.setItem(CHALLENGE_LIST_KEY, JSON.stringify(list));
+      }
+      function loadChallenges() {
+        const list = getChallengeList();
+        const container = document.getElementById('sections-list');
+        container.innerHTML = '';
+        list.forEach((challenge, idx) => {
+          const sectionId = `section_${idx}`;
+          const div = document.createElement('div');
+          div.className = 'section-button';
+          div.innerHTML = `
+            <span class="material-icons section-icon">folder_open</span>
+            ${challenge.title}
+            <span class="material-icons" style="font-size:16px;">keyboard_arrow_right</span>
+          `;
+          div.addEventListener('click', () => {
+            const content = document.getElementById('challenge-panel');
+            content.style.display = 'block';
+            content.innerHTML = `
+              <h2>${challenge.title}</h2>
+              <pre style="background:#111;padding:10px;border-radius:4px;">${challenge.code}</pre>
+              <div style="margin-top:10px;">
+                <button class="run-code" style="padding:5px 10px;border:none;border-radius:4px;background:#a5d8ff;color:#1e1e1e;cursor:pointer;">Run Code</button>
+              </div>
+            `;
+            // Highlight.js
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js';
+            script.onload = () => {
+              hljs.highlightAll();
+            };
+            document.head.appendChild(script);
+            // Run code button
+            document.querySelector('.run-code').addEventListener('click', () => {
+              const userCode = prompt('Enter your code:');
+              if (userCode !== null) {
+                // Save user code
+                localStorage.setItem(`${getCurrentUser()}_codes`, userCode);
+                alert('Code saved! You can now run it in your local environment.');
+              }
+            });
+          });
+          container.appendChild(div);
+          challengeSections[sectionId] = challenge;
+        });
+      }
+      document.addEventListener('DOMContentLoaded', () => {
+        loadChallenges();
+      });
+      // --- Hash Management ---
+      function loadChallengeFromHash() {
+        const hash = location.hash.substring(1);
+        if (!hash) return;
+        const challenge = document.getElementById(hash);
+        if (challenge) {
+          challenge.scrollIntoView({ behavior: 'smooth' });
+          setTimeout(() => {
+            const evt = new Event('click');
+            challenge.dispatchEvent(evt);
+          }, 300);
+        }
+      }
+      window.addEventListener('hashchange', loadChallengeFromHash);
+      // --- User Score ---
+      function updateUserScore() {
+        const score = localStorage.getItem(`${getCurrentUser()}_score`) || 0;
+        document.getElementById('user-score').textContent = `Score: ${score}`;
+      }
+      // --- Sidebar Toggle ---
+      document.querySelector('.sidebar-toggle').addEventListener('click', () => {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('active');
+      });
+      // --- Initial Load ---
+      document.addEventListener('DOMContentLoaded', () => {
+        setCurrentUser(getCurrentUser() || 'Guest');
+        loadChallenges();
+      });
+      </script>
+    </body>
+    </html>
+
+
+    /* Challenge Page */
+
+    .problem-header {
