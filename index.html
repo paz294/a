@@ -9,7 +9,7 @@
     *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,sans-serif}
     body{min-height:100vh;background:#1e1e1e;color:#fff}
 
-    /* Navbar */
+    /* Navbar (fixed) */
     .navbar{display:flex;align-items:center;justify-content:space-between;background:#282828;padding:0 16px;height:56px;border-bottom:1px solid #404040;position:fixed;top:0;left:0;right:0;z-index:1000}
     .navbar-brand{display:flex;align-items:center;gap:8px;color:#a5d8ff;font-weight:600;cursor:pointer}
     .navbar-brand:hover{color:#74c0fc}
@@ -25,8 +25,14 @@
     .edit-icon{font-size:18px;opacity:.8;cursor:pointer}
     .edit-icon:hover{opacity:1}
 
+    /* Scoreboard bar (scrolls with page) */
+    .scorebar{background:#282828;border-bottom:1px solid #404040;padding:8px 16px;margin-top:56px;display:flex;align-items:center;justify-content:space-between}
+    .scorebar .left{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .scorebar .reset-btn{background:#3a3a3a;border:1px solid #4a4a4a;color:#ddd;padding:6px 10px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:6px}
+    .scorebar .reset-btn:hover{background:#444}
+
     /* Layout */
-    .main-container{display:flex;margin-top:56px;height:calc(100vh - 56px)}
+    .main-container{display:flex;height:calc(100vh - 56px - 48px)} /* minus navbar & approx scorebar height */
     #sidebar{width:270px;background:#282828;border-right:1px solid #404040;padding:16px;overflow-y:auto;transition:transform .3s ease}
     #main-content{flex:1;padding:20px;overflow-y:auto}
 
@@ -48,7 +54,7 @@
     .sidebar-toggle{display:none;position:fixed;left:12px;top:64px;z-index:1100;background:#a5d8ff;border:none;border-radius:50%;width:40px;height:40px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.25)}
     .sidebar-toggle .material-icons{color:#111}
     @media (max-width: 900px){
-      #sidebar{position:fixed;left:0;top:56px;bottom:4px;transform:translateX(-100%);z-index:1050}
+      #sidebar{position:fixed;left:0;top:104px;bottom:4px;transform:translateX(-100%);z-index:1050}
       #sidebar.active{transform:translateX(0)}
       .sidebar-toggle{display:flex;align-items:center;justify-content:center}
       #progress-container{left:0!important}
@@ -94,7 +100,6 @@
     .submit-button{background:#a5d8ff;color:#111;border:none;padding:8px 14px;border-radius:8px;font-weight:700;cursor:pointer}
     .autosave-indicator{font-size:12px;color:#9a9a9a;margin-left:auto}
     .note{font-size:12px;color:#bbb}
-
     #run-output{margin-top:12px;padding:12px;background:#151515;border:1px solid #383838;border-radius:8px;min-height:64px;color:#d7d7d7;white-space:pre-wrap}
 
     /* Versus editors side-by-side */
@@ -135,6 +140,20 @@
     </div>
   </nav>
 
+  <!-- SCOREBOARD BAR (scrolls with page) -->
+  <div class="scorebar">
+    <div class="left">
+      <span>🏅</span>
+      <span id="sb-p1-name">Player 1</span>: <strong id="sb-p1-score">0</strong> pts
+      <span style="opacity:.6">|</span>
+      <span id="sb-p2-name">Player 2</span>: <strong id="sb-p2-score">0</strong> pts
+    </div>
+    <button class="reset-btn" id="reset-scores-btn" title="Reset scores">
+      <span class="material-icons" style="font-size:18px">restart_alt</span>
+      Reset
+    </button>
+  </div>
+
   <!-- Mobile toggle -->
   <button class="sidebar-toggle" onclick="document.getElementById('sidebar').classList.toggle('active')">
     <span class="material-icons">menu</span>
@@ -168,12 +187,15 @@
   <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 
   <script>
-    /* ========= Data & Storage Keys ========= */
+    /* ========= Keys ========= */
     const PLAYER_KEY   = 'player_names';
     const PROGRESS_KEY = 'challenge_progress';
-    const CODE_KEY     = 'challenge_code_v2';  // v2 structure: id -> lang -> slot -> code
+    const CODE_KEY     = 'challenge_code_v2';   // id -> lang -> slot -> code
     const NOTES_KEY    = 'challenge_notes';
+    const SCORES_KEY   = 'scores_v1';          // {p1:0,p2:0}
+    const SCORELOG_KEY = 'score_log_v1';       // id -> 'p1'|'p2'|'both'|'solo'
 
+    /* ========= Data ========= */
     const sectionIcons = { Football:'sports_soccer', Relationship:'favorite', Games:'sports_esports' };
 
     const challenges = [
@@ -215,10 +237,8 @@ int main(){
 `
     };
 
-    /* ========= Player Names (persistent) ========= */
-    function getNames(){
-      return JSON.parse(localStorage.getItem(PLAYER_KEY) || '{"p1":"Player 1","p2":"Player 2"}');
-    }
+    /* ========= Player Names ========= */
+    function getNames(){ return JSON.parse(localStorage.getItem(PLAYER_KEY) || '{"p1":"Player 1","p2":"Player 2"}'); }
     function saveNames(n){ localStorage.setItem(PLAYER_KEY, JSON.stringify(n)); }
     function updateNamesUI(){
       const n=getNames();
@@ -226,9 +246,13 @@ int main(){
       const p2 = document.getElementById('p2-name');
       const a1 = document.getElementById('p1-avatar');
       const a2 = document.getElementById('p2-avatar');
+      const sb1 = document.getElementById('sb-p1-name');
+      const sb2 = document.getElementById('sb-p2-name');
       p1.textContent = n.p1; p2.textContent = n.p2;
       a1.textContent = (n.p1?.[0]||'P').toUpperCase();
       a2.textContent = (n.p2?.[0]||'P').toUpperCase();
+      sb1.textContent = n.p1;
+      sb2.textContent = n.p2;
     }
     function enableRename(id){
       const el = id==='p1' ? document.getElementById('p1-name') : document.getElementById('p2-name');
@@ -332,29 +356,26 @@ int main(){
       });
     }
 
-    function toggleCompleted(id){
-      const p=JSON.parse(localStorage.getItem(PROGRESS_KEY)||'{}');
-      const nowCompleted = !(p[id]?.completed);
-      if(nowCompleted) p[id]={completed:true, completedAt:new Date().toISOString()};
-      else delete p[id];
-      localStorage.setItem(PROGRESS_KEY, JSON.stringify(p));
-      setupSidebar();
-      updateProgress();
-      // If on panel, update its button/badge quickly:
-      const btn = document.getElementById('complete-toggle');
-      const badgeWrap = document.getElementById('completed-badge-wrap');
-      if(btn){
-        btn.textContent = nowCompleted ? 'Mark Incomplete' : 'Mark Completed';
-        if(badgeWrap){
-          badgeWrap.innerHTML = nowCompleted ? '<span class="completed-badge"><span class="material-icons" style="font-size:18px;">check_circle</span> Completed</span>' : '';
-        }
-      }
+    /* ========= Scores ========= */
+    function getScores(){ return JSON.parse(localStorage.getItem(SCORES_KEY) || '{"p1":0,"p2":0}'); }
+    function saveScores(s){ localStorage.setItem(SCORES_KEY, JSON.stringify(s)); updateScorebar(); }
+    function getScoreLog(){ return JSON.parse(localStorage.getItem(SCORELOG_KEY) || '{}'); }
+    function saveScoreLog(log){ localStorage.setItem(SCORELOG_KEY, JSON.stringify(log)); }
+
+    function updateScorebar(){
+      const s=getScores();
+      document.getElementById('sb-p1-score').textContent = s.p1;
+      document.getElementById('sb-p2-score').textContent = s.p2;
+    }
+
+    function resetScores(){
+      saveScores({p1:0,p2:0});
+      saveScoreLog({});
     }
 
     /* ========= Code & Notes persistence (per lang & slot) ========= */
     function getCodeStore(){ return JSON.parse(localStorage.getItem(CODE_KEY)||'{}'); }
     function saveCodeStore(store){ localStorage.setItem(CODE_KEY, JSON.stringify(store)); }
-
     // slot: 'solo' | 'p1' | 'p2' | 'collab'
     function loadCode(id, lang, slot){
       const store=getCodeStore();
@@ -415,15 +436,8 @@ _result = _buffer.getvalue()`;
     let currentMode = 'solo'; // 'solo' | 'versus' | 'collab'
     let currentLang = 'python';
 
-    function setMode(mode){
-      currentMode = mode;
-      // re-render editors panel only (retain desc/notes tab selection)
-      loadFromHash();
-    }
-    function setLanguage(lang){
-      currentLang = lang;
-      loadFromHash();
-    }
+    function setMode(mode){ currentMode = mode; loadFromHash(); }
+    function setLanguage(lang){ currentLang = lang; loadFromHash(); }
 
     function buildModeBar(){
       return `
@@ -436,7 +450,6 @@ _result = _buffer.getvalue()`;
     }
 
     function buildLanguagePicker(available){
-      // keep selection if present; default to python
       if(!available.includes(currentLang)) currentLang = available[0] || 'python';
       return `
         <div class="language-selector">
@@ -466,15 +479,13 @@ _result = _buffer.getvalue()`;
           }else if(name==='Notes'){
             leftDesc.style.display='none';
             leftNotes.style.display='block';
-          }else{ // Code tab -> just focus right panel
+          }else{
             leftDesc.style.display='none';
             leftNotes.style.display='none';
-            // Right panel is always visible; we just hide left side
           }
         };
       });
 
-      // Set initial selection
       const toActivate = Array.from(tabs).find(x=>x.textContent.trim()===activeName) || tabs[0];
       toActivate.click();
     }
@@ -513,7 +524,7 @@ _result = _buffer.getvalue()`;
         </div>
 
         <div class="workspace">
-          <!-- LEFT: Description/Notes -->
+          <!-- LEFT -->
           <div class="panel" id="left-panel">
             <div id="desc-panel">
               ${buildLanguagePicker(ch.languages)}
@@ -528,7 +539,7 @@ _result = _buffer.getvalue()`;
             </div>
           </div>
 
-          <!-- RIGHT: Code panel(s) -->
+          <!-- RIGHT -->
           <div class="panel" id="right-panel">
             ${currentMode==='versus' ? `
               <div class="versus-grid">
@@ -537,7 +548,7 @@ _result = _buffer.getvalue()`;
                   <textarea id="code-p1">${loadCode(id, currentLang, 'p1')}</textarea>
                   <div class="button-row">
                     <button class="run-button" onclick="onRun('${id}','${currentLang}','p1')">Run</button>
-                    <button class="submit-button" onclick="toggleCompleted('${id}')" id="complete-toggle">${completed?'Mark Incomplete':'Mark Completed'}</button>
+                    <button class="submit-button" onclick="toggleCompletedFor('${id}','p1')" id="complete-toggle-p1">${completed?'Mark Incomplete':'Mark Completed'}</button>
                     <div class="autosave-indicator" id="autosave-ind-p1">Autosaving…</div>
                   </div>
                 </div>
@@ -546,7 +557,7 @@ _result = _buffer.getvalue()`;
                   <textarea id="code-p2">${loadCode(id, currentLang, 'p2')}</textarea>
                   <div class="button-row">
                     <button class="run-button" onclick="onRun('${id}','${currentLang}','p2')">Run</button>
-                    <button class="submit-button" onclick="toggleCompleted('${id}')" id="complete-toggle-2">${completed?'Mark Incomplete':'Mark Completed'}</button>
+                    <button class="submit-button" onclick="toggleCompletedFor('${id}','p2')" id="complete-toggle-p2">${completed?'Mark Incomplete':'Mark Completed'}</button>
                     <div class="autosave-indicator" id="autosave-ind-p2">Autosaving…</div>
                   </div>
                 </div>
@@ -556,7 +567,7 @@ _result = _buffer.getvalue()`;
               <textarea id="code-collab">${loadCode(id, currentLang, 'collab')}</textarea>
               <div class="button-row">
                 <button class="run-button" onclick="onRun('${id}','${currentLang}','collab')">Run</button>
-                <button class="submit-button" onclick="toggleCompleted('${id}')" id="complete-toggle">${completed?'Mark Incomplete':'Mark Completed'}</button>
+                <button class="submit-button" onclick="toggleCompletedFor('${id}','both')" id="complete-toggle">${completed?'Mark Incomplete':'Mark Completed'}</button>
                 <div class="autosave-indicator" id="autosave-ind">Autosaving…</div>
               </div>
               <div id="run-output"></div>
@@ -564,7 +575,7 @@ _result = _buffer.getvalue()`;
               <textarea id="code-solo">${loadCode(id, currentLang, 'solo')}</textarea>
               <div class="button-row">
                 <button class="run-button" onclick="onRun('${id}','${currentLang}','solo')">Run</button>
-                <button class="submit-button" onclick="toggleCompleted('${id}')" id="complete-toggle">${completed?'Mark Incomplete':'Mark Completed'}</button>
+                <button class="submit-button" onclick="toggleCompletedFor('${id}','solo')" id="complete-toggle">${completed?'Mark Incomplete':'Mark Completed'}</button>
                 <div class="autosave-indicator" id="autosave-ind">Autosaving…</div>
               </div>
               <div id="run-output"></div>
@@ -573,7 +584,7 @@ _result = _buffer.getvalue()`;
         </div>
       `;
 
-      // Hook up autosave for code & notes
+      // Autosave hookups
       if(currentMode==='versus'){
         hookAutosave('code-p1', id, currentLang, 'p1', 'autosave-ind-p1');
         hookAutosave('code-p2', id, currentLang, 'p2', 'autosave-ind-p2');
@@ -588,8 +599,6 @@ _result = _buffer.getvalue()`;
         let t; notesTA.oninput = ()=>{ clearTimeout(t); t=setTimeout(()=> saveNotes(id, notesTA.value), 700); };
       }
 
-      // Tabs behavior
-      // Default to Description visible; Code tab hides left panel (pure focus on code)
       setupTabs('Description');
     }
 
@@ -631,12 +640,80 @@ _result = _buffer.getvalue()`;
       highlightActive('');
     }
 
+    /* ========= Complete + Scoring ========= */
+    // who: 'p1' | 'p2' | 'both' | 'solo'
+    function toggleCompletedFor(id, who){
+      const progress = JSON.parse(localStorage.getItem(PROGRESS_KEY)||'{}');
+      const log = getScoreLog();
+      const wasCompleted = !!progress[id]?.completed;
+
+      if(wasCompleted){
+        // Mark incomplete
+        delete progress[id];
+        localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
+        // If we had logged a scoring for this challenge, reverse it
+        if(log[id]){
+          const scores = getScores();
+          if(log[id]==='p1'){ scores.p1 = Math.max(0, scores.p1 - 1); }
+          else if(log[id]==='p2'){ scores.p2 = Math.max(0, scores.p2 - 1); }
+          else if(log[id]==='both'){ scores.p1 = Math.max(0, scores.p1 - 1); scores.p2 = Math.max(0, scores.p2 - 1); }
+          // 'solo' gives no score, nothing to reverse
+          saveScores(scores);
+          delete log[id];
+          saveScoreLog(log);
+        }
+      } else {
+        // Mark completed
+        progress[id] = { completed:true, completedAt:new Date().toISOString() };
+        localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
+
+        // Score only if not solo
+        if(who==='p1' || who==='p2' || who==='both'){
+          const scores = getScores();
+          if(who==='p1') scores.p1 += 1;
+          else if(who==='p2') scores.p2 += 1;
+          else if(who==='both'){ scores.p1 += 1; scores.p2 += 1; }
+          saveScores(scores);
+          log[id] = who;
+          saveScoreLog(log);
+        } else {
+          // who === 'solo' -> no scoring, but still mark as completed
+          log[id] = 'solo';
+          saveScoreLog(log);
+        }
+      }
+
+      // UI refresh
+      setupSidebar();
+      updateProgress();
+      updateScorebar();
+      // Update header badge + buttons if panel is open
+      const badgeWrap = document.getElementById('completed-badge-wrap');
+      if(badgeWrap){
+        const nowCompleted = !!progress[id]?.completed;
+        badgeWrap.innerHTML = nowCompleted ? '<span class="completed-badge"><span class="material-icons" style="font-size:18px;">check_circle</span> Completed</span>' : '';
+        // update any toggle buttons labels present
+        const p1btn = document.getElementById('complete-toggle-p1');
+        const p2btn = document.getElementById('complete-toggle-p2');
+        const soloBtn = document.getElementById('complete-toggle');
+        if(p1btn) p1btn.textContent = nowCompleted ? 'Mark Incomplete' : 'Mark Completed';
+        if(p2btn) p2btn.textContent = nowCompleted ? 'Mark Incomplete' : 'Mark Completed';
+        if(soloBtn) soloBtn.textContent = nowCompleted ? 'Mark Incomplete' : 'Mark Completed';
+      }
+    }
+
     /* ========= Init ========= */
     function init(){
+      // Names & scores
       updateNamesUI();
+      updateScorebar();
+      document.getElementById('reset-scores-btn').onclick = resetScores;
+
+      // Sidebar & home
       setupSidebar();
       buildHome();
       updateProgress();
+
       if(location.hash){ loadFromHash(); }
       window.onhashchange = loadFromHash;
     }
@@ -645,4 +722,3 @@ _result = _buffer.getvalue()`;
   </script>
 </body>
 </html>
-
