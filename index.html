@@ -41,18 +41,35 @@
       border-radius: 10px; margin-bottom: 30px;
     }
     .welcome-banner h1 { color: #60a5fa; margin-bottom: 10px; }
+
+    /* Challenge Sections */
+    .section {
+      margin-bottom: 40px;
+    }
+    .section h2 {
+      color: #60a5fa; margin-bottom: 20px; border-bottom: 1px solid #404040; padding-bottom: 5px;
+    }
+
     .challenge-grid {
       display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px;
     }
     .challenge-card {
       background-color: #282828; border: 1px solid #404040; border-radius: 10px; padding: 20px;
-      cursor: pointer; transition: 0.2s;
+      cursor: pointer; transition: 0.2s; position: relative;
     }
     .challenge-card:hover {
       transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
     .challenge-card h3 { margin-bottom: 8px; color: #fff; }
     .card-description { font-size: 14px; color: #bbb; }
+
+    .difficulty {
+      position: absolute; top: 10px; right: 10px;
+      padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600;
+    }
+    .easy { background-color: #2e7d32; color: #a5d6a7; }
+    .medium { background-color: #ef6c00; color: #ffcc80; }
+    .hard { background-color: #b71c1c; color: #ef9a9a; }
 
     /* Challenge Page */
     .problem-header {
@@ -110,7 +127,7 @@
           <h1>Welcome 💻❤️⚽</h1>
           <p>Our little coding space — where love meets logic and fun challenges.</p>
         </div>
-        <div class="challenge-grid"></div>
+        <div id="sections"></div>
       </div>
 
       <div id="challenge-panel" style="display: none;"></div>
@@ -123,48 +140,83 @@
     const challenges = [
       {
         id: 'match-day',
-        theme: '⚽ Football',
+        category: 'Football',
         difficulty: 'Easy',
         title: 'Match Day Simulator',
         description: 'Generate a random football match result between Team You and Team Him.',
-        example: 'Example Output:\nTeam Him 3 - 2 Team You\nCommentary: He scored a last-minute goal! ⚽',
+        example: 'Example Output:\nTeam Him 3 - 2 Team You\nCommentary: He scored a last-minute goal! ⚽'
+      },
+      {
+        id: 'penalty-shooter',
+        category: 'Football',
+        difficulty: 'Medium',
+        title: 'Penalty Shootout Game',
+        description: 'Simulate a 5-shot penalty shootout — see who wins the cup!',
+        example: 'Example Output:\nYou ⚽⚽❌⚽⚽\nHim ⚽❌⚽⚽❌\nYou win 4–3! 🏆'
       },
       {
         id: 'love-encoder',
-        theme: '💕 Relationship',
+        category: 'Relationship',
         difficulty: 'Easy',
         title: 'Love Message Encoder',
         description: 'Create a program that encodes a secret message only the two of you can decode.',
-        example: 'Input: I love you\nOutput: ❤️🌹#you#love#I',
+        example: 'Input: I love you\nOutput: ❤️🌹#you#love#I'
+      },
+      {
+        id: 'anniversary-planner',
+        category: 'Relationship',
+        difficulty: 'Medium',
+        title: 'Anniversary Date Planner',
+        description: 'Build a random date generator using your favorite activities and restaurants.',
+        example: 'Output: 🎥 Movie night + 🍝 Italian dinner'
       },
       {
         id: 'game-night',
-        theme: '🎮 Games',
+        category: 'Games',
         difficulty: 'Medium',
         title: 'Game Night Score Tracker',
         description: 'Build a small scoreboard that keeps track of who wins more rounds in your favorite games.',
-        example: 'Input: You - 5, Him - 7\nOutput: Him wins tonight! 🎉',
+        example: 'Input: You - 5, Him - 7\nOutput: Him wins tonight! 🎉'
+      },
+      {
+        id: 'guess-the-song',
+        category: 'Games',
+        difficulty: 'Hard',
+        title: 'Guess The Song Challenge',
+        description: 'Play random snippets of songs and code a way to guess the title!',
+        example: 'Input: 🎶 "da da da daaaa" Output: "Star Wars Theme!"'
       }
     ];
 
-    const list = document.getElementById('challenge-list');
-    const grid = document.querySelector('.challenge-grid');
+    const sectionsContainer = document.getElementById('sections');
+    const sidebarList = document.getElementById('challenge-list');
 
-    // Create challenge cards and sidebar list
-    challenges.forEach(c => {
-      const li = document.createElement('li');
-      li.textContent = c.title;
-      li.onclick = () => { location.hash = c.id; };
-      list.appendChild(li);
+    const categories = [...new Set(challenges.map(c => c.category))];
 
-      const card = document.createElement('div');
-      card.className = 'challenge-card';
-      card.onclick = () => { location.hash = c.id; };
-      card.innerHTML = `
-        <h3>${c.title}</h3>
-        <div class="card-description">${c.description}</div>
-      `;
-      grid.appendChild(card);
+    categories.forEach(cat => {
+      const section = document.createElement('div');
+      section.className = 'section';
+      section.innerHTML = `<h2>${cat}</h2><div class="challenge-grid"></div>`;
+      const grid = section.querySelector('.challenge-grid');
+
+      challenges.filter(c => c.category === cat).forEach(ch => {
+        const card = document.createElement('div');
+        card.className = 'challenge-card';
+        card.onclick = () => { location.hash = ch.id; };
+        card.innerHTML = `
+          <h3>${ch.title}</h3>
+          <p class="card-description">${ch.description}</p>
+          <span class="difficulty ${ch.difficulty.toLowerCase()}">${ch.difficulty}</span>
+        `;
+        grid.appendChild(card);
+
+        const li = document.createElement('li');
+        li.textContent = `${ch.title} (${ch.difficulty})`;
+        li.onclick = () => { location.hash = ch.id; };
+        sidebarList.appendChild(li);
+      });
+
+      sectionsContainer.appendChild(section);
     });
 
     window.addEventListener('hashchange', loadChallengeFromHash);
@@ -179,7 +231,7 @@
       if (!challenge) {
         panel.style.display = 'none';
         homePage.style.display = 'block';
-        list.querySelectorAll('li').forEach(li => li.classList.remove('active'));
+        sidebarList.querySelectorAll('li').forEach(li => li.classList.remove('active'));
         return;
       }
 
@@ -220,34 +272,28 @@
         tab.onclick = () => {
           tabs.forEach(t => t.classList.remove('active'));
           tab.classList.add('active');
+          const ch = challenges.find(c => c.id === location.hash.slice(1));
           if (tab.textContent === 'Description') {
-            const ch = challenges.find(c => c.id === location.hash.slice(1));
-            content.innerHTML = `
-              <p>${ch.description}</p>
-              <div class="example-section">
-                <h4>Example</h4>
-                <pre>${ch.example}</pre>
-              </div>
-            `;
+            content.innerHTML = `<p>${ch.description}</p><div class="example-section"><h4>Example</h4><pre>${ch.example}</pre></div>`;
           } else if (tab.textContent === 'Code') {
-            content.innerHTML = `<p>Here you can write or view your solution ✨</p>`;
+            content.innerHTML = `<p>Write or view your solution here ✨</p>`;
           } else {
-            content.innerHTML = `<p>Write shared notes or hints here 💭</p>`;
+            content.innerHTML = `<p>Notes, hints, or memories related to this challenge 💭</p>`;
           }
         };
       });
     }
 
     function highlightActive(hash) {
-      list.querySelectorAll('li').forEach(li => {
-        li.classList.toggle('active', li.textContent === challenges.find(c => c.id === hash).title);
+      sidebarList.querySelectorAll('li').forEach(li => {
+        li.classList.toggle('active', li.textContent.startsWith(challenges.find(c => c.id === hash).title));
       });
     }
 
     function goHome() {
       document.getElementById('home-page').style.display = 'block';
       document.getElementById('challenge-panel').style.display = 'none';
-      list.querySelectorAll('li').forEach(li => li.classList.remove('active'));
+      sidebarList.querySelectorAll('li').forEach(li => li.classList.remove('active'));
       location.hash = '';
     }
 
@@ -265,4 +311,5 @@
   </script>
 </body>
 </html>
+
 
