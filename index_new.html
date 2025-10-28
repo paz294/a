@@ -205,17 +205,72 @@
             background-color: #333333;
         }
 
-        [Rest of your existing styles...]
+        .user-login-bar {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            background-color: #282828;
+            padding: 0 20px;
+            height: 50px;
+            border-top: 1px solid #404040;
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 300px;
+            z-index: 1000;
+        }
+
+        .user-login-bar label {
+            color: #d4d4d4;
+            margin-right: 10px;
+        }
+
+        .user-login-bar select {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #404040;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            margin-right: 10px;
+        }
+
+        .user-login-bar button {
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: none;
+            background-color: #a5d8ff;
+            color: #1e1e1e;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .user-login-bar button:hover {
+            background-color: #90cfff;
+        }
+
+        /* Add your existing styles here... */
 
     </style>
 </head>
 <body>
+    <div class="user-login-bar">
+        <label for="user-select">User:</label>
+        <select id="user-select"></select>
+        <button id="add-user-btn">Add User</button>
+    </div>
+
     <button class="sidebar-toggle">
         <span class="material-icons">menu</span>
     </button>
 
     <nav class="navbar">
-        [Rest of your existing navbar...]
+        <div class="navbar-brand">
+            <span class="material-icons">code</span>
+            LeetCode-style Challenges
+        </div>
+        <div class="nav-right">
+            <div class="user-avatar">U</div>
+        </div>
     </nav>
 
     <div class="main-container">
@@ -229,10 +284,90 @@
             <div id="sections-list"></div>
         </div>
         
-        [Rest of your existing main-content...]
+        <div id="main-content" style="flex-grow: 1; padding: 20px;">
+            <div id="home-page">
+                <h1>Welcome to LeetCode-style Challenges</h1>
+                <p>Select a challenge from the sidebar to get started.</p>
+            </div>
+            <div id="challenge-panel" style="display: none;">
+                <!-- Challenge panel content will be injected here -->
+            </div>
+        </div>
     </div>
 
     <script>
+    // --- User Management ---
+    const USER_LIST_KEY = 'challengeUserList';
+    let currentUser = null;
+
+    function getUserList() {
+        return JSON.parse(localStorage.getItem(USER_LIST_KEY) || '[]');
+    }
+    function saveUserList(list) {
+        localStorage.setItem(USER_LIST_KEY, JSON.stringify(list));
+    }
+    function setCurrentUser(user) {
+        currentUser = user;
+        localStorage.setItem('challengeCurrentUser', user);
+        document.getElementById('user-select').value = user;
+        loadChallengeFromHash();
+    }
+    function getCurrentUser() {
+        return localStorage.getItem('challengeCurrentUser') || null;
+    }
+    function renderUserSelect() {
+        const select = document.getElementById('user-select');
+        select.innerHTML = '';
+        getUserList().forEach(user => {
+            const opt = document.createElement('option');
+            opt.value = user;
+            opt.textContent = user;
+            select.appendChild(opt);
+        });
+        select.value = getCurrentUser() || '';
+    }
+    function addUser() {
+        const name = prompt('Enter new user name:');
+        if (!name) return;
+        const list = getUserList();
+        if (!list.includes(name)) {
+            list.push(name);
+            saveUserList(list);
+            renderUserSelect();
+            setCurrentUser(name);
+        }
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        renderUserSelect();
+        document.getElementById('user-select').addEventListener('change', e => setCurrentUser(e.target.value));
+        document.getElementById('add-user-btn').addEventListener('click', addUser);
+        if (!getCurrentUser() && getUserList().length) setCurrentUser(getUserList()[0]);
+    });
+
+    // --- Per-user code/progress ---
+    function userKey(key) {
+        return `${getCurrentUser() || 'default'}_${key}`;
+    }
+    function saveUserCode(challengeId, code, lang) {
+        const all = JSON.parse(localStorage.getItem(userKey('codes')) || '{}');
+        if (!all[challengeId]) all[challengeId] = {};
+        all[challengeId][lang] = code;
+        localStorage.setItem(userKey('codes'), JSON.stringify(all));
+    }
+    function loadUserCode(challengeId, lang) {
+        const all = JSON.parse(localStorage.getItem(userKey('codes')) || '{}');
+        return (all[challengeId] && all[challengeId][lang]) || '';
+    }
+    function saveUserProgress(challengeId, status) {
+        const all = JSON.parse(localStorage.getItem(userKey('progress')) || '{}');
+        all[challengeId] = status;
+        localStorage.setItem(userKey('progress'), JSON.stringify(all));
+    }
+    function loadUserProgress(challengeId) {
+        const all = JSON.parse(localStorage.getItem(userKey('progress')) || '{}');
+        return all[challengeId] || null;
+    }
+
     const sections = {
         'football': {
             icon: '⚽',
@@ -427,8 +562,112 @@
                     <button class="icon-button"><span class="material-icons">share</span></button>
                 </div>
             </div>
-            [Rest of your existing challenge panel HTML...]
+            <div class="problem-content">
+                <div class="problem-description">
+                    <h3>Description</h3>
+                    <p>${challenge.description}</p>
+                </div>
+                <div class="problem-example">
+                    <h3>Example</h3>
+                    <pre><code>${challenge.example}</code></pre>
+                </div>
+                <div class="code-editor-container">
+                    <h3>Code Editor</h3>
+                    <div id="editor" style="height: 300px;"></div>
+                </div>
+                <div class="actions-bar">
+                    <button id="run-code" class="action-button">Run Code</button>
+                    <button id="submit-code" class="action-button">Submit</button>
+                </div>
+                <div class="progress-container" id="progress-container">
+                    <!-- Progress circles will be injected here -->
+                </div>
+            </div>
         `;
+
+        // Initialize code editor
+        const editor = ace.edit("editor");
+        editor.setTheme("ace/theme/monokai");
+        editor.getSession().setMode("ace/mode/javascript");
+
+        // Load saved code
+        const savedCode = loadUserCode(challenge.id, 'javascript');
+        editor.setValue(savedCode, -1);
+
+        // Run code button handler
+        document.getElementById('run-code').onclick = () => {
+            const code = editor.getValue();
+            try {
+                // Simple sandboxed eval (for demonstration, not secure!)
+                const result = eval(code);
+                alert(`Output: ${result}`);
+            } catch (e) {
+                alert(`Error: ${e.message}`);
+            }
+        };
+
+        // Submit button handler
+        document.getElementById('submit-code').onclick = () => {
+            const code = editor.getValue();
+            saveUserCode(challenge.id, code, 'javascript');
+            alert('Code saved!');
+        };
+
+        // Load and display user progress
+        loadAndDisplayProgress(challenge.id);
+    }
+
+    function loadAndDisplayProgress(challengeId) {
+        const container = document.getElementById('progress-container');
+        container.innerHTML = '';
+
+        const status = loadUserProgress(challengeId);
+        const completed = status === 'completed';
+
+        // Circle progress indicator
+        const circle = document.createElement('div');
+        circle.className = 'progress-circle';
+        circle.innerHTML = `
+            <div class="circle ${completed ? 'completed' : ''}">
+                ${completed ? '✔️' : ''}
+            </div>
+        `;
+        container.appendChild(circle);
+
+        // Completed challenges list
+        if (completed) {
+            const completedChallenges = Object.keys(JSON.parse(localStorage.getItem(userKey('progress')) || '{}')).filter(id => loadUserProgress(id) === 'completed');
+            if (completedChallenges.length > 0) {
+                const completedList = document.createElement('div');
+                completedList.className = 'completed-list';
+                completedList.innerHTML = '<h4>Completed Challenges:</h4>';
+                
+                completedChallenges.forEach(id => {
+                    const challenge = findChallengeById(id);
+                    if (challenge) {
+                        const item = document.createElement('div');
+                        item.className = 'completed-item';
+                        item.textContent = challenge.title;
+                        completedList.appendChild(item);
+                    }
+                });
+                
+                container.appendChild(completedList);
+            }
+        }
+    }
+
+    function findChallengeById(challengeId) {
+        let foundChallenge = null;
+        Object.values(sections).some(section => {
+            const challenge = section.challenges.find(c => c.id === challengeId);
+            if (challenge) {
+                foundChallenge = challenge;
+                return true;
+            }
+            return false;
+        });
+        return foundChallenge;
     }
 
     // Your existing event listeners and functions
