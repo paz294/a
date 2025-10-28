@@ -1,491 +1,347 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LeetCode-style Challenges</title>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LeetCode-style Challenges</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
 
-        body {
-            min-height: 100vh;
-            background-color: #1e1e1e;
-            color: #ffffff;
-        }
+body {
+    min-height: 100vh;
+    background-color: #1e1e1e;
+    color: #ffffff;
+}
 
-        .navbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: #282828;
-            padding: 0 20px;
-            height: 50px;
-            border-bottom: 1px solid #404040;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-        }
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #282828;
+    padding: 0 20px;
+    height: 50px;
+    border-bottom: 1px solid #404040;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
 
-        .navbar-brand {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #a5d8ff;
-            font-weight: 600;
-            font-size: 18px;
-            margin-left: 32px;
-        }
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #a5d8ff;
+    font-weight: 600;
+    font-size: 18px;
+    margin-left: 32px;
+}
 
-        @media (max-width: 768px) {
-            .navbar-brand {
-                margin-left: 48px;
-            }
-        }
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
 
-        .nav-items {
-            display: flex;
-            gap: 20px;
-        }
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    background-color: #a5d8ff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
 
-        .nav-items a {
-            color: #d4d4d4;
-            text-decoration: none;
-            padding: 5px 10px;
-            border-radius: 4px;
-            transition: all 0.2s ease;
-        }
+.main-container {
+    display: flex;
+    margin-top: 50px;
+    height: calc(100vh - 50px);
+}
 
-        .nav-items a.active {
-            color: #a5d8ff;
-        }
+#sidebar {
+    width: 300px;
+    background-color: #282828;
+    border-right: 1px solid #404040;
+    height: 100%;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+}
 
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
+.sidebar-toggle {
+    display: none;
+    position: fixed;
+    left: 10px;
+    top: 10px;
+    z-index: 1001;
+    background: none;
+    border: none;
+    color: #a5d8ff;
+    cursor: pointer;
+}
 
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            background-color: #a5d8ff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-        }
+@media (max-width: 768px) {
+    .sidebar-toggle { display: block; }
+    #sidebar { position: fixed; left: -300px; top: 50px; bottom: 0; z-index: 100; }
+    #sidebar.active { transform: translateX(300px); }
+    .main-container { margin-left: 0 !important; }
+}
 
-        .main-container {
-            display: flex;
-            margin-top: 50px;
-            height: calc(100vh - 50px);
-        }
+.sidebar-header {
+    padding: 20px;
+    border-bottom: 1px solid #404040;
+}
 
-        #sidebar {
-            width: 300px;
-            background-color: #282828;
-            border-right: 1px solid #404040;
-            height: 100%;
-            overflow-y: auto;
-            transition: transform 0.3s ease;
-        }
+.sidebar-header h3 {
+    color: #a5d8ff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
-        @media (max-width: 768px) {
-            #sidebar {
-                position: fixed;
-                left: -300px;
-                top: 50px;
-                bottom: 0;
-                z-index: 100;
-            }
+.section-button {
+    width: 100%;
+    padding: 12px 20px;
+    background: none;
+    border: none;
+    color: #d4d4d4;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
 
-            #sidebar.active {
-                transform: translateX(300px);
-            }
+.section-button:hover { background-color: #333333; }
+.section-button.active { color: #a5d8ff; }
 
-            .main-container {
-                margin-left: 0 !important;
-            }
+.section-content { display: none; background-color: #1e1e1e; }
+.section-content.active { display: block; }
 
-            #progress-container {
-                left: 0 !important;
-            }
-        }
+.challenge-item {
+    padding: 10px 20px 10px 40px;
+    cursor: pointer;
+    color: #d4d4d4;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+}
 
-        .sidebar-toggle {
-            display: none;
-            position: fixed;
-            left: 10px;
-            top: 10px;
-            z-index: 1001;
-            background: none;
-            border: none;
-            color: #a5d8ff;
-            cursor: pointer;
-        }
+.challenge-item:hover { background-color: #333333; }
+.challenge-item.active { color: #a5d8ff; background-color: #333333; }
 
-        @media (max-width: 768px) {
-            .sidebar-toggle {
-                display: block;
-            }
-        }
+.user-login-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: #282828;
+    padding: 0 20px;
+    height: 50px;
+    border-top: 1px solid #404040;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 300px;
+    z-index: 1000;
+}
 
-        .sidebar-header {
-            padding: 20px;
-            border-bottom: 1px solid #404040;
-        }
+.user-login-bar label { color: #d4d4d4; margin-right: 10px; }
+.user-login-bar button {
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: none;
+    background-color: #a5d8ff;
+    color: #1e1e1e;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.user-login-bar button:hover { background-color: #90cfff; }
 
-        .sidebar-header h3 {
-            color: #a5d8ff;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .section-button {
-            width: 100%;
-            padding: 12px 20px;
-            background: none;
-            border: none;
-            color: #d4d4d4;
-            text-align: left;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 14px;
-            transition: all 0.2s ease;
-        }
-
-        .section-button:hover {
-            background-color: #333333;
-        }
-
-        .section-button.active {
-            color: #a5d8ff;
-        }
-
-        .section-icon {
-            margin-right: 8px;
-        }
-
-        .section-content {
-            display: none;
-            background-color: #1e1e1e;
-        }
-
-        .section-content.active {
-            display: block;
-        }
-
-        .challenge-item {
-            padding: 10px 20px 10px 40px;
-            cursor: pointer;
-            color: #d4d4d4;
-            display: flex;
-            align-items: center;
-            transition: all 0.2s ease;
-        }
-
-        .challenge-item:hover {
-            background-color: #333333;
-        }
-
-        .challenge-item.active {
-            color: #a5d8ff;
-            background-color: #333333;
-        }
-
-        .user-login-bar {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            background-color: #282828;
-            padding: 0 20px;
-            height: 50px;
-            border-top: 1px solid #404040;
-            position: fixed;
-            top: 0;
-            right: 0;
-            left: 300px;
-            z-index: 1000;
-        }
-
-        .user-login-bar label {
-            color: #d4d4d4;
-            margin-right: 10px;
-        }
-
-        .user-login-bar select {
-            padding: 5px;
-            border-radius: 4px;
-            border: 1px solid #404040;
-            background-color: #1e1e1e;
-            color: #ffffff;
-            margin-right: 10px;
-        }
-
-        .user-login-bar button {
-            padding: 5px 10px;
-            border-radius: 4px;
-            border: none;
-            background-color: #a5d8ff;
-            color: #1e1e1e;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        .user-login-bar button:hover {
-            background-color: #90cfff;
-        }
-
-        /* Add your existing styles here... */
-
-    </style>
+</style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="navbar-brand">
-            <span class="material-icons">code</span>
-            LeetCode-style Challenges
+
+<nav class="navbar">
+    <div class="navbar-brand">
+        <span class="material-icons">code</span>
+        LeetCode-style Challenges
+    </div>
+    <div class="nav-right" id="navbar-user-info"></div>
+</nav>
+
+<div class="user-login-bar">
+    <label>Users:</label>
+    <div id="user-list-bar" style="display:flex;gap:8px;"></div>
+    <button id="add-user-btn">Add User</button>
+    <span id="user-score" style="margin-left:20px;color:#a5d8ff;font-weight:bold;">Score: 0</span>
+</div>
+
+<button class="sidebar-toggle">
+    <span class="material-icons">menu</span>
+</button>
+
+<div class="main-container">
+    <div id="sidebar">
+        <div class="sidebar-header">
+            <h3><span class="material-icons">code</span>Challenges</h3>
         </div>
-        <div class="nav-right" id="navbar-user-info"></div>
-    </nav>
-    <div class="user-login-bar" style="display:flex;align-items:center;gap:10px;padding:10px 20px;background:#222;margin-top:50px;">
-        <label>Users:</label>
-        <div id="user-list-bar" style="display:flex;gap:8px;"></div>
-        <button id="add-user-btn">Add User</button>
-        <span id="user-score" style="margin-left:20px;color:#a5d8ff;font-weight:bold;">Score: 0</span>
+        <div id="sections-list"></div>
     </div>
 
-    <button class="sidebar-toggle">
-        <span class="material-icons">menu</span>
-    </button>
-
-    <div class="main-container">
-        <div id="sidebar">
-            <div class="sidebar-header">
-                <h3>
-                    <span class="material-icons">code</span>
-                    Challenges
-                </h3>
-            </div>
-            <div id="sections-list"></div>
+    <div id="main-content" style="flex-grow: 1; padding: 20px;">
+        <div id="home-page">
+            <h1>Welcome to LeetCode-style Challenges</h1>
+            <p>Select a challenge from the sidebar to get started.</p>
         </div>
-        
-        <div id="main-content" style="flex-grow: 1; padding: 20px;">
-            <div id="home-page">
-                <h1>Welcome to LeetCode-style Challenges</h1>
-                <p>Select a challenge from the sidebar to get started.</p>
-            </div>
-            <div id="challenge-panel" style="display: none;">
-                <!-- Challenge panel content will be injected here -->
-            </div>
+        <div id="challenge-panel" style="display: none;"></div>
+
+        <div id="game-board" style="margin-top:20px;">
+            <div>Player 1: <span id="player1-name"></span></div>
+            <div>Player 2: <span id="player2-name"></span></div>
         </div>
     </div>
+</div>
 
-    <script>
-    // --- User Management ---
-    const USER_LIST_KEY = 'challengeUserList';
-    let currentUser = null;
+<script>
+// --- User Management ---
+const USER_LIST_KEY = 'challengeUserList';
+let currentUser = null;
 
-    function getUserList() {
-        return JSON.parse(localStorage.getItem(USER_LIST_KEY) || '[]');
-    }
-    function saveUserList(list) {
-        localStorage.setItem(USER_LIST_KEY, JSON.stringify(list));
-    }
-    function setCurrentUser(user) {
-        currentUser = user;
-        localStorage.setItem('challengeCurrentUser', user);
-        renderUserListBar();
-        renderNavbarUser();
-        updateUserScore();
-        loadChallengeFromHash();
-    }
-    function getCurrentUser() {
-        return localStorage.getItem('challengeCurrentUser') || null;
-    }
-    function getDisplayNames() {
-        return JSON.parse(localStorage.getItem('challengeUserDisplayNames') || '{}');
-    }
-    function saveDisplayNames(obj) {
-        localStorage.setItem('challengeUserDisplayNames', JSON.stringify(obj));
-    }
-    function getDisplayName(user) {
-        const names = getDisplayNames();
-        return names[user] || user;
-    }
-    function setDisplayName(user, displayName) {
-        const names = getDisplayNames();
-        names[user] = displayName;
-        saveDisplayNames(names);
-    }
-    function renderNavbarUser() {
-        const nav = document.getElementById('navbar-user-info');
-        if (!nav) return;
-        const user = getCurrentUser();
-        nav.innerHTML = '';
-        if (user) {
-            const avatar = document.createElement('div');
-            avatar.className = 'user-avatar';
-            avatar.textContent = getDisplayName(user)[0].toUpperCase();
-            avatar.title = getDisplayName(user);
-            const name = document.createElement('span');
-            name.textContent = getDisplayName(user);
-            name.style.marginLeft = '8px';
-            name.style.color = '#a5d8ff';
-            nav.appendChild(avatar);
-            nav.appendChild(name);
-        }
-    }
-    function renderUserListBar() {
-        const bar = document.getElementById('user-list-bar');
-        bar.innerHTML = '';
-        getUserList().forEach(user => {
-            const btn = document.createElement('button');
-            btn.textContent = getDisplayName(user);
-            btn.style.padding = '4px 12px';
-            btn.style.borderRadius = '16px';
-            btn.style.border = 'none';
-            btn.style.background = user === getCurrentUser() ? '#a5d8ff' : '#444';
-            btn.style.color = user === getCurrentUser() ? '#222' : '#fff';
-            btn.style.cursor = 'pointer';
-            btn.style.fontWeight = user === getCurrentUser() ? 'bold' : 'normal';
-            btn.onclick = () => setCurrentUser(user);
-            btn.ondblclick = () => {
-                const newDisplayName = prompt('Enter new display name for this player:', getDisplayName(user));
-                if (!newDisplayName || newDisplayName === getDisplayName(user)) return;
-                setDisplayName(user, newDisplayName);
-                renderUserListBar();
-                renderNavbarUser();
-            };
-            bar.appendChild(btn);
-        });
-    }
-    function addUser() {
-        const name = prompt('Enter new user name:');
-        if (!name) return;
-        const list = getUserList();
-        if (!list.includes(name)) {
-            list.push(name);
-            saveUserList(list);
+function getUserList() {
+    return JSON.parse(localStorage.getItem(USER_LIST_KEY) || '["Player1","Player2"]');
+}
+function saveUserList(list) {
+    localStorage.setItem(USER_LIST_KEY, JSON.stringify(list));
+}
+function setCurrentUser(user) {
+    currentUser = user;
+    localStorage.setItem('challengeCurrentUser', user);
+    renderUserListBar();
+    renderNavbarUser();
+    renderCurrentPlayers();
+    updateUserScore();
+}
+function getCurrentUser() {
+    return localStorage.getItem('challengeCurrentUser') || getUserList()[0];
+}
+
+// Display Names
+function getDisplayNames() {
+    return JSON.parse(localStorage.getItem('challengeUserDisplayNames') || '{}');
+}
+function saveDisplayNames(obj) {
+    localStorage.setItem('challengeUserDisplayNames', JSON.stringify(obj));
+}
+function getDisplayName(user) {
+    const names = getDisplayNames();
+    return names[user] || user;
+}
+function setDisplayName(user, displayName) {
+    const names = getDisplayNames();
+    names[user] = displayName;
+    saveDisplayNames(names);
+}
+
+// Render Navbar Users
+function renderNavbarUser() {
+    const nav = document.getElementById('navbar-user-info');
+    nav.innerHTML = '';
+    getUserList().forEach(user => {
+        const avatar = document.createElement('div');
+        avatar.className = 'user-avatar';
+        avatar.textContent = getDisplayName(user)[0].toUpperCase();
+        avatar.title = getDisplayName(user);
+        avatar.style.marginRight = '8px';
+        if(user === getCurrentUser()) avatar.style.backgroundColor = '#a5d8ff';
+        nav.appendChild(avatar);
+
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = getDisplayName(user);
+        nameSpan.style.marginRight = '16px';
+        nameSpan.style.color = user === getCurrentUser() ? '#222' : '#fff';
+        nav.appendChild(nameSpan);
+    });
+}
+
+// Render User List Bar
+function renderUserListBar() {
+    const bar = document.getElementById('user-list-bar');
+    bar.innerHTML = '';
+    getUserList().forEach(user => {
+        const btn = document.createElement('button');
+        btn.textContent = getDisplayName(user);
+        btn.style.padding = '4px 12px';
+        btn.style.borderRadius = '16px';
+        btn.style.border = 'none';
+        btn.style.background = user === getCurrentUser() ? '#a5d8ff' : '#444';
+        btn.style.color = user === getCurrentUser() ? '#222' : '#fff';
+        btn.style.cursor = 'pointer';
+        btn.style.fontWeight = user === getCurrentUser() ? 'bold' : 'normal';
+
+        btn.onclick = () => setCurrentUser(user);
+        btn.ondblclick = () => {
+            const newName = prompt('Enter new display name:', getDisplayName(user));
+            if (!newName || newName === getDisplayName(user)) return;
+            setDisplayName(user, newName);
             renderUserListBar();
-            setCurrentUser(name);
-        } else {
-            setCurrentUser(name);
-        }
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-        // Set display name for first user to 'Paula' if not already set
-        const users = getUserList();
-        if (users.length > 0) {
-            const displayNames = getDisplayNames();
-            if (getDisplayName(users[0]) !== 'Paula') {
-                setDisplayName(users[0], 'Paula');
-            }
-        }
-        renderUserListBar();
-        renderNavbarUser();
-        document.getElementById('add-user-btn').addEventListener('click', addUser);
-        if (!getCurrentUser() && getUserList().length) setCurrentUser(getUserList()[0]);
-        updateUserScore();
-    });
-    // --- Challenge Management ---
-    const CHALLENGE_LIST_KEY = 'challengeList';
-    const challengeSections = {};
+            renderNavbarUser();
+            renderCurrentPlayers();
+        };
 
-    function getChallengeList() {
-        return JSON.parse(localStorage.getItem(CHALLENGE_LIST_KEY) || '[]');
-    }
-    function saveChallengeList(list) {
-        localStorage.setItem(CHALLENGE_LIST_KEY, JSON.stringify(list));
-    }
-    function loadChallenges() {
-        const list = getChallengeList();
-        const container = document.getElementById('sections-list');
-        container.innerHTML = '';
-        list.forEach((challenge, idx) => {
-            const sectionId = `section_${idx}`;
-            const div = document.createElement('div');
-            div.className = 'section-button';
-            div.innerHTML = `
-                <span class="material-icons section-icon">folder_open</span>
-                ${challenge.title}
-                <span class="material-icons" style="font-size:16px;">keyboard_arrow_right</span>
-            `;
-            div.addEventListener('click', () => {
-                const content = document.getElementById('challenge-panel');
-                content.style.display = 'block';
-                content.innerHTML = `
-                    <h2>${challenge.title}</h2>
-                    <pre style="background:#111;padding:10px;border-radius:4px;">${challenge.code}</pre>
-                    <div style="margin-top:10px;">
-                        <button class="run-code" style="padding:5px 10px;border:none;border-radius:4px;background:#a5d8ff;color:#1e1e1e;cursor:pointer;">Run Code</button>
-                    </div>
-                `;
-                // Highlight.js
-                const script = document.createElement('script');
-                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js';
-                script.onload = () => {
-                    hljs.highlightAll();
-                };
-                document.head.appendChild(script);
-                // Run code button
-                document.querySelector('.run-code').addEventListener('click', () => {
-                    const userCode = prompt('Enter your code:');
-                    if (userCode !== null) {
-                        // Save user code
-                        localStorage.setItem(`${getCurrentUser()}_codes`, userCode);
-                        alert('Code saved! You can now run it in your local environment.');
-                    }
-                });
-            });
-            container.appendChild(div);
-            challengeSections[sectionId] = challenge;
-        });
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-        loadChallenges();
+        bar.appendChild(btn);
     });
-    // --- Hash Management ---
-    function loadChallengeFromHash() {
-        const hash = location.hash.substring(1);
-        if (!hash) return;
-        const challenge = document.getElementById(hash);
-        if (challenge) {
-            challenge.scrollIntoView({ behavior: 'smooth' });
-            setTimeout(() => {
-                const evt = new Event('click');
-                challenge.dispatchEvent(evt);
-            }, 300);
-        }
+}
+
+// Add User
+function addUser() {
+    const name = prompt('Enter new user name:');
+    if (!name) return;
+    const list = getUserList();
+    if (!list.includes(name)) {
+        list.push(name);
+        saveUserList(list);
     }
-    window.addEventListener('hashchange', loadChallengeFromHash);
-    // --- User Score ---
-    function updateUserScore() {
-        const score = localStorage.getItem(`${getCurrentUser()}_score`) || 0;
-        document.getElementById('user-score').textContent = `Score: ${score}`;
-    }
-    // --- Sidebar Toggle ---
-    document.querySelector('.sidebar-toggle').addEventListener('click', () => {
-        const sidebar = document.getElementById('sidebar');
-        sidebar.classList.toggle('active');
-    });
-    // --- Initial Load ---
-    document.addEventListener('DOMContentLoaded', () => {
-        setCurrentUser(getCurrentUser() || 'Guest');
-        loadChallenges();
-    });
-    </script>
+    setCurrentUser(name);
+}
+
+// Render Players on Board
+function renderCurrentPlayers() {
+    const users = getUserList();
+    document.getElementById('player1-name').textContent = users[0] ? getDisplayName(users[0]) : '';
+    document.getElementById('player2-name').textContent = users[1] ? getDisplayName(users[1]) : '';
+}
+
+// User Score
+function updateUserScore() {
+    const score = localStorage.getItem(`${getCurrentUser()}_score`) || 0;
+    document.getElementById('user-score').textContent = `Score: ${score}`;
+}
+
+// Sidebar Toggle
+document.querySelector('.sidebar-toggle').addEventListener('click', () => {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('active');
+});
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    renderUserListBar();
+    renderNavbarUser();
+    renderCurrentPlayers();
+    document.getElementById('add-user-btn').addEventListener('click', addUser);
+    if (!getCurrentUser()) setCurrentUser(getUserList()[0]);
+});
+</script>
+
 </body>
 </html>
