@@ -15,7 +15,7 @@
     .navbar-brand:hover { color:#74c0fc; }
     .nav-right { display:flex; align-items:center; gap:16px; }
 
-    /* User profiles (inline editable names) */
+    /* Player profiles */
     .user-profiles { display:flex; align-items:center; gap:16px; }
     .user-profile { display:flex; align-items:center; gap:8px; padding:4px 10px; border-radius:18px; background:#333; }
     .user-avatar { width:28px; height:28px; border-radius:50%; background:#a5d8ff; color:#1e1e1e; display:flex; align-items:center; justify-content:center; font-weight:700; }
@@ -29,13 +29,11 @@
     .main-container { display:flex; margin-top:50px; height:calc(100vh - 50px); }
     #sidebar { width:250px; background:#282828; border-right:1px solid #404040; padding:20px; overflow-y:auto; }
     #main-content { flex:1; padding:20px; overflow-y:auto; }
-    .sidebar-toggle { display:none; position:fixed; left:10px; top:60px; z-index:1001; background:#a5d8ff; border:none; border-radius:50%; width:40px; height:40px; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,.2); }
-    .sidebar-toggle .material-icons { color:#1e1e1e; font-size:24px; }
 
     /* Sidebar accordion */
     #sidebar h3 { color:#60a5fa; margin-bottom:15px; display:flex; align-items:center; gap:8px; }
     .section-accordion { margin-bottom:10px; }
-    .section-header { display:flex; align-items:center; justify-content:space-between; padding:10px; background:#333; border-radius:6px; cursor:pointer; user-select:none; }
+    .section-header { display:flex; align-items:center; justify-content:space-between; padding:10px; background:#333; border-radius:6px; cursor:pointer; }
     .section-header:hover { background:#404040; }
     .section-header .title { display:flex; align-items:center; gap:8px; font-weight:500; }
     .section-content { max-height:0; overflow:hidden; transition:max-height .3s ease-out; }
@@ -49,9 +47,6 @@
     /* Home page */
     .welcome-banner { text-align:center; padding:40px; background:linear-gradient(45deg,#282828,#333); border-radius:10px; margin-bottom:30px; }
     .welcome-banner h1 { color:#60a5fa; margin-bottom:10px; }
-    .section { margin-bottom:40px; }
-    .section h2 { color:#60a5fa; margin-bottom:20px; border-bottom:1px solid #404040; padding-bottom:5px; }
-
     .challenge-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap:20px; }
     .challenge-card { background:#282828; border:1px solid #404040; border-radius:10px; padding:20px; cursor:pointer; transition:.2s; position:relative; }
     .challenge-card:hover { transform:translateY(-3px); box-shadow:0 4px 12px rgba(0,0,0,.3); }
@@ -60,37 +55,28 @@
     .difficulty { position:absolute; top:10px; right:10px; padding:2px 8px; border-radius:12px; font-size:12px; font-weight:600; }
     .easy{ background:#2e7d32; color:#a5d6a7; } .medium{ background:#ef6c00; color:#ffcc80; } .hard{ background:#b71c1c; color:#ef9a9a; }
 
-    /* Challenge page */
+    /* Challenge Page */
     .problem-header { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #404040; padding-bottom:10px; margin-bottom:20px; }
     .header-actions { display:flex; align-items:center; gap:12px; }
     .completed-badge { background:#2e7d32; color:#fff; padding:4px 8px; border-radius:4px; font-size:14px; display:inline-flex; gap:4px; align-items:center; }
-    .language-selector { display:flex; align-items:center; gap:10px; margin:20px 0; padding:10px; background:#282828; border-radius:6px; }
-    .language-select { background:#1e1e1e; color:#fff; border:1px solid #404040; padding:6px 12px; border-radius:4px; font-size:14px; cursor:pointer; outline:none; }
-    .language-select:hover { border-color:#60a5fa; }
 
-    textarea { width:100%; height:220px; background:#282828; color:#fff; border:1px solid #404040; border-radius:6px; padding:10px; font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace; resize:vertical; }
+    .language-selector { display:flex; align-items:center; gap:10px; margin:20px 0; padding:10px; background:#282828; border-radius:6px; }
+    .language-select { background:#1e1e1e; color:#fff; border:1px solid #404040; padding:6px 12px; border-radius:4px; font-size:14px; cursor:pointer; }
+
+    .tabs { display:flex; gap:20px; border-bottom:1px solid #404040; margin-bottom:20px; }
+    .tab { background:none; border:none; color:#bbb; cursor:pointer; padding-bottom:8px; font-size:15px; }
+    .tab.active { color:#60a5fa; border-bottom:2px solid #60a5fa; }
+
+    textarea { width:100%; height:220px; background:#282828; color:#fff; border:1px solid #404040; border-radius:6px; padding:10px; font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; resize:vertical; }
     .button-row { display:flex; gap:10px; margin-top:10px; }
     .run-button { background:transparent; color:#a5d8ff; border:1px solid #a5d8ff; padding:8px 14px; border-radius:6px; font-weight:600; cursor:pointer; }
     .submit-button { background:#a5d8ff; color:#000; border:none; padding:8px 14px; border-radius:6px; font-weight:600; cursor:pointer; }
     .autosave-indicator { font-size:12px; color:#888; margin-left:auto; align-self:center; }
 
-    .example-section { background:#282828; border-radius:8px; padding:16px; margin:20px 0; }
-    pre { background:#1e1e1e; padding:10px; border-radius:6px; color:#ccc; white-space:pre-wrap; }
-
-    /* Output console */
     #run-output { margin-top:12px; padding:12px; background:#151515; border:1px solid #383838; border-radius:6px; min-height:64px; color:#d7d7d7; white-space:pre-wrap; }
 
-    /* Progress bar */
     #progress-container { position:fixed; bottom:0; left:250px; right:0; height:4px; background:#282828; }
     #progress-bar { height:100%; background:#60a5fa; width:0; transition:width .3s ease; }
-
-    /* Mobile */
-    @media (max-width: 768px) {
-      .sidebar-toggle { display:flex; align-items:center; justify-content:center; }
-      #sidebar { position:fixed; left:0; top:50px; bottom:0; transform:translateX(-100%); z-index:1000; }
-      #sidebar.active { transform:translateX(0); }
-      #progress-container { left:0; }
-    }
   </style>
 </head>
 <body>
@@ -105,25 +91,21 @@
         <div class="user-profile">
           <div class="user-avatar" id="p1-avatar">P1</div>
           <div class="user-info">
-            <div class="user-name" id="p1-name" contenteditable="false" spellcheck="false"></div>
-            <span class="material-icons edit-icon" title="Rename" onclick="enableRename('p1')">edit</span>
+            <div class="user-name" id="p1-name" contenteditable="false"></div>
+            <span class="material-icons edit-icon" onclick="enableRename('p1')">edit</span>
           </div>
         </div>
         <span class="material-icons" style="opacity:.65">favorite</span>
         <div class="user-profile">
           <div class="user-avatar" id="p2-avatar">P2</div>
           <div class="user-info">
-            <div class="user-name" id="p2-name" contenteditable="false" spellcheck="false"></div>
-            <span class="material-icons edit-icon" title="Rename" onclick="enableRename('p2')">edit</span>
+            <div class="user-name" id="p2-name" contenteditable="false"></div>
+            <span class="material-icons edit-icon" onclick="enableRename('p2')">edit</span>
           </div>
         </div>
       </div>
     </div>
   </nav>
-
-  <button class="sidebar-toggle" onclick="toggleSidebar()">
-    <span class="material-icons">menu</span>
-  </button>
 
   <div class="main-container">
     <div id="sidebar">
@@ -139,508 +121,157 @@
         </div>
         <div id="sections"></div>
       </div>
-
       <div id="challenge-panel" style="display:none;"></div>
     </div>
   </div>
 
   <div id="progress-container"><div id="progress-bar"></div></div>
 
-  <!-- Load Pyodide (Python runner) -->
   <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 
-  <!-- App script -->
   <script>
-    /* -------------------------------
-       Config: icons, languages, challenges
-    ----------------------------------*/
-    const sectionIcons = {
-      'Football': 'sports_soccer',
-      'Relationship': 'favorite',
-      'Games': 'sports_esports'
-    };
+    /* Simplified core JS with Python-only run and toggle completion */
 
-    // Python only (C/C++ present but not runnable yet)
-    const languageOptions = {
-      'python': {
-        name: 'Python',
-        extension: 'py',
-        template: `# Define solution() and print or return something\n\ndef solution():\n    print("Hello from Python!")\n    return 42\n`
-      },
-      'c': {
-        name: 'C',
-        extension: 'c',
-        template: `#include <stdio.h>\nint main(){ printf("C to WASM soon!\\n"); return 0; }\n`
-      },
-      'cpp': {
-        name: 'C++',
-        extension: 'cpp',
-        template: `#include <iostream>\nint main(){ std::cout << "C++ to WASM soon!\\n"; return 0; }\n`
-      }
-    };
+    const PLAYER_KEY = 'player_names';
+    const PROGRESS_KEY = 'challenge_progress';
+    const CODE_KEY = 'challenge_code';
 
     const challenges = [
-      {
-        id: 'match-day',
-        category: 'Football',
-        difficulty: 'Easy',
-        title: 'Match Day Simulator',
-        description: 'Generate a random football match result between Team You and Team Him.',
-        example: 'Example Output:\nTeam Him 3 - 2 Team You\nCommentary: He scored a last-minute goal! ⚽',
-        languages: ['python','cpp','c']
-      },
-      {
-        id: 'penalty-shooter',
-        category: 'Football',
-        difficulty: 'Medium',
-        title: 'Penalty Shootout Game',
-        description: 'Simulate a 5-shot penalty shootout — see who wins the cup!',
-        example: 'Example Output:\nYou ⚽⚽❌⚽⚽\nHim ⚽❌⚽⚽❌\nYou win 4–3! 🏆',
-        languages: ['python','cpp','c']
-      },
-      {
-        id: 'love-encoder',
-        category: 'Relationship',
-        difficulty: 'Easy',
-        title: 'Love Message Encoder',
-        description: 'Create a program that encodes a secret message only the two of you can decode.',
-        example: 'Input: I love you\nOutput: ❤️🌹#you#love#I',
-        languages: ['python']
-      },
-      {
-        id: 'anniversary-planner',
-        category: 'Relationship',
-        difficulty: 'Medium',
-        title: 'Anniversary Date Planner',
-        description: 'Build a random date generator using your favorite activities and restaurants.',
-        example: 'Output: 🎥 Movie night + 🍝 Italian dinner',
-        languages: ['python']
-      },
-      {
-        id: 'game-night',
-        category: 'Games',
-        difficulty: 'Medium',
-        title: 'Game Night Score Tracker',
-        description: 'Build a small scoreboard that keeps track of who wins more rounds in your favorite games.',
-        example: 'Input: You - 5, Him - 7\nOutput: Him wins tonight! 🎉',
-        languages: ['python','cpp','c']
-      },
-      {
-        id: 'guess-the-song',
-        category: 'Games',
-        difficulty: 'Hard',
-        title: 'Guess The Song Challenge',
-        description: 'Play random snippets of songs and code a way to guess the title!',
-        example: 'Input: 🎶 "da da da daaaa" Output: "Star Wars Theme!"',
-        languages: ['python']
-      }
+      {id:'match-day', category:'Football', difficulty:'Easy', title:'Match Day Simulator', description:'Generate a random football match result.', example:'Output: Team Him 3 - 2 Team You ⚽', languages:['python']},
+      {id:'love-encoder', category:'Relationship', difficulty:'Easy', title:'Love Message Encoder', description:'Encode a secret love message.', example:'Input: I love you → ❤️🌹#you#love#I', languages:['python']},
+      {id:'game-night', category:'Games', difficulty:'Medium', title:'Game Night Tracker', description:'Track scores for your favorite games.', example:'You 5 - Him 7 → Him wins 🎉', languages:['python']}
     ];
 
-    /* -------------------------------
-       Player names (inline rename + persist)
-    ----------------------------------*/
-    const PLAYER_NAMES_KEY = 'cc_player_names';
-    function getPlayerNames() {
-      const raw = localStorage.getItem(PLAYER_NAMES_KEY);
-      if (raw) return JSON.parse(raw);
-      const defaults = { p1: 'Player 1', p2: 'Player 2' };
-      localStorage.setItem(PLAYER_NAMES_KEY, JSON.stringify(defaults));
-      return defaults;
-    }
-    function savePlayerNames(names) {
-      localStorage.setItem(PLAYER_NAMES_KEY, JSON.stringify(names));
-    }
-    function updateNameUI() {
-      const { p1, p2 } = getPlayerNames();
-      const p1El = document.getElementById('p1-name');
-      const p2El = document.getElementById('p2-name');
-      const p1Av = document.getElementById('p1-avatar');
-      const p2Av = document.getElementById('p2-avatar');
-      p1El.textContent = p1;
-      p2El.textContent = p2;
-      p1Av.textContent = (p1[0] || 'P').toUpperCase();
-      p2Av.textContent = (p2[0] || 'P').toUpperCase();
+    function getNames(){return JSON.parse(localStorage.getItem(PLAYER_KEY)||'{"p1":"Player 1","p2":"Player 2"}')}
+    function saveNames(n){localStorage.setItem(PLAYER_KEY,JSON.stringify(n))}
+    function updateNamesUI(){const n=getNames();p1_name.textContent=n.p1;p2_name.textContent=n.p2;p1_avatar.textContent=n.p1[0].toUpperCase();p2_avatar.textContent=n.p2[0].toUpperCase();}
+    function enableRename(id){const el=id==='p1'?p1_name:p2_name;el.setAttribute('contenteditable','true');el.focus();el.onblur=()=>{el.removeAttribute('contenteditable');const n=getNames();n[id]=el.textContent.trim()||n[id];saveNames(n);updateNamesUI();}}
 
-      // Update any labels inside challenge panel if present
-      document.querySelectorAll('.player-name-label.p1').forEach(n => n.textContent = p1);
-      document.querySelectorAll('.player-name-label.p2').forEach(n => n.textContent = p2);
-    }
-    function enableRename(which) {
-      const el = document.getElementById(which === 'p1' ? 'p1-name' : 'p2-name');
-      el.setAttribute('contenteditable','true');
-      el.focus();
-      const finish = (save) => {
-        el.removeAttribute('contenteditable');
-        if (save) {
-          const val = el.textContent.trim() || (which === 'p1' ? 'Player 1' : 'Player 2');
-          const all = getPlayerNames();
-          all[which] = val;
-          savePlayerNames(all);
-        } else {
-          updateNameUI();
-        }
-        updateNameUI();
-      };
-      const keyHandler = (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); finish(true); }
-        if (e.key === 'Escape') { e.preventDefault(); finish(false); }
-      };
-      el.addEventListener('keydown', keyHandler, { once: true });
-      el.addEventListener('blur', () => finish(true), { once: true });
-    }
-
-    /* -------------------------------
-       Sidebar + Home sections
-    ----------------------------------*/
-    function setupAccordionSidebar() {
-      const sectionsList = document.getElementById('sections-list');
-      sectionsList.innerHTML = '';
-      const cats = [...new Set(challenges.map(c => c.category))];
-      cats.forEach(category => {
-        const section = document.createElement('div');
-        section.className = 'section-accordion';
-        const icon = sectionIcons[category] || 'folder';
-        section.innerHTML = `
-          <div class="section-header">
-            <div class="title"><span class="material-icons">${icon}</span>${category}</div>
-            <span class="material-icons">expand_more</span>
-          </div>
-          <div class="section-content">
-            <ul>
-              ${challenges.filter(ch => ch.category === category).map(ch => `
-                <li data-id="${ch.id}">
-                  <span class="material-icons">
-                    ${ch.difficulty === 'Easy' ? 'assignment' : ch.difficulty === 'Medium' ? 'assignment_late' : 'assignment_turned_in'}
-                  </span>
-                  ${ch.title}
-                </li>
-              `).join('')}
-            </ul>
-          </div>
-        `;
-        section.querySelector('.section-header').addEventListener('click', () => {
-          section.classList.toggle('active');
-        });
-        section.querySelectorAll('li').forEach(li => {
-          li.addEventListener('click', (e) => {
-            e.stopPropagation();
-            location.hash = li.dataset.id;
-          });
-        });
-        sectionsList.appendChild(section);
+    function setupSidebar(){
+      const cats=[...new Set(challenges.map(c=>c.category))];
+      sections_list.innerHTML='';
+      cats.forEach(cat=>{
+        const div=document.createElement('div');
+        div.innerHTML=`<div class='section-header'><div>${cat}</div><span class='material-icons'>expand_more</span></div><div class='section-content'><ul>${challenges.filter(c=>c.category===cat).map(c=>`<li data-id="${c.id}">${c.title}</li>`).join('')}</ul></div>`;
+        div.className='section-accordion';
+        div.querySelector('.section-header').onclick=()=>div.classList.toggle('active');
+        div.querySelectorAll('li').forEach(li=>li.onclick=()=>location.hash=li.dataset.id);
+        sections_list.appendChild(div);
       });
     }
 
-    function buildHomeSections() {
-      const container = document.getElementById('sections');
-      container.innerHTML = '';
-      const cats = [...new Set(challenges.map(c => c.category))];
-      cats.forEach(cat => {
-        const wrap = document.createElement('div');
-        wrap.className = 'section';
-        wrap.innerHTML = `<h2>${cat}</h2><div class="challenge-grid"></div>`;
-        const grid = wrap.querySelector('.challenge-grid');
-        challenges.filter(c => c.category === cat).forEach(ch => {
-          const card = document.createElement('div');
-          card.className = 'challenge-card';
-          card.onclick = () => { location.hash = ch.id; };
-          card.innerHTML = `
-            <h3>${ch.title}</h3>
-            <p class="card-description">${ch.description}</p>
-            <span class="difficulty ${ch.difficulty.toLowerCase()}">${ch.difficulty}</span>
-          `;
-          grid.appendChild(card);
-        });
-        container.appendChild(wrap);
+    function buildHome(){
+      const cats=[...new Set(challenges.map(c=>c.category))];
+      sections.innerHTML='';
+      cats.forEach(cat=>{
+        const s=document.createElement('div');
+        s.className='section';
+        s.innerHTML=`<h2>${cat}</h2><div class='challenge-grid'>${challenges.filter(c=>c.category===cat).map(ch=>`<div class='challenge-card' onclick="location.hash='${ch.id}'"><h3>${ch.title}</h3><p>${ch.description}</p><span class='difficulty ${ch.difficulty.toLowerCase()}'>${ch.difficulty}</span></div>`).join('')}</div>`;
+        sections.appendChild(s);
       });
     }
 
-    function toggleSidebar() {
-      document.getElementById('sidebar').classList.toggle('active');
+    const pyReady=loadPyodide();
+    async function runCode(id){
+      const code=document.querySelector('textarea').value;
+      document.getElementById('run-output').textContent='Running...';
+      try{
+        const py=await pyReady;
+        const wrapped=`import sys,io\n_buffer=io.StringIO()\nsys.stdout=_buffer\n${code}\ntry:\n if 'solution' in globals():\n  r=solution()\n  if r!=None:print(r)\nfinally:\n sys.stdout=sys.__stdout__\n_result=_buffer.getvalue()`;
+        await py.runPythonAsync(wrapped);
+        const out=py.runPython('_result');
+        document.getElementById('run-output').textContent=out||'✔ Ran (no output)';
+      }catch(e){document.getElementById('run-output').textContent='❌ Error: '+e.message;}
+      const store=JSON.parse(localStorage.getItem(CODE_KEY)||'{}');store[id]=code;localStorage.setItem(CODE_KEY,JSON.stringify(store));
     }
 
-    /* -------------------------------
-       Progress + Code persistence
-    ----------------------------------*/
-    const USER_PROGRESS_KEY = 'userChallengeProgress';
-    const USER_CODE_KEY = 'userChallengeCode';
-
-    function loadUserProgress() {
-      const raw = localStorage.getItem(USER_PROGRESS_KEY);
-      return raw ? JSON.parse(raw) : {};
-    }
-    function saveUserProgress(obj) {
-      localStorage.setItem(USER_PROGRESS_KEY, JSON.stringify(obj));
-    }
-    function updateProgress() {
-      const progress = loadUserProgress();
-      const completedCount = Object.values(progress).filter(p => p.completed).length;
-      const percentage = (completedCount / challenges.length) * 100;
-      document.getElementById('progress-bar').style.width = percentage + '%';
-
-      // mark completed in sidebar
-      Object.entries(progress).forEach(([id, val]) => {
-        const li = document.querySelector(`#sections-list li[data-id="${id}"]`);
-        if (li && val.completed) li.classList.add('completed');
-      });
-    }
-    function markCompleted(id) {
-      const p = loadUserProgress();
-      p[id] = { ...(p[id] || {}), completed: true, completedAt: new Date().toISOString() };
-      saveUserProgress(p);
+    function markToggle(id){
+      const p=JSON.parse(localStorage.getItem(PROGRESS_KEY)||'{}');
+      if(p[id]?.completed){delete p[id];}
+      else{p[id]={completed:true};}
+      localStorage.setItem(PROGRESS_KEY,JSON.stringify(p));
+      loadFromHash();
       updateProgress();
     }
 
-    function loadUserCode() {
-      const raw = localStorage.getItem(USER_CODE_KEY);
-      return raw ? JSON.parse(raw) : {};
-    }
-    function saveUserCode(obj) {
-      localStorage.setItem(USER_CODE_KEY, JSON.stringify(obj));
-    }
-    function saveCode(id, code, language) {
-      const data = loadUserCode();
-      if (!data[id]) data[id] = {};
-      data[id][language] = { code, lastModified: new Date().toISOString() };
-      saveUserCode(data);
-    }
-    function loadSavedCode(id, language) {
-      const data = loadUserCode();
-      return (data[id] && data[id][language] && data[id][language].code) || languageOptions[language].template;
-    }
-    function getLastUsedLanguage(id) {
-      const p = loadUserProgress();
-      return p[id]?.lastUsedLanguage || (challenges.find(c => c.id === id).languages[0]);
-    }
-    function setLastUsedLanguage(id, lang) {
-      const p = loadUserProgress();
-      p[id] = { ...(p[id] || {}), lastUsedLanguage: lang };
-      saveUserProgress(p);
-    }
-
-    /* -------------------------------
-       Challenge view + runner
-    ----------------------------------*/
-    let pyodideReadyPromise = null;
-
-    function writeOutput(text) {
-      const out = document.getElementById('run-output');
-      if (out) out.textContent = String(text);
-    }
-    async function ensurePyodide() {
-      if (!pyodideReadyPromise) {
-        pyodideReadyPromise = (async () => {
-          const py = await loadPyodide();
-          return py;
-        })();
-      }
-      return pyodideReadyPromise;
-    }
-
-    function getSelectedLanguage() {
-      const sel = document.getElementById('language-select');
-      return sel ? sel.value : 'python';
-    }
-
-    async function runCode(challengeId) {
-      const editor = document.querySelector('#code-workspace .solo-mode textarea');
-      if (!editor) { writeOutput('No editor found.'); return; }
-
-      // persist current code & language
-      const lang = editor.dataset.currentLanguage || getSelectedLanguage();
-      saveCode(challengeId, editor.value, lang);
-
-      writeOutput('Running...');
-      if (lang === 'python') {
-        try {
-          const pyodide = await ensurePyodide();
-          const code = editor.value;
-          const pyWrapper = `
-import sys, io
-_buffer = io.StringIO()
-_stdout = sys.stdout
-sys.stdout = _buffer
-
-# --- user code start ---
-${code}
-# --- user code end ---
-
-_out = None
-try:
-    if 'solution' in globals():
-        _out = solution()
-        if _out is not None:
-            print(_out)
-finally:
-    sys.stdout = _stdout
-
-_result = _buffer.getvalue()
-          `.trim();
-          await pyodide.runPythonAsync(pyWrapper);
-          const result = pyodide.runPython('_result');
-          writeOutput(result && result.trim().length ? result : '✔ Ran (no output printed)');
-        } catch (err) {
-          writeOutput('❌ Python Error: ' + (err.message || err));
-        }
-        return;
-      }
-
-      if (lang === 'c' || lang === 'cpp') {
-        writeOutput('C/C++ in-browser requires a WebAssembly toolchain (coming soon). Keep code saved here for now.');
-        return;
-      }
-
-      writeOutput('Unknown language: ' + lang);
-    }
-
-    function handleLanguageChange(id, language) {
-      const textarea = document.querySelector('#code-workspace .solo-mode textarea');
-      if (!textarea) return;
-
-      // Save current before switching
-      if (textarea.dataset.currentLanguage) {
-        saveCode(id, textarea.value, textarea.dataset.currentLanguage);
-      }
-      // Load new language code
-      textarea.value = loadSavedCode(id, language);
-      textarea.dataset.currentLanguage = language;
-
-      // Remember choice
-      setLastUsedLanguage(id, language);
-    }
-
-    function setupTabs(challengeId) {
-      const tabs = document.querySelectorAll('.tab');
-      const content = document.querySelector('.problem-content');
-      const ch = challenges.find(c => c.id === challengeId);
-      tabs.forEach(tab => {
-        tab.onclick = () => {
-          tabs.forEach(t => t.classList.remove('active'));
-          tab.classList.add('active');
-          if (tab.textContent === 'Description') {
-            content.innerHTML = `<p>${ch.description}</p><div class="example-section"><h4>Example</h4><pre>${ch.example}</pre></div>`;
-          } else if (tab.textContent === 'Code') {
-            content.innerHTML = `<p>Write or view your solution in the editor below ✨</p>`;
-          } else {
-            content.innerHTML = `<p>Notes, hints, or memories related to this challenge 💭</p>`;
-          }
-        };
-      });
-
-      // Autosave typing
-      const textarea = document.querySelector('#code-workspace .solo-mode textarea');
-      let saveTimeout;
-      textarea.addEventListener('input', () => {
-        clearTimeout(saveTimeout);
-        saveTimeout = setTimeout(() => {
-          const lang = textarea.dataset.currentLanguage || getSelectedLanguage();
-          saveCode(challengeId, textarea.value, lang);
-        }, 800);
+    function updateProgress(){
+      const p=JSON.parse(localStorage.getItem(PROGRESS_KEY)||'{}');
+      const ratio=Object.keys(p).length/challenges.length*100;
+      progress_bar.style.width=ratio+'%';
+      document.querySelectorAll('#sections-list li').forEach(li=>{
+        li.classList.toggle('completed',!!p[li.dataset.id]);
       });
     }
 
-    function highlightActive(hash) {
-      document.querySelectorAll('#sections-list li').forEach(li => {
-        li.classList.toggle('active', li.dataset.id === hash);
+    function goHome(){challenge_panel.style.display='none';home_page.style.display='block';location.hash='';}
+
+    function setupTabs(id){
+      const tabs=document.querySelectorAll('.tab');
+      const desc=document.getElementById('desc-content');
+      const notes=document.getElementById('notes-content');
+      const codeDiv=document.getElementById('code-workspace');
+      tabs.forEach(t=>t.onclick=()=>{
+        tabs.forEach(x=>x.classList.remove('active'));
+        t.classList.add('active');
+        desc.style.display=t.textContent==='Description'?'block':'none';
+        notes.style.display=t.textContent==='Notes'?'block':'none';
+        codeDiv.style.display=t.textContent==='Code'?'block':'none';
       });
-      if (hash) {
-        const item = document.querySelector(`#sections-list li[data-id="${hash}"]`);
-        if (item) {
-          const section = item.closest('.section-accordion');
-          if (section) section.classList.add('active');
-        }
-      }
     }
 
-    function goHome() {
-      document.getElementById('home-page').style.display = 'block';
-      document.getElementById('challenge-panel').style.display = 'none';
-      document.querySelectorAll('#sections-list li').forEach(li => li.classList.remove('active'));
-      location.hash = '';
-    }
+    function loadFromHash(){
+      const id=location.hash.slice(1);
+      const ch=challenges.find(c=>c.id===id);
+      if(!ch){goHome();return;}
+      home_page.style.display='none';challenge_panel.style.display='block';
+      const codeStore=JSON.parse(localStorage.getItem(CODE_KEY)||'{}');
+      const saved=codeStore[id]||'# Write your Python solution here\ndef solution():\n    print("hi")\n';
+      const p=JSON.parse(localStorage.getItem(PROGRESS_KEY)||'{}');
+      const completed=!!p[id]?.completed;
 
-    function loadChallengeFromHash() {
-      const hash = location.hash.slice(1);
-      const ch = challenges.find(c => c.id === hash);
-      const panel = document.getElementById('challenge-panel');
-      const home = document.getElementById('home-page');
-
-      highlightActive(hash);
-
-      if (!ch) { panel.style.display='none'; home.style.display='block'; return; }
-
-      panel.style.display='block'; home.style.display='none';
-
-      const currentLanguage = getLastUsedLanguage(ch.id);
-      const code = loadSavedCode(ch.id, currentLanguage);
-      const { p1, p2 } = getPlayerNames();
-
-      panel.innerHTML = `
-        <div class="problem-header">
+      challenge_panel.innerHTML=`
+        <div class='problem-header'>
           <h2>${ch.title}</h2>
-          <div class="header-actions">
-            ${(loadUserProgress()[ch.id]?.completed ? '<span class="completed-badge"><span class="material-icons" style="font-size:16px;">check_circle</span> Completed</span>' : '')}
-            <button class="run-button" onclick="goHome()">← Back</button>
+          <div class='header-actions'>
+            ${completed?'<span class="completed-badge"><span class="material-icons" style="font-size:16px;">check_circle</span> Completed</span>':''}
+            <button class='run-button' onclick='goHome()'>← Back</button>
           </div>
         </div>
 
-        <div class="language-selector">
-          <label for="language-select">Language:</label>
-          <select id="language-select" class="language-select" onchange="handleLanguageChange('${ch.id}', this.value)">
-            ${ch.languages.map(l => `<option value="${l}" ${l===currentLanguage?'selected':''}>${languageOptions[l].name}</option>`).join('')}
-          </select>
+        <div class='tabs'>
+          <button class='tab active'>Description</button>
+          <button class='tab'>Code</button>
+          <button class='tab'>Notes</button>
         </div>
 
-        <div class="tabs">
-          <button class="tab active">Description</button>
-          <button class="tab">Code</button>
-          <button class="tab">Notes</button>
-        </div>
-
-        <div class="problem-content">
+        <div id='desc-content' style='display:block;'>
           <p>${ch.description}</p>
-          <div class="example-section">
-            <h4>Example</h4>
-            <pre>${ch.example}</pre>
-          </div>
+          <div class='example-section'><h4>Example</h4><pre>${ch.example}</pre></div>
         </div>
 
-        <div id="code-workspace">
-          <div class="solo-mode">
-            <textarea placeholder="Write your code here..." data-language="${currentLanguage}" data-current-language="${currentLanguage}">${code}</textarea>
-            <div class="button-row">
-              <button class="run-button" onclick="runCode('${ch.id}')">Run</button>
-              <button class="submit-button" onclick="markCompleted('${ch.id}')" ${(loadUserProgress()[ch.id]?.completed ? 'disabled' : '')}>${(loadUserProgress()[ch.id]?.completed ? 'Completed ✓' : 'Submit')}</button>
-              <div class="autosave-indicator">Changes saved automatically</div>
-            </div>
-            <div id="run-output"></div>
+        <div id='code-workspace' style='display:none;'>
+          <textarea>${saved}</textarea>
+          <div class='button-row'>
+            <button class='run-button' onclick='runCode("${ch.id}")'>Run</button>
+            <button class='submit-button' onclick='markToggle("${ch.id}")'>${completed?'Mark Incomplete':'Mark Completed'}</button>
+            <div class='autosave-indicator'>Autosaved</div>
           </div>
+          <div id='run-output'></div>
+        </div>
+
+        <div id='notes-content' style='display:none;'>
+          <p>Write any notes or hints here 💭</p>
         </div>
       `;
-
-      // Replace placeholder labels in split-screen (if you add back later)
-      document.querySelectorAll('.player-name-label.p1').forEach(n => n.textContent = p1);
-      document.querySelectorAll('.player-name-label.p2').forEach(n => n.textContent = p2);
-
-      setupTabs(ch.id);
+      setupTabs(id);
+      updateNamesUI();
+      const ta=document.querySelector('textarea');
+      let t;ta.oninput=()=>{clearTimeout(t);t=setTimeout(()=>{const c=JSON.parse(localStorage.getItem(CODE_KEY)||'{}');c[id]=ta.value;localStorage.setItem(CODE_KEY,JSON.stringify(c));},800)};
     }
 
-    /* -------------------------------
-       Init
-    ----------------------------------*/
-    window.addEventListener('hashchange', loadChallengeFromHash);
-    window.addEventListener('load', () => {
-      // Players
-      updateNameUI();
-      // Sidebar + home
-      setupAccordionSidebar();
-      buildHomeSections();
-      // First view
-      loadChallengeFromHash();
-      // Progress
-      updateProgress();
-    });
+    window.onload=()=>{updateNamesUI();setupSidebar();buildHome();updateProgress();if(location.hash)loadFromHash();window.onhashchange=loadFromHash;}
   </script>
 </body>
 </html>
+
 
