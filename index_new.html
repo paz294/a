@@ -253,7 +253,16 @@
     </style>
 </head>
 <body>
-    <div class="user-login-bar" style="display:flex;align-items:center;gap:10px;padding:10px 20px;background:#222;">
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <span class="material-icons">code</span>
+            LeetCode-style Challenges
+        </div>
+        <div class="nav-right">
+            <div class="user-avatar">U</div>
+        </div>
+    </nav>
+    <div class="user-login-bar" style="display:flex;align-items:center;gap:10px;padding:10px 20px;background:#222;margin-top:50px;">
         <label for="user-select">User:</label>
         <select id="user-select"></select>
         <button id="add-user-btn">Add User</button>
@@ -264,16 +273,6 @@
     <button class="sidebar-toggle">
         <span class="material-icons">menu</span>
     </button>
-
-    <nav class="navbar">
-        <div class="navbar-brand">
-            <span class="material-icons">code</span>
-            LeetCode-style Challenges
-        </div>
-        <div class="nav-right">
-            <div class="user-avatar">U</div>
-        </div>
-    </nav>
 
     <div class="main-container">
         <div id="sidebar">
