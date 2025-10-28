@@ -1,565 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LeetCode-style Challenges</title>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
-
-        body {
-            min-height: 100vh;
-            background-color: #1e1e1e;
-            color: #ffffff;
-        }
-
-        .navbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: #282828;
-            padding: 0 20px;
-            height: 50px;
-            border-bottom: 1px solid #404040;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-        }
-
-        .navbar-brand {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #a5d8ff;
-            font-weight: 600;
-            font-size: 18px;
-        }
-
-        .nav-items {
-            display: flex;
-            gap: 20px;
-        }
-
-        .nav-items a {
-            color: #d4d4d4;
-            text-decoration: none;
-            padding: 5px 10px;
-            border-radius: 4px;
-            transition: all 0.2s ease;
-        }
-
-        .nav-items a.active {
-            color: #60a5fa;
-        }
-
-        .nav-items a:hover {
-            background-color: #333333;
-        }
-
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            background-color: #a5d8ff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-        }
-
-        .main-container {
-            display: flex;
-            margin-top: 50px;
-            height: calc(100vh - 50px);
-        }
-
-        #sidebar {
-            width: 300px;
-            background-color: #282828;
-            border-right: 1px solid #404040;
-            height: 100%;
-            overflow-y: auto;
-        }
-
-        .sidebar-header {
-            padding: 20px;
-            border-bottom: 1px solid #404040;
-        }
-
-        .sidebar-header h3 {
-            margin-bottom: 15px;
-            color: #60a5fa;
-        }
-
-        .filter-tags {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .filter-tag {
-            padding: 4px 8px;
-            background-color: #333333;
-            border-radius: 12px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .filter-tag.active {
-            background-color: #60a5fa;
-            color: #ffffff;
-        }
-
-        #main-content {
-            flex: 1;
-            padding: 20px;
-            height: 100%;
-            overflow-y: auto;
-            background-color: #1e1e1e;
-        }
-
-        .right-sidebar {
-            width: 280px;
-            background-color: #282828;
-            border-left: 1px solid #404040;
-            padding: 20px;
-            height: 100%;
-        }
-
-        #challenge-list {
-            list-style: none;
-            padding: 10px 0;
-        }
-
-        #challenge-list li {
-            padding: 12px 20px;
-            cursor: pointer;
-            border-left: 3px solid transparent;
-            color: #d4d4d4;
-            transition: all 0.2s ease;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        #challenge-list li:hover {
-            background-color: #333333;
-        }
-
-        #challenge-list li.active {
-            background-color: #333333;
-            border-left-color: #60a5fa;
-            color: #60a5fa;
-        }
-
-        .challenge-title {
-            font-size: 24px;
-            font-weight: 600;
-            color: #ffffff;
-            margin-bottom: 16px;
-        }
-
-        .challenge-theme {
-            display: inline-block;
-            padding: 4px 8px;
-            background-color: #404040;
-            color: #60a5fa;
-            border-radius: 4px;
-            font-size: 14px;
-            margin-bottom: 12px;
-        }
-
-        .challenge-difficulty {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 14px;
-            margin-left: 8px;
-        }
-
-        .challenge-difficulty.easy {
-            background-color: #f9a8d4;
-            color: #ffffff;
-        }
-
-        .challenge-difficulty.medium {
-            background-color: #a5d8ff;
-            color: #ffffff;
-        }
-
-        .challenge-difficulty.hard {
-            background-color: #ef4743;
-            color: #ffffff;
-        }
-
-        p {
-            color: #d4d4d4;
-            line-height: 1.6;
-            margin: 16px 0;
-        }
-
-        pre {
-            background-color: #282828;
-            padding: 16px;
-            border-radius: 6px;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-size: 14px;
-            margin: 16px 0;
-            white-space: pre-wrap;
-            color: #d4d4d4;
-            border: 1px solid #404040;
-        }
-
-        textarea {
-            width: 100%;
-            height: 300px;
-            padding: 16px;
-            border: 1px solid #404040;
-            border-radius: 6px;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-size: 14px;
-            resize: vertical;
-            margin: 16px 0;
-            background-color: #282828;
-            color: #d4d4d4;
-        }
-
-        textarea:focus {
-            outline: none;
-            border-color: #a5d8ff;
-            box-shadow: 0 0 0 2px rgba(165, 216, 255, 0.1);
-        }
-
-        .solution-stats {
-            background-color: #2d2d2d;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-
-        .solution-stats h4 {
-            color: #a5d8ff;
-            margin-bottom: 12px;
-        }
-
-        .stat-item {
-            display: flex;
-            justify-content: space-between;
-            margin: 8px 0;
-            color: #d4d4d4;
-        }
-
-        .stat-value {
-            color: #60a5fa;
-            font-weight: 500;
-        }
-
-        .tag {
-            font-size: 12px;
-            padding: 2px 6px;
-            border-radius: 12px;
-        }
-
-        .tag.easy {
-            background-color: #f9a8d4;
-            color: #fff;
-        }
-
-        .problem-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #404040;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .icon-button {
-            background: none;
-            border: none;
-            color: #d4d4d4;
-            cursor: pointer;
-            padding: 4px;
-            border-radius: 4px;
-        }
-
-        .icon-button:hover {
-            background-color: #333333;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #404040;
-        }
-
-        .tab {
-            background: none;
-            border: none;
-            color: #d4d4d4;
-            padding: 12px 0;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .tab.active {
-            color: #60a5fa;
-        }
-
-        .tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background-color: #60a5fa;
-        }
-
-        .example-section {
-            background-color: #282828;
-            border-radius: 8px;
-            padding: 16px;
-            margin: 20px 0;
-        }
-
-        .example-section h4 {
-            color: #60a5fa;
-            margin-bottom: 12px;
-        }
-
-        .code-section {
-            background-color: #282828;
-            border-radius: 8px;
-            padding: 16px;
-            margin-top: 20px;
-        }
-
-        .code-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .language-select {
-            background-color: #333333;
-            color: #d4d4d4;
-            border: 1px solid #404040;
-            padding: 6px 12px;
-            border-radius: 4px;
-        }
-
-        .button-row {
-            display: flex;
-            gap: 12px;
-            margin-top: 12px;
-        }
-
-        .run-button {
-            background-color: #282828;
-            color: #a5d8ff;
-            border: 1px solid #a5d8ff;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 500;
-        }
-
-        .submit-button {
-            background-color: #a5d8ff;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 500;
-        }
-
-        .run-button:hover {
-            background-color: #333333;
-        }
-
-        .submit-button:hover {
-            background-color: #74c0fc;
-        }
-
-        .welcome-message {
-            text-align: center;
-            padding: 40px;
-            color: #888;
-            font-size: 18px;
-        }
-
-        .welcome-banner {
-            text-align: center;
-            padding: 40px 20px;
-            background: linear-gradient(45deg, #282828, #333333);
-            border-radius: 8px;
-            margin-bottom: 30px;
-        }
-
-        .welcome-banner h1 {
-            color: #60a5fa;
-            margin-bottom: 10px;
-            font-size: 28px;
-        }
-
-        .welcome-banner p {
-            color: #d4d4d4;
-            font-size: 16px;
-        }
-
-        .challenge-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            padding: 20px 0;
-        }
-
-        .challenge-card {
-            background-color: #282828;
-            border-radius: 8px;
-            padding: 20px;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            border: 1px solid #404040;
-        }
-
-        .challenge-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        .challenge-card h3 {
-            color: #ffffff;
-            margin-bottom: 10px;
-            font-size: 18px;
-        }
-
-        .card-meta {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .card-description {
-            color: #d4d4d4;
-            font-size: 14px;
-            line-height: 1.5;
-            margin-bottom: 15px;
-        }
-
-        #progress-container {
-            position: fixed;
-            bottom: 0;
-            left: 300px;
-            right: 280px;
-            height: 4px;
-            background-color: #282828;
-        }
-
-        #progress-bar {
-            height: 100%;
-            background-color: #60a5fa;
-            width: 0;
-            transition: width 0.3s ease;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Coding Challenges</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif; }
+    body { background-color: #1e1e1e; color: #fff; }
+
+    /* Navbar */
+    .navbar {
+      display: flex; align-items: center; justify-content: space-between;
+      background-color: #282828; padding: 0 20px; height: 50px;
+      border-bottom: 1px solid #404040; position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    }
+    .navbar-brand { display: flex; align-items: center; gap: 8px; color: #a5d8ff; font-weight: 600; cursor: pointer; }
+    .navbar-brand:hover { color: #74c0fc; }
+
+    /* Main layout */
+    .main-container { display: flex; margin-top: 50px; height: calc(100vh - 50px); }
+    #sidebar {
+      width: 250px; background-color: #282828; border-right: 1px solid #404040;
+      padding: 20px; overflow-y: auto;
+    }
+    #sidebar h3 { color: #60a5fa; margin-bottom: 15px; }
+    #challenge-list { list-style: none; }
+    #challenge-list li {
+      padding: 10px; border-radius: 6px; cursor: pointer; transition: 0.2s;
+    }
+    #challenge-list li:hover, #challenge-list li.active {
+      background-color: #333; color: #60a5fa;
+    }
+
+    #main-content { flex: 1; padding: 20px; overflow-y: auto; }
+
+    /* Home Page */
+    .welcome-banner {
+      text-align: center; padding: 40px; background: linear-gradient(45deg, #282828, #333);
+      border-radius: 10px; margin-bottom: 30px;
+    }
+    .welcome-banner h1 { color: #60a5fa; margin-bottom: 10px; }
+    .challenge-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px;
+    }
+    .challenge-card {
+      background-color: #282828; border: 1px solid #404040; border-radius: 10px; padding: 20px;
+      cursor: pointer; transition: 0.2s;
+    }
+    .challenge-card:hover {
+      transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .challenge-card h3 { margin-bottom: 8px; color: #fff; }
+    .card-description { font-size: 14px; color: #bbb; }
+
+    /* Challenge Page */
+    .problem-header {
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid #404040; padding-bottom: 10px; margin-bottom: 20px;
+    }
+    .tabs { display: flex; gap: 20px; border-bottom: 1px solid #404040; margin-bottom: 20px; }
+    .tab {
+      background: none; border: none; color: #bbb; cursor: pointer; padding-bottom: 8px;
+    }
+    .tab.active { color: #60a5fa; border-bottom: 2px solid #60a5fa; }
+    .example-section { background: #282828; border-radius: 8px; padding: 16px; margin: 20px 0; }
+    pre { background: #1e1e1e; padding: 10px; border-radius: 6px; color: #ccc; }
+
+    textarea {
+      width: 100%; height: 200px; background: #282828; color: #fff;
+      border: 1px solid #404040; border-radius: 6px; padding: 10px;
+      font-family: monospace; resize: vertical;
+    }
+    .button-row { display: flex; gap: 10px; margin-top: 10px; }
+    .run-button, .submit-button {
+      padding: 8px 14px; border-radius: 6px; font-weight: 500; cursor: pointer;
+    }
+    .run-button {
+      background: transparent; color: #a5d8ff; border: 1px solid #a5d8ff;
+    }
+    .submit-button {
+      background: #a5d8ff; border: none; color: #000;
+    }
+    #progress-container {
+      position: fixed; bottom: 0; left: 250px; right: 0; height: 4px; background-color: #282828;
+    }
+    #progress-bar {
+      height: 100%; background-color: #60a5fa; width: 0; transition: 0.3s ease;
+    }
+  </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="navbar-brand" onclick="goHome()" style="cursor: pointer;">
-        <span class="material-icons">code</span>
-        <span>CodeChallenges</span>
-</div>
-
-
-        <div class="nav-items">
-            <a href="#" class="active">Problems</a>
-            <a href="#">Contest</a>
-            <a href="#">Discuss</a>
-            <a href="#">Interview</a>
-        </div>
-        <div class="nav-right">
-            <span class="material-icons">dark_mode</span>
-            <span class="material-icons">notifications</span>
-            <div class="user-avatar">P</div>
-        </div>
-    </nav>
-
-    <div class="main-container">
-        <div id="sidebar">
-            <div class="sidebar-header">
-                <h3>Problem List</h3>
-                <div class="filter-tags">
-                    <span class="filter-tag active">All</span>
-                    <span class="filter-tag">Easy</span>
-                    <span class="filter-tag">Medium</span>
-                    <span class="filter-tag">Hard</span>
-                </div>
-            </div>
-            <ul id="challenge-list"></ul>
-        </div>
-        
-        <div id="main-content">
-            <div id="home-page">
-                <div class="welcome-banner">
-                    <h1>Welcome to Coding Challenges</h1>
-                    <p>Choose a challenge from our curated list and start coding!</p>
-                </div>
-                <div class="challenge-grid">
-                    <!-- Challenges will be populated here -->
-                </div>
-            </div>
-            <div id="challenge-panel" style="display: none;">
-                <p class="welcome-message">Select a challenge from the list to start coding!</p>
-            </div>
-        </div>
-
-        <div class="right-sidebar">
-            <div class="solution-stats">
-                <h4>Submission Stats</h4>
-                <div class="stat-item">
-                    <span>Acceptance Rate</span>
-                    <span class="stat-value">100%</span>
-                </div>
-                <div class="stat-item">
-                    <span>Submissions</span>
-                    <span class="stat-value">0</span>
-                </div>
-            </div>
-        </div>
+  <nav class="navbar">
+    <div class="navbar-brand" onclick="goHome()">
+      <span class="material-icons">favorite</span>
+      <span>Our Code Challenges</span>
     </div>
-    
-    <div id="progress-container">
-        <div id="progress-bar"></div>
+  </nav>
+
+  <div class="main-container">
+    <div id="sidebar">
+      <h3>Challenges</h3>
+      <ul id="challenge-list"></ul>
     </div>
 
-    <script>
+    <div id="main-content">
+      <div id="home-page">
+        <div class="welcome-banner">
+          <h1>Welcome 💻❤️⚽</h1>
+          <p>Our little coding space — where love meets logic and fun challenges.</p>
+        </div>
+        <div class="challenge-grid"></div>
+      </div>
+
+      <div id="challenge-panel" style="display: none;"></div>
+    </div>
+  </div>
+
+  <div id="progress-container"><div id="progress-bar"></div></div>
+
+  <script>
     const challenges = [
       {
         id: 'match-day',
@@ -576,151 +136,119 @@
         title: 'Love Message Encoder',
         description: 'Create a program that encodes a secret message only the two of you can decode.',
         example: 'Input: I love you\nOutput: ❤️🌹#you#love#I',
+      },
+      {
+        id: 'game-night',
+        theme: '🎮 Games',
+        difficulty: 'Medium',
+        title: 'Game Night Score Tracker',
+        description: 'Build a small scoreboard that keeps track of who wins more rounds in your favorite games.',
+        example: 'Input: You - 5, Him - 7\nOutput: Him wins tonight! 🎉',
       }
     ];
 
-    // Populate sidebar and challenge grid
     const list = document.getElementById('challenge-list');
     const grid = document.querySelector('.challenge-grid');
-    
+
+    // Create challenge cards and sidebar list
     challenges.forEach(c => {
-      // Create sidebar item
       const li = document.createElement('li');
       li.textContent = c.title;
       li.onclick = () => { location.hash = c.id; };
       list.appendChild(li);
 
-      // Create challenge card
       const card = document.createElement('div');
       card.className = 'challenge-card';
       card.onclick = () => { location.hash = c.id; };
       card.innerHTML = `
         <h3>${c.title}</h3>
-        <div class="card-meta">
-            <div class="challenge-theme">${c.theme}</div>
-            <div class="challenge-difficulty ${c.difficulty.toLowerCase()}">${c.difficulty}</div>
-        </div>
         <div class="card-description">${c.description}</div>
       `;
       grid.appendChild(card);
     });
 
-    // Listen for hash changes
     window.addEventListener('hashchange', loadChallengeFromHash);
     window.addEventListener('load', loadChallengeFromHash);
 
     function loadChallengeFromHash() {
-  const hash = location.hash.slice(1); // remove #
-  const challenge = challenges.find(c => c.id === hash);
-  const panel = document.getElementById('challenge-panel');
-  const homePage = document.getElementById('home-page');
+      const hash = location.hash.slice(1);
+      const challenge = challenges.find(c => c.id === hash);
+      const panel = document.getElementById('challenge-panel');
+      const homePage = document.getElementById('home-page');
 
-  if (!challenge) {
-    // Show home page if no hash or hash not found
-    panel.style.display = 'none';
-    homePage.style.display = 'block';
-    return;
-  }
+      if (!challenge) {
+        panel.style.display = 'none';
+        homePage.style.display = 'block';
+        list.querySelectorAll('li').forEach(li => li.classList.remove('active'));
+        return;
+      }
 
-  // Show challenge panel
-  panel.style.display = 'block';
-  homePage.style.display = 'none';
+      panel.style.display = 'block';
+      homePage.style.display = 'none';
 
-  panel.innerHTML = `
-    <div class="problem-header">
-        <div class="challenge-title">${challenge.title}</div>
-        <div class="header-right">
-            <div class="challenge-theme">${challenge.theme}</div>
-            <div class="challenge-difficulty ${challenge.difficulty.toLowerCase()}">${challenge.difficulty}</div>
-            <button class="icon-button" onclick="goHome()"><span class="material-icons">arrow_back</span></button>
-            <button class="icon-button"><span class="material-icons">bookmark_border</span></button>
-            <button class="icon-button"><span class="material-icons">thumb_up_off_alt</span></button>
-            <button class="icon-button"><span class="material-icons">share</span></button>
+      panel.innerHTML = `
+        <div class="problem-header">
+          <h2>${challenge.title}</h2>
+          <button class="run-button" onclick="goHome()">← Back</button>
         </div>
-    </div>
-    <div class="tabs">
-        <button class="tab active">Description</button>
-        <button class="tab">Editorial</button>
-        <button class="tab">Solutions</button>
-        <button class="tab">Submissions</button>
-    </div>
-    <div class="problem-content">
-        <p>${challenge.description}</p>
-        <div class="example-section">
+        <div class="tabs">
+          <button class="tab active">Description</button>
+          <button class="tab">Code</button>
+          <button class="tab">Notes</button>
+        </div>
+        <div class="problem-content">
+          <p>${challenge.description}</p>
+          <div class="example-section">
             <h4>Example</h4>
             <pre>${challenge.example}</pre>
-        </div>
-    </div>
-    <div class="code-section">
-        <div class="code-header">
-            <select class="language-select">
-                <option>Python3</option>
-                <option>JavaScript</option>
-                <option>Java</option>
-                <option>C++</option>
-            </select>
-            <button class="icon-button"><span class="material-icons">settings</span></button>
+          </div>
         </div>
         <textarea placeholder="Write your code here..."></textarea>
         <div class="button-row">
-            <button class="run-button">Run Code</button>
-            <button class="submit-button" onclick="markCompleted('${challenge.id}')">Submit</button>
+          <button class="run-button">Run</button>
+          <button class="submit-button" onclick="markCompleted('${challenge.id}')">Submit</button>
         </div>
-    </div>
-  `;
-
-  setupTabs();
-
-  // Highlight active sidebar item
-  document.querySelectorAll('#challenge-list li').forEach(li => li.classList.remove('active'));
-  const activeIndex = challenges.findIndex(c => c.id === hash);
-  if (activeIndex >= 0) list.children[activeIndex].classList.add('active');
-}
-
-// Back to home page
-function goHome() {
-  location.hash = '';
-}
-
-
-      // Handle tab switching
-function setupTabs() {
-  const tabs = document.querySelectorAll('.tab');
-  const content = document.querySelector('.problem-content');
-
-  tabs.forEach(tab => {
-    tab.onclick = () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-
-      switch (tab.textContent) {
-        case 'Description':
-          content.innerHTML = `
-            <p>${challenges.find(c => c.id === location.hash.slice(1)).description}</p>
-            <div class="example-section">
-                <h4>Example</h4>
-                <pre>${challenges.find(c => c.id === location.hash.slice(1)).example}</pre>
-            </div>
-          `;
-          break;
-        case 'Editorial':
-          content.innerHTML = `<p>Editorial content coming soon 📝</p>`;
-          break;
-        case 'Solutions':
-          content.innerHTML = `<p>Example solutions coming soon 💻</p>`;
-          break;
-        case 'Submissions':
-          content.innerHTML = `<p>Your submissions will appear here 📨</p>`;
-          break;
-      }
+      `;
+      setupTabs();
+      highlightActive(hash);
     }
-  });
-}
 
-      // Highlight active
-      document.querySelectorAll('#challenge-list li').forEach(li => li.classList.remove('active'));
-      const activeIndex = challenges.findIndex(c => c.id === hash);
-      if (activeIndex >= 0) list.children[activeIndex].classList.add('active');
+    function setupTabs() {
+      const tabs = document.querySelectorAll('.tab');
+      const content = document.querySelector('.problem-content');
+      tabs.forEach(tab => {
+        tab.onclick = () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          if (tab.textContent === 'Description') {
+            const ch = challenges.find(c => c.id === location.hash.slice(1));
+            content.innerHTML = `
+              <p>${ch.description}</p>
+              <div class="example-section">
+                <h4>Example</h4>
+                <pre>${ch.example}</pre>
+              </div>
+            `;
+          } else if (tab.textContent === 'Code') {
+            content.innerHTML = `<p>Here you can write or view your solution ✨</p>`;
+          } else {
+            content.innerHTML = `<p>Write shared notes or hints here 💭</p>`;
+          }
+        };
+      });
+    }
+
+    function highlightActive(hash) {
+      list.querySelectorAll('li').forEach(li => {
+        li.classList.toggle('active', li.textContent === challenges.find(c => c.id === hash).title);
+      });
+    }
+
+    function goHome() {
+      document.getElementById('home-page').style.display = 'block';
+      document.getElementById('challenge-panel').style.display = 'none';
+      list.querySelectorAll('li').forEach(li => li.classList.remove('active'));
+      location.hash = '';
     }
 
     function markCompleted(id) {
@@ -734,17 +262,7 @@ function setupTabs() {
       const percentage = (completedCount / challenges.length) * 100;
       document.getElementById('progress-bar').style.width = percentage + '%';
     }
-    function goHome() {
-    // Show home page
-    document.getElementById('home-page').style.display = 'block';
-    // Hide challenge panel
-    document.getElementById('challenge-panel').style.display = 'none';
-    // Remove active highlight from sidebar
-    document.querySelectorAll('#challenge-list li').forEach(li => li.classList.remove('active'));
-    // Clear the hash
-    location.hash = '';
-}
-
-    </script>
+  </script>
 </body>
 </html>
+
