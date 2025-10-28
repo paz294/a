@@ -8,6 +8,77 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif; }
     body { background-color: #1e1e1e; color: #fff; }
+    /* ...all CSS from attachment... */
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-brand" onclick="goHome()">
+      <span class="material-icons">favorite</span>
+      <span>Our Code Challenges</span>
+    </div>
+    <div class="user-profiles">
+      <div class="user-profile" onclick="switchUser('user1')">
+        <div class="user-avatar">1</div>
+        <div class="user-info">
+          <div class="user-name">Player 1</div>
+          <div class="user-score">Score: <span id="user1-score">0</span></div>
+        </div>
+      </div>
+      <span class="material-icons">favorite</span>
+      <div class="user-profile" onclick="switchUser('user2')">
+        <div class="user-avatar">2</div>
+        <div class="user-info">
+          <div class="user-name">Player 2</div>
+          <div class="user-score">Score: <span id="user2-score">0</span></div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <button class="sidebar-toggle" onclick="toggleSidebar()">
+    <span class="material-icons">menu</span>
+  </button>
+
+  <div class="main-container">
+    <div id="sidebar">
+      <h3>
+        <span class="material-icons">code</span>
+        Challenges
+      </h3>
+      <div id="sections-list"></div>
+    </div>
+
+    <div id="main-content">
+      <div id="home-page">
+        <div class="welcome-banner">
+          <h1>Welcome 💻❤️⚽</h1>
+          <p>Our little coding space — where love meets logic and fun challenges.</p>
+        </div>
+        <div id="sections"></div>
+      </div>
+
+      <div id="challenge-panel" style="display: none;"></div>
+    </div>
+  </div>
+
+  <div id="progress-container"><div id="progress-bar"></div></div>
+
+  <script>
+    // ...all JS from attachment...
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Coding Challenges</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif; }
+    body { background-color: #1e1e1e; color: #fff; }
 
     /* Navbar */
     .navbar {
