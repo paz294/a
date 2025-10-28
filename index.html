@@ -216,6 +216,42 @@
       background: none; border: none; color: #bbb; cursor: pointer; padding-bottom: 8px;
     }
     .tab.active { color: #60a5fa; border-bottom: 2px solid #60a5fa; }
+
+    /* Language selector styles */
+    .language-selector {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 20px 0;
+      padding: 10px;
+      background: #282828;
+      border-radius: 6px;
+    }
+    
+    .language-selector label {
+      font-size: 14px;
+      color: #bbb;
+    }
+    
+    .language-select {
+      background: #1e1e1e;
+      color: #fff;
+      border: 1px solid #404040;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      outline: none;
+    }
+    
+    .language-select:hover {
+      border-color: #60a5fa;
+    }
+    
+    .language-select option {
+      background: #1e1e1e;
+      color: #fff;
+    }
     .example-section { background: #282828; border-radius: 8px; padding: 16px; margin: 20px 0; }
     pre { background: #1e1e1e; padding: 10px; border-radius: 6px; color: #ccc; }
 
@@ -291,6 +327,27 @@
       'Games': 'sports_esports'
     };
 
+    const languageOptions = {
+      'javascript': {
+        name: 'JavaScript',
+        icon: 'language-javascript',
+        extension: 'js',
+        template: '// Write your JavaScript code here\nfunction solution() {\n  // Your code here\n}\n'
+      },
+      'python': {
+        name: 'Python',
+        icon: 'language-python',
+        extension: 'py',
+        template: '# Write your Python code here\ndef solution():\n    # Your code here\n    pass\n'
+      },
+      'cpp': {
+        name: 'C++',
+        icon: 'language-cpp',
+        extension: 'cpp',
+        template: '// Write your C++ code here\n#include <iostream>\n\nclass Solution {\npublic:\n    void solve() {\n        // Your code here\n    }\n};\n'
+      }
+    };
+
     const challenges = [
       {
         id: 'match-day',
@@ -298,7 +355,8 @@
         difficulty: 'Easy',
         title: 'Match Day Simulator',
         description: 'Generate a random football match result between Team You and Team Him.',
-        example: 'Example Output:\nTeam Him 3 - 2 Team You\nCommentary: He scored a last-minute goal! ⚽'
+        example: 'Example Output:\nTeam Him 3 - 2 Team You\nCommentary: He scored a last-minute goal! ⚽',
+        languages: ['javascript', 'python', 'cpp']
       },
       {
         id: 'penalty-shooter',
@@ -306,7 +364,8 @@
         difficulty: 'Medium',
         title: 'Penalty Shootout Game',
         description: 'Simulate a 5-shot penalty shootout — see who wins the cup!',
-        example: 'Example Output:\nYou ⚽⚽❌⚽⚽\nHim ⚽❌⚽⚽❌\nYou win 4–3! 🏆'
+        example: 'Example Output:\nYou ⚽⚽❌⚽⚽\nHim ⚽❌⚽⚽❌\nYou win 4–3! 🏆',
+        languages: ['javascript', 'python', 'cpp']
       },
       {
         id: 'love-encoder',
@@ -314,7 +373,8 @@
         difficulty: 'Easy',
         title: 'Love Message Encoder',
         description: 'Create a program that encodes a secret message only the two of you can decode.',
-        example: 'Input: I love you\nOutput: ❤️🌹#you#love#I'
+        example: 'Input: I love you\nOutput: ❤️🌹#you#love#I',
+        languages: ['javascript', 'python']
       },
       {
         id: 'anniversary-planner',
@@ -322,7 +382,8 @@
         difficulty: 'Medium',
         title: 'Anniversary Date Planner',
         description: 'Build a random date generator using your favorite activities and restaurants.',
-        example: 'Output: 🎥 Movie night + 🍝 Italian dinner'
+        example: 'Output: 🎥 Movie night + 🍝 Italian dinner',
+        languages: ['javascript', 'python']
       },
       {
         id: 'game-night',
@@ -330,7 +391,8 @@
         difficulty: 'Medium',
         title: 'Game Night Score Tracker',
         description: 'Build a small scoreboard that keeps track of who wins more rounds in your favorite games.',
-        example: 'Input: You - 5, Him - 7\nOutput: Him wins tonight! 🎉'
+        example: 'Input: You - 5, Him - 7\nOutput: Him wins tonight! 🎉',
+        languages: ['javascript', 'python', 'cpp']
       },
       {
         id: 'guess-the-song',
@@ -338,7 +400,8 @@
         difficulty: 'Hard',
         title: 'Guess The Song Challenge',
         description: 'Play random snippets of songs and code a way to guess the title!',
-        example: 'Input: 🎶 "da da da daaaa" Output: "Star Wars Theme!"'
+        example: 'Input: 🎶 "da da da daaaa" Output: "Star Wars Theme!"',
+        languages: ['javascript', 'python']
       }
     ];
 
@@ -466,7 +529,8 @@
       // Load saved progress
       const progress = loadUserProgress();
       const isCompleted = progress[challenge.id]?.completed;
-      const savedCode = loadSavedCode(challenge.id);
+      const currentLanguage = getLastUsedLanguage(challenge.id);
+      const savedCode = loadSavedCode(challenge.id, currentLanguage);
       
       panel.innerHTML = `
         <div class="problem-header">
@@ -475,6 +539,16 @@
             ${isCompleted ? '<span class="completed-badge">✓ Completed</span>' : ''}
             <button class="run-button" onclick="goHome()">← Back</button>
           </div>
+        </div>
+        <div class="language-selector">
+          <label for="language-select">Language:</label>
+          <select id="language-select" class="language-select" onchange="handleLanguageChange('${challenge.id}', this.value)">
+            ${challenge.languages.map(lang => `
+              <option value="${lang}" ${lang === currentLanguage ? 'selected' : ''}>
+                ${languageOptions[lang].name}
+              </option>
+            `).join('')}
+          </select>
         </div>
         <div class="tabs">
           <button class="tab active">Description</button>
@@ -488,9 +562,13 @@
             <pre>${challenge.example}</pre>
           </div>
         </div>
-        <textarea placeholder="Write your code here...">${savedCode}</textarea>
+        <textarea 
+          placeholder="Write your code here..." 
+          data-language="${currentLanguage}"
+          data-current-language="${currentLanguage}"
+        >${savedCode}</textarea>
         <div class="button-row">
-          <button class="run-button" onclick="runCode('${challenge.id}')">Run</button>
+          <button class="run-button" onclick="runCode('${challenge.id}', '${currentLanguage}')">Run</button>
           <button class="submit-button" onclick="markCompleted('${challenge.id}')" ${isCompleted ? 'disabled' : ''}>
             ${isCompleted ? 'Completed ✓' : 'Submit'}
           </button>
@@ -512,7 +590,7 @@
       textarea.addEventListener('input', () => {
         clearTimeout(saveTimeout);
         saveTimeout = setTimeout(() => {
-          saveCode(challengeId, textarea.value);
+          saveCode(challengeId, textarea.value, textarea.dataset.currentLanguage);
         }, 1000); // Save after 1 second of no typing
       });
       
@@ -598,18 +676,51 @@
       document.getElementById('progress-bar').style.width = percentage + '%';
     }
 
-    function saveCode(id, code) {
+    function saveCode(id, code, language) {
       const codeData = loadUserCode();
-      codeData[id] = {
+      if (!codeData[id]) codeData[id] = {};
+      codeData[id][language] = {
         code: code,
         lastModified: new Date().toISOString()
       };
       saveUserCode(codeData);
     }
 
-    function loadSavedCode(id) {
+    function loadSavedCode(id, language) {
       const codeData = loadUserCode();
-      return codeData[id]?.code || '';
+      return codeData[id]?.[language]?.code || languageOptions[language].template;
+    }
+
+    function getLastUsedLanguage(id) {
+      const progress = loadUserProgress();
+      return progress[id]?.lastUsedLanguage || challenges.find(c => c.id === id).languages[0];
+    }
+
+    function handleLanguageChange(id, language) {
+      const textarea = document.querySelector('textarea');
+      // Save current code before switching
+      if (textarea.dataset.currentLanguage) {
+        saveCode(id, textarea.value, textarea.dataset.currentLanguage);
+      }
+      
+      // Load code for selected language
+      textarea.value = loadSavedCode(id, language);
+      textarea.dataset.currentLanguage = language;
+      
+      // Update progress
+      const progress = loadUserProgress();
+      if (!progress[id]) progress[id] = {};
+      progress[id].lastUsedLanguage = language;
+      saveUserProgress(progress);
+      
+      // Update syntax highlighting (if we add it later)
+      updateEditorLanguage(language);
+    }
+
+    function updateEditorLanguage(language) {
+      const textarea = document.querySelector('textarea');
+      textarea.setAttribute('data-language', language);
+      // We could add syntax highlighting here in the future
     }
 
     function runCode(id) {
