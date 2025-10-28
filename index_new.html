@@ -263,8 +263,8 @@
         </div>
     </nav>
     <div class="user-login-bar" style="display:flex;align-items:center;gap:10px;padding:10px 20px;background:#222;margin-top:50px;">
-        <label for="user-select">User:</label>
-        <select id="user-select"></select>
+        <label>Users:</label>
+        <div id="user-list-bar" style="display:flex;gap:8px;"></div>
         <button id="add-user-btn">Add User</button>
         <span id="user-score" style="margin-left:20px;color:#a5d8ff;font-weight:bold;">Score: 0</span>
     </div>
@@ -309,23 +309,56 @@
     function setCurrentUser(user) {
         currentUser = user;
         localStorage.setItem('challengeCurrentUser', user);
-        document.getElementById('user-select').value = user;
+        renderUserListBar();
         updateUserScore();
         loadChallengeFromHash();
     }
     function getCurrentUser() {
         return localStorage.getItem('challengeCurrentUser') || null;
     }
-    function renderUserSelect() {
-        const select = document.getElementById('user-select');
-        select.innerHTML = '';
+    function renderUserListBar() {
+        const bar = document.getElementById('user-list-bar');
+        bar.innerHTML = '';
         getUserList().forEach(user => {
-            const opt = document.createElement('option');
-            opt.value = user;
-            opt.textContent = user;
-            select.appendChild(opt);
+            const btn = document.createElement('button');
+            btn.textContent = user;
+            btn.style.padding = '4px 12px';
+            btn.style.borderRadius = '16px';
+            btn.style.border = 'none';
+            btn.style.background = user === getCurrentUser() ? '#a5d8ff' : '#444';
+            btn.style.color = user === getCurrentUser() ? '#222' : '#fff';
+            btn.style.cursor = 'pointer';
+            btn.style.fontWeight = user === getCurrentUser() ? 'bold' : 'normal';
+            btn.onclick = () => setCurrentUser(user);
+            btn.ondblclick = () => {
+                const newName = prompt('Enter new username:', user);
+                if (!newName || newName === user) return;
+                const list = getUserList();
+                if (list.includes(newName)) {
+                    alert('That username already exists.');
+                    return;
+                }
+                // Update user list
+                const idx = list.indexOf(user);
+                if (idx !== -1) list[idx] = newName;
+                saveUserList(list);
+                // Move all localStorage keys for this user
+                ['codes','progress'].forEach(suffix => {
+                    const oldKey = `${user}_${suffix}`;
+                    const newKey = `${newName}_${suffix}`;
+                    const val = localStorage.getItem(oldKey);
+                    if (val !== null) {
+                        localStorage.setItem(newKey, val);
+                        localStorage.removeItem(oldKey);
+                    }
+                });
+                // Update current user
+                setCurrentUser(newName);
+                renderUserListBar();
+                updateUserScore();
+            };
+            bar.appendChild(btn);
         });
-        select.value = getCurrentUser() || '';
     }
     function addUser() {
         const name = prompt('Enter new user name:');
@@ -334,7 +367,7 @@
         if (!list.includes(name)) {
             list.push(name);
             saveUserList(list);
-            renderUserSelect();
+            renderUserListBar();
             setCurrentUser(name);
         } else {
             setCurrentUser(name);
@@ -366,12 +399,11 @@
         });
         // Update current user
         setCurrentUser(newName);
-        renderUserSelect();
+        renderUserListBar();
         updateUserScore();
     }
     document.addEventListener('DOMContentLoaded', () => {
-        renderUserSelect();
-        document.getElementById('user-select').addEventListener('change', e => setCurrentUser(e.target.value));
+        renderUserListBar();
         document.getElementById('add-user-btn').addEventListener('click', addUser);
         // Double-click to rename
         document.getElementById('user-select').addEventListener('dblclick', function(e) {
@@ -400,7 +432,7 @@
             });
             // Update current user
             setCurrentUser(newName);
-            renderUserSelect();
+            renderUserListBar();
             updateUserScore();
         });
     });
