@@ -109,6 +109,91 @@
     /* Progress bar */
     #progress-container{position:fixed;bottom:0;left:270px;right:0;height:4px;background:#282828}
     #progress-bar{height:100%;background:#60a5fa;width:0;transition:width .3s ease}
+    /* === Celebration Popup === */
+#celebration-overlay {
+  position: fixed;
+  inset: 0;
+  display: none;             /* toggled by JS */
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  pointer-events: none;       /* let clicks pass through */
+}
+
+.celebration-popup {
+  min-width: 280px;
+  max-width: 90vw;
+  padding: 18px 22px;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 18px;
+  border-radius: 16px;
+  background: radial-gradient(120px 80px at 30% 20%, rgba(255,182,193,.28), transparent),
+              radial-gradient(140px 100px at 70% 60%, rgba(255,105,180,.22), transparent),
+              linear-gradient(135deg, #ff7cc8, #ff48a6);
+  box-shadow:
+    0 10px 30px rgba(255, 105, 180, .35),
+    0 0 18px rgba(255, 192, 203, .35) inset,
+    0 0 32px rgba(255, 105, 180, .25);
+  transform: scale(.9);
+  opacity: 0;
+  animation: popFade 0.35s ease-out forwards, popOut 3s ease forwards;
+  position: relative;
+  overflow: hidden;
+}
+
+/* floating hearts */
+.celebration-popup .hearts {
+  position: absolute;
+  left: 0; right: 0; bottom: -8px;
+  display: flex; gap: 16px; justify-content: center;
+  opacity: .9;
+}
+.celebration-popup .hearts span {
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.2));
+  animation: floatUp 2.2s ease-in infinite;
+  font-size: 18px;
+}
+.celebration-popup .hearts span:nth-child(2) { animation-delay: .25s; }
+.celebration-popup .hearts span:nth-child(3) { animation-delay: .5s; }
+.celebration-popup .hearts span:nth-child(4) { animation-delay: .75s; }
+.celebration-popup .hearts span:nth-child(5) { animation-delay: 1s; }
+
+/* sparkles */
+.celebration-popup::before, .celebration-popup::after {
+  content: "✨✨✨";
+  position: absolute;
+  top: 8px;
+  left: 12px;
+  font-size: 12px;
+  opacity: .8;
+  animation: twinkle 1.6s ease-in-out infinite alternate;
+}
+.celebration-popup::after {
+  top: auto; bottom: 8px; left: auto; right: 12px;
+  animation-delay: .4s;
+}
+
+/* animations */
+@keyframes popFade {
+  from { transform: scale(.9); opacity: 0; }
+  to   { transform: scale(1);  opacity: 1; }
+}
+@keyframes popOut {
+  0%, 80% { transform: scale(1); opacity: 1; }
+  100%    { transform: scale(.98); opacity: 0; }
+}
+@keyframes floatUp {
+  0%   { transform: translateY(0) scale(1);    opacity: .95; }
+  70%  { transform: translateY(-48px) scale(1.1); opacity: 1; }
+  100% { transform: translateY(-70px) scale(1.15); opacity: 0; }
+}
+@keyframes twinkle {
+  from { opacity: .55; text-shadow: 0 0 6px rgba(255,255,255,.25); }
+  to   { opacity: .95; text-shadow: 0 0 12px rgba(255,255,255,.55); }
+}
+
   </style>
 </head>
 <body>
@@ -400,6 +485,53 @@ int main(){
       const store=JSON.parse(localStorage.getItem(NOTES_KEY)||'{}');
       return store[id] ?? '';
     }
+    // --- Celebration popup helpers ---
+function getPlayerNameFromUI(userId) {
+  // Tries to read the text in the top-right mini profiles (Player 1 / Player 2)
+  // Falls back to generic names if not found.
+  try {
+    const profiles = document.querySelectorAll('.user-profile .user-info .user-name');
+    if (userId === 'user1' && profiles[0]) return profiles[0].textContent.trim();
+    if (userId === 'user2' && profiles[1]) return profiles[1].textContent.trim();
+  } catch (_) {}
+  // fallback labels:
+  return userId === 'user1' ? 'Player 1' : 'Player 2';
+}
+
+function messageForName(name) {
+  if (!name) return "yayyyy!";
+  const n = name.trim().toLowerCase();
+  if (n.startsWith('paul')) {
+    return "yayyy you're the best! and so smart and pretty and nice <3";
+  }
+  if (n.startsWith('ruben')) {
+    return "wow you're really a nerd (still love you I guess) <3";
+  }
+  return "yayyyy!";
+}
+
+let _celebrationTimeout;
+function showCelebrationMessage(name) {
+  const overlay = document.getElementById('celebration-overlay');
+  const popup   = document.getElementById('celebration-popup');
+  const textEl  = document.getElementById('celebration-text');
+  if (!overlay || !popup || !textEl) return;
+
+  textEl.textContent = messageForName(name);
+
+  // Reset animation by forcing reflow
+  popup.style.animation = 'none';
+  void popup.offsetWidth; // reflow
+  popup.style.animation = '';
+
+  overlay.style.display = 'flex';
+
+  clearTimeout(_celebrationTimeout);
+  _celebrationTimeout = setTimeout(() => {
+    overlay.style.display = 'none';
+  }, 3000); // visible ~3s
+}
+
 
     /* ========= Pyodide (Python runner) ========= */
     const pyReady = loadPyodide();
@@ -719,6 +851,63 @@ _result = _buffer.getvalue()`;
     }
 
     window.onload = init;
+    /* ===== Celebration Popup Functions ===== */
+
+// Read player names (you can rename them later!)
+function getPlayerNameFromUI(userId) {
+  try {
+    const profiles = document.querySelectorAll('.user-profile .user-info .user-name');
+    if (userId === 'user1' && profiles[0]) return profiles[0].textContent.trim();
+    if (userId === 'user2' && profiles[1]) return profiles[1].textContent.trim();
+  } catch (_) {}
+  return userId === 'user1' ? 'Player 1' : 'Player 2';
+}
+
+// Message logic
+function messageForName(name) {
+  if (!name) return "yayyyy!";
+  const n = name.trim().toLowerCase();
+  if (n.startsWith('paul')) {
+    return "yayyy you're the best! and so smart and pretty and nice <3";
+  }
+  if (n.startsWith('ruben')) {
+    return "wow you're really a nerd (still love you I guess) <3";
+  }
+  return "yayyyy!";
+}
+
+// Popup display logic
+let _celebrationTimeout;
+function showCelebrationMessage(name) {
+  const overlay = document.getElementById('celebration-overlay');
+  const popup   = document.getElementById('celebration-popup');
+  const textEl  = document.getElementById('celebration-text');
+  if (!overlay || !popup || !textEl) return;
+
+  textEl.textContent = messageForName(name);
+  popup.style.animation = 'none';
+  void popup.offsetWidth;
+  popup.style.animation = '';
+  overlay.style.display = 'flex';
+
+  clearTimeout(_celebrationTimeout);
+  _celebrationTimeout = setTimeout(() => {
+    overlay.style.display = 'none';
+  }, 3000);
+}
+
+// Call this anywhere you want to celebrate:
+// Example: showCelebrationMessage("Paulina");
+
   </script>
+  <!-- Celebration overlay -->
+<div id="celebration-overlay">
+  <div class="celebration-popup" id="celebration-popup">
+    <div id="celebration-text">yayyyy!</div>
+    <div class="hearts" aria-hidden="true">
+      <span>💖</span><span>💕</span><span>💘</span><span>💞</span><span>💓</span>
+    </div>
+  </div>
+</div>
 </body>
 </html>
