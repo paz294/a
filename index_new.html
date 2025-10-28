@@ -258,9 +258,7 @@
             <span class="material-icons">code</span>
             LeetCode-style Challenges
         </div>
-        <div class="nav-right" id="navbar-user-info">
-            <!-- Will be filled by JS -->
-        </div>
+        <div class="nav-right" id="navbar-user-info"></div>
     </nav>
     <div class="user-login-bar" style="display:flex;align-items:center;gap:10px;padding:10px 20px;background:#222;margin-top:50px;">
         <label>Users:</label>
@@ -316,6 +314,24 @@
     }
     function getCurrentUser() {
         return localStorage.getItem('challengeCurrentUser') || null;
+    }
+    function renderNavbarUser() {
+        const nav = document.getElementById('navbar-user-info');
+        if (!nav) return;
+        const user = getCurrentUser();
+        nav.innerHTML = '';
+        if (user) {
+            const avatar = document.createElement('div');
+            avatar.className = 'user-avatar';
+            avatar.textContent = user[0].toUpperCase();
+            avatar.title = user;
+            const name = document.createElement('span');
+            name.textContent = user;
+            name.style.marginLeft = '8px';
+            name.style.color = '#a5d8ff';
+            nav.appendChild(avatar);
+            nav.appendChild(name);
+        }
     }
     function renderUserListBar() {
         const bar = document.getElementById('user-list-bar');
