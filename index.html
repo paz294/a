@@ -55,260 +55,6 @@
             padding: 5px 10px;
             border-radius: 4px;
             transition: all 0.2s ease;
-        }
-        .nav-items a.active {
-            color: #a5d8ff;
-        }
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            background-color: #a5d8ff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-        }
-        .main-container {
-            display: flex;
-            margin-top: 50px;
-            height: calc(100vh - 50px);
-        }
-        #sidebar {
-            width: 300px;
-            background-color: #282828;
-            border-right: 1px solid #404040;
-            height: 100%;
-            overflow-y: auto;
-            transition: transform 0.3s ease;
-        }
-        @media (max-width: 768px) {
-            #sidebar {
-                position: fixed;
-                left: -300px;
-                top: 50px;
-                bottom: 0;
-                z-index: 100;
-            }
-            #sidebar.active {
-                transform: translateX(300px);
-            }
-            .main-container {
-                margin-left: 0 !important;
-            }
-            #progress-container {
-                left: 0 !important;
-            }
-        }
-        .sidebar-toggle {
-            display: none;
-            position: fixed;
-            left: 10px;
-            top: 10px;
-            z-index: 1001;
-            background: none;
-            border: none;
-            color: #a5d8ff;
-            cursor: pointer;
-        }
-        @media (max-width: 768px) {
-            .sidebar-toggle {
-                display: block;
-            }
-        }
-        .sidebar-header {
-            padding: 20px;
-            border-bottom: 1px solid #404040;
-        }
-        .sidebar-header h3 {
-            color: #a5d8ff;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .section-button {
-            width: 100%;
-            padding: 12px 20px;
-            background: none;
-            border: none;
-            color: #d4d4d4;
-            text-align: left;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 14px;
-            transition: all 0.2s ease;
-        }
-        .section-button:hover {
-            background-color: #333333;
-        }
-        .section-button.active {
-            color: #a5d8ff;
-        }
-        .section-icon {
-            margin-right: 8px;
-        }
-        .section-content {
-            display: none;
-            background-color: #1e1e1e;
-        }
-        .section-content.active {
-            display: block;
-        }
-        .challenge-item {
-            padding: 10px 20px 10px 40px;
-            cursor: pointer;
-            color: #d4d4d4;
-            display: flex;
-            align-items: center;
-            transition: all 0.2s ease;
-        }
-        .challenge-item:hover {
-            background-color: #333333;
-        }
-        .challenge-item.active {
-            color: #a5d8ff;
-            background-color: #333333;
-        }
-        .user-login-bar {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            background-color: #282828;
-            padding: 0 20px;
-            height: 50px;
-            border-top: 1px solid #404040;
-            position: fixed;
-            top: 0;
-            right: 0;
-            left: 300px;
-            z-index: 1000;
-        }
-        .user-login-bar label {
-            color: #d4d4d4;
-            margin-right: 10px;
-        }
-        .user-login-bar select {
-            padding: 5px;
-            border-radius: 4px;
-            border: 1px solid #404040;
-            background-color: #1e1e1e;
-            color: #ffffff;
-            margin-right: 10px;
-        }
-        .user-login-bar button {
-            padding: 5px 10px;
-            border-radius: 4px;
-            border: none;
-            background-color: #a5d8ff;
-            color: #1e1e1e;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-        .user-login-bar button:hover {
-            background-color: #90cfff;
-        }
-        /* Add your existing styles here... */
-    </style>
-</head>
-<body>
-    <nav class="navbar">
-        <div class="navbar-brand">
-            <span class="material-icons">code</span>
-            LeetCode-style Challenges
-        </div>
-        <div class="nav-right" id="navbar-user-info"></div>
-    </nav>
-    <div class="user-login-bar" style="display:flex;align-items:center;gap:10px;padding:10px 20px;background:#222;margin-top:50px;">
-        <label>Users:</label>
-        <div id="user-list-bar" style="display:flex;gap:8px;"></div>
-        <button id="add-user-btn">Add User</button>
-        <span id="user-score" style="margin-left:20px;color:#a5d8ff;font-weight:bold;">Score: 0</span>
-    </div>
-    <button class="sidebar-toggle">
-        <span class="material-icons">menu</span>
-    </button>
-    <div class="main-container">
-        <div id="sidebar">
-            <div class="sidebar-header">
-                <h3>
-                    <span class="material-icons">code</span>
-                    Challenges
-                </h3>
-            </div>
-            <div id="sections-list"></div>
-        </div>
-        <div id="main-content" style="flex-grow: 1; padding: 20px;">
-            <div id="home-page">
-                <h1>Welcome to LeetCode-style Challenges</h1>
-                <p>Select a challenge from the sidebar to get started.</p>
-            </div>
-            <div id="challenge-panel" style="display: none;">
-                <!-- Challenge panel content will be injected here -->
-            </div>
-        </div>
-    </div>
-    <script>
-    // --- User Management ---
-    const USER_LIST_KEY = 'challengeUserList';
-    let currentUser = null;
-    function getUserList() {
-        return JSON.parse(localStorage.getItem(USER_LIST_KEY) || '[]');
-    }
-    function saveUserList(list) {
-        localStorage.setItem(USER_LIST_KEY, JSON.stringify(list));
-    }
-    function setCurrentUser(user) {
-        currentUser = user;
-        localStorage.setItem('challengeCurrentUser', user);
-        renderUserListBar();
-        renderNavbarUser();
-        updateUserScore();
-        loadChallengeFromHash();
-    }
-    function getCurrentUser() {
-        return localStorage.getItem('challengeCurrentUser') || null;
-    }
-    function getDisplayNames() {
-        return JSON.parse(localStorage.getItem('challengeUserDisplayNames') || '{}');
-    }
-    function saveDisplayNames(obj) {
-        localStorage.setItem('challengeUserDisplayNames', JSON.stringify(obj));
-    }
-    function getDisplayName(user) {
-        const names = getDisplayNames();
-        return names[user] || user;
-    }
-    function setDisplayName(user, displayName) {
-        const names = getDisplayNames();
-        names[user] = displayName;
-        saveDisplayNames(names);
-    }
-    function renderNavbarUser() {
-        const nav = document.getElementById('navbar-user-info');
-        if (!nav) return;
-        const user = getCurrentUser();
-        nav.innerHTML = '';
-        if (user) {
-            const avatar = document.createElement('div');
-            avatar.className = 'user-avatar';
-            avatar.textContent = getDisplayName(user)[0].toUpperCase();
-            avatar.title = getDisplayName(user);
-            const name = document.createElement('span');
-            name.textContent = getDisplayName(user);
-            name.style.marginLeft = '8px';
-            name.style.color = '#a5d8ff';
-            nav.appendChild(avatar);
-            nav.appendChild(name);
-        }
-    }
-    function renderUserListBar() {
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -317,139 +63,140 @@
           <title>Our Coding Challenges</title>
           <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
           <style>
-                * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif; }
-                body { background-color: #1e1e1e; color: #fff; }
-                .navbar {
-                  display: flex; align-items: center; justify-content: space-between;
-                  background-color: #282828; padding: 0 20px; height: 50px;
-                  border-bottom: 1px solid #404040; position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-                }
-                .navbar-brand { display: flex; align-items: center; gap: 8px; color: #a5d8ff; font-weight: 600; cursor: pointer; }
-                .navbar-brand:hover { color: #74c0fc; }
-                .user-profiles {
-                  display: flex;
-                  align-items: center;
-                  gap: 20px;
-                }
-                .user-profile {
-                  display: flex;
-                  align-items: center;
-                  gap: 8px;
-                  padding: 4px 12px;
-                  border-radius: 20px;
-                  background: #333;
-                  cursor: pointer;
-                }
-                .user-avatar {
-                  width: 30px;
-                  height: 30px;
-                  border-radius: 50%;
-                  background: #a5d8ff;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-weight: 600;
-                  color: #1e1e1e;
-                }
-                .user-score {
-                  font-size: 14px;
-                  color: #bbb;
-                }
-                .main-container { display: flex; margin-top: 50px; height: calc(100vh - 50px); }
-                #sidebar {
-                  width: 250px; background-color: #282828; border-right: 1px solid #404040;
-                  padding: 20px; overflow-y: auto;
-                  transition: transform 0.3s ease;
-                }
-                #sidebar h3 { 
-                  color: #60a5fa; 
-                  margin-bottom: 15px;
-                  display: flex;
-                  align-items: center;
-                  gap: 8px;
-                }
-                #main-content { flex: 1; padding: 20px; overflow-y: auto; }
-                .welcome-banner {
-                  text-align: center; padding: 40px; background: linear-gradient(45deg, #282828, #333);
-                  border-radius: 10px; margin-bottom: 30px;
-                }
-                .welcome-banner h1 { color: #60a5fa; margin-bottom: 10px; }
-                .section {
-                  margin-bottom: 40px;
-                }
-                .section h2 {
-                  color: #60a5fa; margin-bottom: 20px; border-bottom: 1px solid #404040; padding-bottom: 5px;
-                }
-                .challenge-grid {
-                  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px;
-                }
-                .challenge-card {
-                  background-color: #282828; border: 1px solid #404040; border-radius: 10px; padding: 20px;
-                  cursor: pointer; transition: 0.2s; position: relative;
-                }
-                .challenge-card:hover {
-                  transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-                }
-                .challenge-card h3 { margin-bottom: 8px; color: #fff; }
-                .card-description { font-size: 14px; color: #bbb; }
-                .difficulty {
-                  position: absolute; top: 10px; right: 10px;
-                  padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600;
-                }
-                .easy { background-color: #2e7d32; color: #a5d6a7; }
-                .medium { background-color: #ef6c00; color: #ffcc80; }
-                .hard { background-color: #b71c1c; color: #ef9a9a; }
+            * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif; }
+            body { background-color: #1e1e1e; color: #fff; }
+            .navbar {
+              display: flex; align-items: center; justify-content: space-between;
+              background-color: #282828; padding: 0 20px; height: 50px;
+              border-bottom: 1px solid #404040; position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            }
+            .navbar-brand { display: flex; align-items: center; gap: 8px; color: #a5d8ff; font-weight: 600; cursor: pointer; }
+            .navbar-brand:hover { color: #74c0fc; }
+            .user-profiles {
+              display: flex;
+              align-items: center;
+              gap: 20px;
+            }
+            .user-profile {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              padding: 4px 12px;
+              border-radius: 20px;
+              background: #333;
+              cursor: pointer;
+            }
+            .user-avatar {
+              width: 30px;
+              height: 30px;
+              border-radius: 50%;
+              background: #a5d8ff;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-weight: 600;
+              color: #1e1e1e;
+            }
+            .user-score {
+              font-size: 14px;
+              color: #bbb;
+            }
+            .main-container { display: flex; margin-top: 50px; height: calc(100vh - 50px); }
+            #sidebar {
+              width: 250px; background-color: #282828; border-right: 1px solid #404040;
+              padding: 20px; overflow-y: auto;
+              transition: transform 0.3s ease;
+            }
+            #sidebar h3 { 
+              color: #60a5fa; 
+              margin-bottom: 15px;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+            }
+            #main-content { flex: 1; padding: 20px; overflow-y: auto; }
+            .welcome-banner {
+              text-align: center; padding: 40px; background: linear-gradient(45deg, #282828, #333);
+              border-radius: 10px; margin-bottom: 30px;
+            }
+            .welcome-banner h1 { color: #60a5fa; margin-bottom: 10px; }
+            .section {
+              margin-bottom: 40px;
+            }
+            .section h2 {
+              color: #60a5fa; margin-bottom: 20px; border-bottom: 1px solid #404040; padding-bottom: 5px;
+            }
+            .challenge-grid {
+              display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px;
+            }
+            .challenge-card {
+              background-color: #282828; border: 1px solid #404040; border-radius: 10px; padding: 20px;
+              cursor: pointer; transition: 0.2s; position: relative;
+            }
+            .challenge-card:hover {
+              transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            }
+            .challenge-card h3 { margin-bottom: 8px; color: #fff; }
+            .card-description { font-size: 14px; color: #bbb; }
+            .difficulty {
+              position: absolute; top: 10px; right: 10px;
+              padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600;
+            }
+            .easy { background-color: #2e7d32; color: #a5d6a7; }
+            .medium { background-color: #ef6c00; color: #ffcc80; }
+            .hard { background-color: #b71c1c; color: #ef9a9a; }
           </style>
         </head>
         <body>
           <nav class="navbar">
-                <div class="navbar-brand" onclick="goHome()">
-                  <span class="material-icons">favorite</span>
-                  <span>Our Code Challenges</span>
+            <div class="navbar-brand" onclick="goHome()">
+              <span class="material-icons">favorite</span>
+              <span>Our Code Challenges</span>
+            </div>
+            <div class="user-profiles">
+              <div class="user-profile" onclick="switchUser('user1')">
+                <div class="user-avatar">1</div>
+                <div class="user-info">
+                  <div class="user-name">Player 1</div>
+                  <div class="user-score">Score: <span id="user1-score">0</span></div>
                 </div>
-                <div class="user-profiles">
-                  <div class="user-profile" onclick="switchUser('user1')">
-                        <div class="user-avatar">1</div>
-                        <div class="user-info">
-                          <div class="user-name">Player 1</div>
-                          <div class="user-score">Score: <span id="user1-score">0</span></div>
-                        </div>
-                  </div>
-                  <span class="material-icons">favorite</span>
-                  <div class="user-profile" onclick="switchUser('user2')">
-                        <div class="user-avatar">2</div>
-                        <div class="user-info">
-                          <div class="user-name">Player 2</div>
-                          <div class="user-score">Score: <span id="user2-score">0</span></div>
-                        </div>
-                  </div>
+              </div>
+              <span class="material-icons">favorite</span>
+              <div class="user-profile" onclick="switchUser('user2')">
+                <div class="user-avatar">2</div>
+                <div class="user-info">
+                  <div class="user-name">Player 2</div>
+                  <div class="user-score">Score: <span id="user2-score">0</span></div>
                 </div>
+              </div>
+            </div>
           </nav>
           <button class="sidebar-toggle" onclick="toggleSidebar()">
-                <span class="material-icons">menu</span>
+            <span class="material-icons">menu</span>
           </button>
           <div class="main-container">
-                <div id="sidebar">
-                  <h3>
-                        <span class="material-icons">code</span>
-                        Challenges
-                  </h3>
-                  <div id="sections-list"></div>
+            <div id="sidebar">
+              <h3>
+                <span class="material-icons">code</span>
+                Challenges
+              </h3>
+              <div id="sections-list"></div>
+            </div>
+            <div id="main-content">
+              <div id="home-page">
+                <div class="welcome-banner">
+                  <h1>Welcome 💻❤️⚽</h1>
+                  <p>Our little coding space — where love meets logic and fun challenges.</p>
                 </div>
-                <div id="main-content">
-                  <div id="home-page">
-                        <div class="welcome-banner">
-                          <h1>Welcome 💻❤️⚽</h1>
-                          <p>Our little coding space — where love meets logic and fun challenges.</p>
-                        </div>
-                        <div id="sections"></div>
-                  </div>
-                  <div id="challenge-panel" style="display: none;"></div>
-                </div>
+                <div id="sections"></div>
+              </div>
+              <div id="challenge-panel" style="display: none;"></div>
+            </div>
           </div>
           <div id="progress-container"><div id="progress-bar"></div></div>
           <script>
-                // ...existing code...
+            // ...existing code...
           </script>
         </body>
         </html>
+            color: #ffffff;
