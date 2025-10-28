@@ -52,6 +52,8 @@
       #sidebar.active{transform:translateX(0)}
       .sidebar-toggle{display:flex;align-items:center;justify-content:center}
       #progress-container{left:0!important}
+      .workspace{grid-template-columns:1fr!important}
+      .versus-grid{grid-template-columns:1fr!important}
     }
 
     /* Home */
@@ -71,23 +73,33 @@
     .problem-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #404040;padding-bottom:10px;margin-bottom:16px}
     .header-actions{display:flex;align-items:center;gap:10px}
     .completed-badge{background:#2e7d32;color:#fff;padding:4px 8px;border-radius:6px;display:inline-flex;gap:6px;align-items:center}
+    .mode-bar{display:flex;gap:10px;margin:10px 0}
+    .mode-button{padding:8px 14px;border-radius:20px;border:1px solid #404040;background:#282828;color:#bbb;cursor:pointer}
+    .mode-button.active{background:#60a5fa;color:#111;border-color:#60a5fa}
 
     .tabs{display:flex;gap:18px;border-bottom:1px solid #404040;margin-bottom:12px}
     .tab{background:none;border:none;color:#bbb;cursor:pointer;padding:10px 2px;font-size:15px}
     .tab.active{color:#60a5fa;border-bottom:2px solid #60a5fa}
 
-    .language-selector{display:flex;align-items:center;gap:10px;margin:14px 0;padding:10px;background:#282828;border:1px solid #3a3a3a;border-radius:8px}
+    .workspace{display:grid;grid-template-columns:1fr 1.1fr;gap:16px}
+    .panel{background:#282828;border:1px solid #3a3a3a;border-radius:10px;padding:14px;min-height:220px}
+    .language-selector{display:flex;align-items:center;gap:10px;margin:10px 0;padding:8px;background:#1f1f1f;border:1px solid #333;border-radius:8px}
     .language-select{background:#1e1e1e;color:#fff;border:1px solid #404040;padding:6px 10px;border-radius:6px}
-    .example-section{background:#282828;border:1px solid #3a3a3a;border-radius:8px;padding:12px;margin:14px 0}
+    .example-section{background:#1f1f1f;border:1px solid #333;border-radius:8px;padding:12px;margin:12px 0}
     pre{background:#111;padding:12px;border-radius:6px;color:#ccc;overflow:auto}
 
     textarea{width:100%;min-height:220px;background:#282828;color:#fff;border:1px solid #404040;border-radius:8px;padding:12px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;resize:vertical}
-    .button-row{display:flex;gap:10px;margin-top:10px}
+    .button-row{display:flex;gap:10px;margin-top:10px;align-items:center}
     .run-button{background:transparent;color:#a5d8ff;border:1px solid #a5d8ff;padding:8px 14px;border-radius:8px;font-weight:600;cursor:pointer}
     .submit-button{background:#a5d8ff;color:#111;border:none;padding:8px 14px;border-radius:8px;font-weight:700;cursor:pointer}
-    .autosave-indicator{font-size:12px;color:#9a9a9a;align-self:center;margin-left:auto}
+    .autosave-indicator{font-size:12px;color:#9a9a9a;margin-left:auto}
+    .note{font-size:12px;color:#bbb}
 
     #run-output{margin-top:12px;padding:12px;background:#151515;border:1px solid #383838;border-radius:8px;min-height:64px;color:#d7d7d7;white-space:pre-wrap}
+
+    /* Versus editors side-by-side */
+    .versus-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .mini-label{display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#bbb;font-weight:600}
 
     /* Progress bar */
     #progress-container{position:fixed;bottom:0;left:270px;right:0;height:4px;background:#282828}
@@ -159,65 +171,49 @@
     /* ========= Data & Storage Keys ========= */
     const PLAYER_KEY   = 'player_names';
     const PROGRESS_KEY = 'challenge_progress';
-    const CODE_KEY     = 'challenge_code';
+    const CODE_KEY     = 'challenge_code_v2';  // v2 structure: id -> lang -> slot -> code
     const NOTES_KEY    = 'challenge_notes';
 
+    const sectionIcons = { Football:'sports_soccer', Relationship:'favorite', Games:'sports_esports' };
+
     const challenges = [
-      {
-        id:'match-day',
-        category:'Football',
-        difficulty:'Easy',
-        title:'Match Day Simulator',
+      { id:'match-day', category:'Football', difficulty:'Easy',   title:'Match Day Simulator',
         description:'Generate a random football match result for You vs. Him.',
-        example:'Example Output:\nTeam Him 3 - 2 Team You\nCommentary: last-minute goal! ⚽',
-        languages:['python']
-      },
-      {
-        id:'penalty-shooter',
-        category:'Football',
-        difficulty:'Medium',
-        title:'Penalty Shootout',
+        example:'Output:\nTeam Him 3 - 2 Team You\nCommentary: last-minute goal! ⚽', languages:['python','c'] },
+      { id:'penalty-shooter', category:'Football', difficulty:'Medium', title:'Penalty Shootout',
         description:'Simulate a 5-shot penalty shootout — highest goals wins.',
-        example:'You: ⚽⚽❌⚽⚽\nHim: ⚽❌⚽⚽❌\nYou win 4–3 🏆',
-        languages:['python']
-      },
-      {
-        id:'love-encoder',
-        category:'Relationship',
-        difficulty:'Easy',
-        title:'Love Message Encoder',
+        example:'You: ⚽⚽❌⚽⚽\nHim: ⚽❌⚽⚽❌\nYou win 4–3 🏆', languages:['python','c'] },
+      { id:'love-encoder', category:'Relationship', difficulty:'Easy', title:'Love Message Encoder',
         description:'Encode a secret message only you two can read.',
-        example:'Input: I love you\nOutput: ❤️🌹#you#love#I',
-        languages:['python']
-      },
-      {
-        id:'anniversary-planner',
-        category:'Relationship',
-        difficulty:'Medium',
-        title:'Anniversary Date Planner',
+        example:'Input: I love you\nOutput: ❤️🌹#you#love#I', languages:['python','c'] },
+      { id:'anniversary-planner', category:'Relationship', difficulty:'Medium', title:'Anniversary Date Planner',
         description:'Generate a random date plan from your favorites.',
-        example:'Output: 🎥 Movie night + 🍝 Italian dinner',
-        languages:['python']
-      },
-      {
-        id:'game-night',
-        category:'Games',
-        difficulty:'Medium',
-        title:'Game Night Score Tracker',
+        example:'Output: 🎥 Movie night + 🍝 Italian dinner', languages:['python','c'] },
+      { id:'game-night', category:'Games', difficulty:'Medium', title:'Game Night Score Tracker',
         description:'Track scores and announce the winner.',
-        example:'You 5 — Him 7 → Him wins! 🎉',
-        languages:['python']
-      },
-      {
-        id:'guess-the-song',
-        category:'Games',
-        difficulty:'Hard',
-        title:'Guess The Song',
+        example:'You 5 — Him 7 → Him wins! 🎉', languages:['python','c'] },
+      { id:'guess-the-song', category:'Games', difficulty:'Hard', title:'Guess The Song',
         description:'Play little snippets & guess titles — code the logic.',
-        example:'Input: 🎶 "da da da daaaa"\nOutput: "Star Wars Theme!"',
-        languages:['python']
-      }
+        example:'Input: 🎶 "da da da daaaa"\nOutput: "Star Wars Theme!"', languages:['python','c'] }
     ];
+
+    const templates = {
+      python: `# Write your Python solution here
+# Define a function named solution(), the runner will call it.
+def solution():
+    print("Hello from solution()")
+`,
+      c: `// Write your C solution here (won't run in-browser)
+// You can still write and save your code.
+// Example skeleton:
+#include <stdio.h>
+
+int main(){
+    // your code
+    return 0;
+}
+`
+    };
 
     /* ========= Player Names (persistent) ========= */
     function getNames(){
@@ -265,7 +261,10 @@
 
         sec.innerHTML = `
           <div class="section-header">
-            <div class="title"><span class="material-icons">folder_open</span>${cat}</div>
+            <div class="title">
+              <span class="material-icons">${sectionIcons[cat]||'folder_open'}</span>
+              ${cat}
+            </div>
             <span class="material-icons">expand_more</span>
           </div>
           <div class="section-content">
@@ -333,26 +332,42 @@
       });
     }
 
-    function markToggle(id){
+    function toggleCompleted(id){
       const p=JSON.parse(localStorage.getItem(PROGRESS_KEY)||'{}');
-      if(p[id]?.completed){ delete p[id]; }
-      else { p[id]={completed:true, completedAt:new Date().toISOString()}; }
+      const nowCompleted = !(p[id]?.completed);
+      if(nowCompleted) p[id]={completed:true, completedAt:new Date().toISOString()};
+      else delete p[id];
       localStorage.setItem(PROGRESS_KEY, JSON.stringify(p));
-      // Refresh panel & sidebar/progress
-      if(location.hash.slice(1)===id) loadFromHash();
       setupSidebar();
       updateProgress();
+      // If on panel, update its button/badge quickly:
+      const btn = document.getElementById('complete-toggle');
+      const badgeWrap = document.getElementById('completed-badge-wrap');
+      if(btn){
+        btn.textContent = nowCompleted ? 'Mark Incomplete' : 'Mark Completed';
+        if(badgeWrap){
+          badgeWrap.innerHTML = nowCompleted ? '<span class="completed-badge"><span class="material-icons" style="font-size:18px;">check_circle</span> Completed</span>' : '';
+        }
+      }
     }
 
-    /* ========= Code & Notes persistence ========= */
-    function saveCode(id, code){
-      const store=JSON.parse(localStorage.getItem(CODE_KEY)||'{}');
-      store[id]=code;
-      localStorage.setItem(CODE_KEY, JSON.stringify(store));
+    /* ========= Code & Notes persistence (per lang & slot) ========= */
+    function getCodeStore(){ return JSON.parse(localStorage.getItem(CODE_KEY)||'{}'); }
+    function saveCodeStore(store){ localStorage.setItem(CODE_KEY, JSON.stringify(store)); }
+
+    // slot: 'solo' | 'p1' | 'p2' | 'collab'
+    function loadCode(id, lang, slot){
+      const store=getCodeStore();
+      const existing = store?.[id]?.[lang]?.[slot];
+      if(existing!=null) return existing;
+      return templates[lang] || '';
     }
-    function loadCode(id){
-      const store=JSON.parse(localStorage.getItem(CODE_KEY)||'{}');
-      return store[id] ?? '# Write your Python solution here\n# Define a function named solution(), the runner will call it.\n\ndef solution():\n    print("Hello from", __name__)\n';
+    function saveCode(id, lang, slot, code){
+      const store=getCodeStore();
+      store[id] = store[id] || {};
+      store[id][lang] = store[id][lang] || {};
+      store[id][lang][slot] = code;
+      saveCodeStore(store);
     }
 
     function saveNotes(id, text){
@@ -367,9 +382,8 @@
 
     /* ========= Pyodide (Python runner) ========= */
     const pyReady = loadPyodide();
-    async function runCode(id){
-      const code = document.querySelector('#code-workspace textarea').value;
-      const outEl = document.getElementById('run-output');
+
+    async function runPython(code, outEl){
       outEl.textContent = 'Running...';
       try{
         const py = await pyReady;
@@ -382,7 +396,6 @@ sys.stdout = _buffer
 ${code}
 # ----- USER CODE END -----
 try:
-    # If a function named solution exists, call it
     if 'solution' in globals():
         r = solution()
         if r is not None:
@@ -396,26 +409,74 @@ _result = _buffer.getvalue()`;
       }catch(err){
         outEl.textContent = '❌ Error: ' + (err?.message || String(err));
       }
-      saveCode(id, code);
     }
 
-    /* ========= Tabs & Panel Renderer ========= */
-    function setupTabs(id){
+    /* ========= Panel Renderer ========= */
+    let currentMode = 'solo'; // 'solo' | 'versus' | 'collab'
+    let currentLang = 'python';
+
+    function setMode(mode){
+      currentMode = mode;
+      // re-render editors panel only (retain desc/notes tab selection)
+      loadFromHash();
+    }
+    function setLanguage(lang){
+      currentLang = lang;
+      loadFromHash();
+    }
+
+    function buildModeBar(){
+      return `
+        <div class="mode-bar">
+          <button class="mode-button ${currentMode==='solo'?'active':''}" onclick="setMode('solo')"><span class="material-icons" style="font-size:18px;vertical-align:middle">person</span> Solo</button>
+          <button class="mode-button ${currentMode==='versus'?'active':''}" onclick="setMode('versus')"><span class="material-icons" style="font-size:18px;vertical-align:middle">sports_kabaddi</span> Versus</button>
+          <button class="mode-button ${currentMode==='collab'?'active':''}" onclick="setMode('collab')"><span class="material-icons" style="font-size:18px;vertical-align:middle">handshake</span> Collaborative</button>
+        </div>
+      `;
+    }
+
+    function buildLanguagePicker(available){
+      // keep selection if present; default to python
+      if(!available.includes(currentLang)) currentLang = available[0] || 'python';
+      return `
+        <div class="language-selector">
+          <span class="material-icons">terminal</span>
+          <strong>Language:</strong>
+          <select class="language-select" onchange="setLanguage(this.value)">
+            ${available.map(l=>`<option value="${l}" ${l===currentLang?'selected':''}>${l.toUpperCase()}</option>`).join('')}
+          </select>
+          <span class="note">Runner supports Python only.</span>
+        </div>
+      `;
+    }
+
+    function setupTabs(activeName){
       const tabs = document.querySelectorAll('.tab');
-      const desc = document.getElementById('desc-content');
-      const code = document.getElementById('code-workspace');
-      const notes= document.getElementById('notes-content');
+      const leftDesc = document.getElementById('desc-panel');
+      const leftNotes = document.getElementById('notes-panel');
 
       tabs.forEach(t=>{
         t.onclick = ()=>{
           tabs.forEach(x=>x.classList.remove('active'));
           t.classList.add('active');
           const name = t.textContent.trim();
-          desc.style.display  = name==='Description' ? 'block' : 'none';
-          code.style.display  = name==='Code' ? 'block' : 'none';
-          notes.style.display = name==='Notes' ? 'block' : 'none';
+          if(name==='Description'){
+            leftDesc.style.display='block';
+            leftNotes.style.display='none';
+          }else if(name==='Notes'){
+            leftDesc.style.display='none';
+            leftNotes.style.display='block';
+          }else{ // Code tab -> just focus right panel
+            leftDesc.style.display='none';
+            leftNotes.style.display='none';
+            // Right panel is always visible; we just hide left side
+          }
         };
       });
+
+      // Set initial selection
+      const toActivate = Array.from(tabs).find(x=>x.textContent.trim()===activeName) || tabs[0];
+      toActivate.click();
     }
 
     function loadFromHash(){
@@ -427,23 +488,23 @@ _result = _buffer.getvalue()`;
       highlightActive(id);
 
       if(!ch){ panel.style.display='none'; home.style.display='block'; return; }
-
       home.style.display='none';
       panel.style.display='block';
 
       const progress = JSON.parse(localStorage.getItem(PROGRESS_KEY)||'{}');
       const completed = !!progress[id]?.completed;
-      const savedCode = loadCode(id);
-      const savedNotes= loadNotes(id);
+      const notes = loadNotes(id);
 
       panel.innerHTML = `
         <div class="problem-header">
           <h2>${ch.title}</h2>
           <div class="header-actions">
-            ${completed ? '<span class="completed-badge"><span class="material-icons" style="font-size:18px;">check_circle</span> Completed</span>' : ''}
+            <div id="completed-badge-wrap">${completed ? '<span class="completed-badge"><span class="material-icons" style="font-size:18px;">check_circle</span> Completed</span>' : ''}</div>
             <button class="run-button" onclick="goHome()">← Back</button>
           </div>
         </div>
+
+        ${buildModeBar()}
 
         <div class="tabs">
           <button class="tab active">Description</button>
@@ -451,41 +512,116 @@ _result = _buffer.getvalue()`;
           <button class="tab">Notes</button>
         </div>
 
-        <div id="desc-content" style="display:block;">
-          <div class="language-selector">
-            <span class="material-icons">terminal</span>
-            <strong>Language:</strong> Python (Pyodide)
+        <div class="workspace">
+          <!-- LEFT: Description/Notes -->
+          <div class="panel" id="left-panel">
+            <div id="desc-panel">
+              ${buildLanguagePicker(ch.languages)}
+              <p>${ch.description}</p>
+              <div class="example-section">
+                <h4>Example</h4>
+                <pre>${ch.example}</pre>
+              </div>
+            </div>
+            <div id="notes-panel" style="display:none;">
+              <textarea id="notes-editor" placeholder="Notes, hints, ideas…">${notes}</textarea>
+            </div>
           </div>
-          <p>${ch.description}</p>
-          <div class="example-section">
-            <h4>Example</h4>
-            <pre>${ch.example}</pre>
-          </div>
-        </div>
 
-        <div id="code-workspace" style="display:none;">
-          <textarea id="code-editor">${savedCode}</textarea>
-          <div class="button-row">
-            <button class="run-button" onclick="runCode('${ch.id}')">Run</button>
-            <button class="submit-button" onclick="markToggle('${ch.id}')">${completed?'Mark Incomplete':'Mark Completed'}</button>
-            <div class="autosave-indicator" id="autosave-ind">Autosave on</div>
+          <!-- RIGHT: Code panel(s) -->
+          <div class="panel" id="right-panel">
+            ${currentMode==='versus' ? `
+              <div class="versus-grid">
+                <div>
+                  <div class="mini-label"><span class="material-icons">person</span> ${getNames().p1}</div>
+                  <textarea id="code-p1">${loadCode(id, currentLang, 'p1')}</textarea>
+                  <div class="button-row">
+                    <button class="run-button" onclick="onRun('${id}','${currentLang}','p1')">Run</button>
+                    <button class="submit-button" onclick="toggleCompleted('${id}')" id="complete-toggle">${completed?'Mark Incomplete':'Mark Completed'}</button>
+                    <div class="autosave-indicator" id="autosave-ind-p1">Autosaving…</div>
+                  </div>
+                </div>
+                <div>
+                  <div class="mini-label"><span class="material-icons">person</span> ${getNames().p2}</div>
+                  <textarea id="code-p2">${loadCode(id, currentLang, 'p2')}</textarea>
+                  <div class="button-row">
+                    <button class="run-button" onclick="onRun('${id}','${currentLang}','p2')">Run</button>
+                    <button class="submit-button" onclick="toggleCompleted('${id}')" id="complete-toggle-2">${completed?'Mark Incomplete':'Mark Completed'}</button>
+                    <div class="autosave-indicator" id="autosave-ind-p2">Autosaving…</div>
+                  </div>
+                </div>
+              </div>
+              <div id="run-output"></div>
+            ` : currentMode==='collab' ? `
+              <textarea id="code-collab">${loadCode(id, currentLang, 'collab')}</textarea>
+              <div class="button-row">
+                <button class="run-button" onclick="onRun('${id}','${currentLang}','collab')">Run</button>
+                <button class="submit-button" onclick="toggleCompleted('${id}')" id="complete-toggle">${completed?'Mark Incomplete':'Mark Completed'}</button>
+                <div class="autosave-indicator" id="autosave-ind">Autosaving…</div>
+              </div>
+              <div id="run-output"></div>
+            ` : `
+              <textarea id="code-solo">${loadCode(id, currentLang, 'solo')}</textarea>
+              <div class="button-row">
+                <button class="run-button" onclick="onRun('${id}','${currentLang}','solo')">Run</button>
+                <button class="submit-button" onclick="toggleCompleted('${id}')" id="complete-toggle">${completed?'Mark Incomplete':'Mark Completed'}</button>
+                <div class="autosave-indicator" id="autosave-ind">Autosaving…</div>
+              </div>
+              <div id="run-output"></div>
+            `}
           </div>
-          <div id="run-output"></div>
-        </div>
-
-        <div id="notes-content" style="display:none;">
-          <textarea id="notes-editor" placeholder="Notes, hints, ideas…">${savedNotes}</textarea>
         </div>
       `;
 
-      setupTabs(id);
-      // Autosave code
-      const codeTA = document.getElementById('code-editor');
-      let codeTimer; codeTA.oninput = ()=>{ clearTimeout(codeTimer); codeTimer=setTimeout(()=>saveCode(id, codeTA.value), 700); };
+      // Hook up autosave for code & notes
+      if(currentMode==='versus'){
+        hookAutosave('code-p1', id, currentLang, 'p1', 'autosave-ind-p1');
+        hookAutosave('code-p2', id, currentLang, 'p2', 'autosave-ind-p2');
+      }else if(currentMode==='collab'){
+        hookAutosave('code-collab', id, currentLang, 'collab', 'autosave-ind');
+      }else{
+        hookAutosave('code-solo', id, currentLang, 'solo', 'autosave-ind');
+      }
 
-      // Autosave notes
       const notesTA = document.getElementById('notes-editor');
-      let notesTimer; notesTA.oninput = ()=>{ clearTimeout(notesTimer); notesTimer=setTimeout(()=>saveNotes(id, notesTA.value), 700); };
+      if(notesTA){
+        let t; notesTA.oninput = ()=>{ clearTimeout(t); t=setTimeout(()=> saveNotes(id, notesTA.value), 700); };
+      }
+
+      // Tabs behavior
+      // Default to Description visible; Code tab hides left panel (pure focus on code)
+      setupTabs('Description');
+    }
+
+    function hookAutosave(textareaId, id, lang, slot, indId){
+      const ta = document.getElementById(textareaId);
+      const ind = document.getElementById(indId);
+      let t;
+      const setSaved = ()=>{
+        if(ind){ ind.textContent='Autosaved'; setTimeout(()=>{ if(ind) ind.textContent='Autosaving…'; }, 1500); }
+      };
+      ta.oninput = ()=>{
+        clearTimeout(t);
+        t = setTimeout(()=>{ saveCode(id, lang, slot, ta.value); setSaved(); }, 700);
+      };
+    }
+
+    async function onRun(id, lang, slot){
+      const out = document.getElementById('run-output');
+      const codeText =
+        slot==='p1' ? document.getElementById('code-p1').value :
+        slot==='p2' ? document.getElementById('code-p2').value :
+        slot==='collab' ? document.getElementById('code-collab').value :
+        document.getElementById('code-solo').value;
+
+      // Save before run
+      saveCode(id, lang, slot, codeText);
+
+      if(lang !== 'python'){
+        out.textContent = 'ℹ️ Runner supports Python only. Your C code is saved locally.';
+        return;
+      }
+      await runPython(codeText, out);
     }
 
     function goHome(){
