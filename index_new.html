@@ -315,6 +315,21 @@
     function getCurrentUser() {
         return localStorage.getItem('challengeCurrentUser') || null;
     }
+    function getDisplayNames() {
+        return JSON.parse(localStorage.getItem('challengeUserDisplayNames') || '{}');
+    }
+    function saveDisplayNames(obj) {
+        localStorage.setItem('challengeUserDisplayNames', JSON.stringify(obj));
+    }
+    function getDisplayName(user) {
+        const names = getDisplayNames();
+        return names[user] || user;
+    }
+    function setDisplayName(user, displayName) {
+        const names = getDisplayNames();
+        names[user] = displayName;
+        saveDisplayNames(names);
+    }
     function renderNavbarUser() {
         const nav = document.getElementById('navbar-user-info');
         if (!nav) return;
@@ -323,10 +338,10 @@
         if (user) {
             const avatar = document.createElement('div');
             avatar.className = 'user-avatar';
-            avatar.textContent = user[0].toUpperCase();
-            avatar.title = user;
+            avatar.textContent = getDisplayName(user)[0].toUpperCase();
+            avatar.title = getDisplayName(user);
             const name = document.createElement('span');
-            name.textContent = user;
+            name.textContent = getDisplayName(user);
             name.style.marginLeft = '8px';
             name.style.color = '#a5d8ff';
             nav.appendChild(avatar);
@@ -338,7 +353,7 @@
         bar.innerHTML = '';
         getUserList().forEach(user => {
             const btn = document.createElement('button');
-            btn.textContent = user;
+            btn.textContent = getDisplayName(user);
             btn.style.padding = '4px 12px';
             btn.style.borderRadius = '16px';
             btn.style.border = 'none';
@@ -348,35 +363,11 @@
             btn.style.fontWeight = user === getCurrentUser() ? 'bold' : 'normal';
             btn.onclick = () => setCurrentUser(user);
             btn.ondblclick = () => {
-                const newName = prompt('Enter new username:', user);
-                if (!newName || newName === user) return;
-                const list = getUserList();
-                if (list.includes(newName)) {
-                    alert('That username already exists.');
-                    return;
-                }
-                // Update user list
-                const idx = list.indexOf(user);
-                if (idx !== -1) list[idx] = newName;
-                saveUserList(list);
-                // Move all localStorage keys for this user (codes, progress, score)
-                ['codes','progress','score'].forEach(suffix => {
-                    const oldKey = `${user}_${suffix}`;
-                    const newKey = `${newName}_${suffix}`;
-                    const val = localStorage.getItem(oldKey);
-                    if (val !== null) {
-                        localStorage.setItem(newKey, val);
-                        localStorage.removeItem(oldKey);
-                    }
-                });
-                // If this was the current user, update current user key
-                if (getCurrentUser() === user) {
-                    setCurrentUser(newName);
-                } else {
-                    renderUserListBar();
-                    renderNavbarUser();
-                    updateUserScore();
-                }
+                const newDisplayName = prompt('Enter new display name for this player:', getDisplayName(user));
+                if (!newDisplayName || newDisplayName === getDisplayName(user)) return;
+                setDisplayName(user, newDisplayName);
+                renderUserListBar();
+                renderNavbarUser();
             };
             bar.appendChild(btn);
         });
