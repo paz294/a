@@ -386,6 +386,14 @@
         }
     }
     document.addEventListener('DOMContentLoaded', () => {
+        // Set display name for first user to 'Paula' if not already set
+        const users = getUserList();
+        if (users.length > 0) {
+            const displayNames = getDisplayNames();
+            if (getDisplayName(users[0]) !== 'Paula') {
+                setDisplayName(users[0], 'Paula');
+            }
+        }
         renderUserListBar();
         renderNavbarUser();
         document.getElementById('add-user-btn').addEventListener('click', addUser);
