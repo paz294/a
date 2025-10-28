@@ -1,159 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Our Coding Challenges</title>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif; }
-    body { background-color: #1e1e1e; color: #fff; }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+    body { min-height: 100vh; background:#1e1e1e; color:#fff; }
 
     /* Navbar */
-    .navbar {
-      display: flex; align-items: center; justify-content: space-between;
-      background-color: #282828; padding: 0 20px; height: 50px;
-      border-bottom: 1px solid #404040; position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-    }
-    .navbar-brand { display: flex; align-items: center; gap: 8px; color: #a5d8ff; font-weight: 600; cursor: pointer; }
-    .navbar-brand:hover { color: #74c0fc; }
+    .navbar { display:flex; align-items:center; justify-content:space-between; background:#282828; padding:0 20px; height:50px; border-bottom:1px solid #404040; position:fixed; top:0; left:0; right:0; z-index:1000; }
+    .navbar-brand { display:flex; align-items:center; gap:8px; color:#a5d8ff; font-weight:600; cursor:pointer; }
+    .navbar-brand:hover { color:#74c0fc; }
+    .nav-right { display:flex; align-items:center; gap:16px; }
 
-    /* User profiles (top-right) */
-    .user-profiles { display: flex; align-items: center; gap: 20px; }
-    .user-profile { display: flex; align-items: center; gap: 8px; padding: 4px 12px; border-radius: 20px; background: #333; }
-    .user-avatar { width: 30px; height: 30px; border-radius: 50%; background: #a5d8ff; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #1e1e1e; }
-    .user-score { font-size: 14px; color: #bbb; }
+    /* User profiles (inline editable names) */
+    .user-profiles { display:flex; align-items:center; gap:16px; }
+    .user-profile { display:flex; align-items:center; gap:8px; padding:4px 10px; border-radius:18px; background:#333; }
+    .user-avatar { width:28px; height:28px; border-radius:50%; background:#a5d8ff; color:#1e1e1e; display:flex; align-items:center; justify-content:center; font-weight:700; }
+    .user-info { display:flex; align-items:center; gap:6px; }
+    .user-name { padding:2px 6px; border-radius:6px; background:#1e1e1e; border:1px solid #333; min-width:80px; outline:none; }
+    .user-name[contenteditable="true"] { border-color:#a5d8ff; box-shadow:0 0 0 2px rgba(165,216,255,.15); }
+    .edit-icon { font-size:18px; opacity:.8; cursor:pointer; }
+    .edit-icon:hover { opacity:1; }
 
-    /* Inline rename affordances */
-    .user-name { cursor: text; border-bottom: 1px dashed transparent; transition: 0.2s; }
-    .user-name:hover { border-bottom: 1px dashed #a5d8ff; color: #a5d8ff; }
-    .user-name[contenteditable="true"] { outline: none; border-bottom: 1px dashed #a5d8ff; }
+    /* Layout */
+    .main-container { display:flex; margin-top:50px; height:calc(100vh - 50px); }
+    #sidebar { width:250px; background:#282828; border-right:1px solid #404040; padding:20px; overflow-y:auto; }
+    #main-content { flex:1; padding:20px; overflow-y:auto; }
+    .sidebar-toggle { display:none; position:fixed; left:10px; top:60px; z-index:1001; background:#a5d8ff; border:none; border-radius:50%; width:40px; height:40px; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,.2); }
+    .sidebar-toggle .material-icons { color:#1e1e1e; font-size:24px; }
 
-    /* Sidebar & layout */
-    .main-container { display: flex; margin-top: 50px; height: calc(100vh - 50px); }
-    #sidebar {
-      width: 250px; background-color: #282828; border-right: 1px solid #404040;
-      padding: 20px; overflow-y: auto; transition: transform 0.3s ease;
-    }
-    #sidebar h3 {
-      color: #60a5fa; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;
-    }
+    /* Sidebar accordion */
+    #sidebar h3 { color:#60a5fa; margin-bottom:15px; display:flex; align-items:center; gap:8px; }
+    .section-accordion { margin-bottom:10px; }
+    .section-header { display:flex; align-items:center; justify-content:space-between; padding:10px; background:#333; border-radius:6px; cursor:pointer; user-select:none; }
+    .section-header:hover { background:#404040; }
+    .section-header .title { display:flex; align-items:center; gap:8px; font-weight:500; }
+    .section-content { max-height:0; overflow:hidden; transition:max-height .3s ease-out; }
+    .section-accordion.active .section-content { max-height:600px; }
+    .section-content ul { list-style:none; padding:10px; }
+    .section-content li { padding:8px 10px; margin:4px 0; border-radius:4px; cursor:pointer; display:flex; align-items:center; gap:8px; transition:.2s; }
+    .section-content li:hover { background:#333; }
+    .section-content li.active { background:#404040; color:#a5d8ff; }
+    .section-content li.completed::after { content:"✓"; margin-left:auto; color:#2e7d32; }
 
-    /* Accordion sections */
-    .section-accordion { margin-bottom: 10px; }
-    .section-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 10px; background: #333; border-radius: 6px; cursor: pointer; user-select: none;
-    }
-    .section-header:hover { background: #404040; }
-    .section-header .title { display: flex; align-items: center; gap: 8px; font-weight: 500; }
-    .section-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
-    .section-accordion.active .section-content { max-height: 500px; }
-    .section-content ul { list-style: none; padding: 10px; }
-    .section-content li {
-      padding: 8px 10px; margin: 4px 0; border-radius: 4px; cursor: pointer; transition: 0.2s;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .section-content li:hover { background: #333; }
-    .section-content li.active { background: #404040; color: #a5d8ff; }
-    .section-content li.completed::after { content: "✓"; margin-left: auto; color: #2e7d32; }
+    /* Home page */
+    .welcome-banner { text-align:center; padding:40px; background:linear-gradient(45deg,#282828,#333); border-radius:10px; margin-bottom:30px; }
+    .welcome-banner h1 { color:#60a5fa; margin-bottom:10px; }
+    .section { margin-bottom:40px; }
+    .section h2 { color:#60a5fa; margin-bottom:20px; border-bottom:1px solid #404040; padding-bottom:5px; }
 
-    /* Main content */
-    #main-content { flex: 1; padding: 20px; overflow-y: auto; }
-    .welcome-banner { text-align: center; padding: 40px; background: linear-gradient(45deg, #282828, #333); border-radius: 10px; margin-bottom: 30px; }
-    .welcome-banner h1 { color: #60a5fa; margin-bottom: 10px; }
+    .challenge-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap:20px; }
+    .challenge-card { background:#282828; border:1px solid #404040; border-radius:10px; padding:20px; cursor:pointer; transition:.2s; position:relative; }
+    .challenge-card:hover { transform:translateY(-3px); box-shadow:0 4px 12px rgba(0,0,0,.3); }
+    .challenge-card h3 { margin-bottom:8px; color:#fff; }
+    .card-description { font-size:14px; color:#bbb; }
+    .difficulty { position:absolute; top:10px; right:10px; padding:2px 8px; border-radius:12px; font-size:12px; font-weight:600; }
+    .easy{ background:#2e7d32; color:#a5d6a7; } .medium{ background:#ef6c00; color:#ffcc80; } .hard{ background:#b71c1c; color:#ef9a9a; }
 
-    /* Sections on home */
-    .section { margin-bottom: 40px; }
-    .section h2 { color: #60a5fa; margin-bottom: 20px; border-bottom: 1px solid #404040; padding-bottom: 5px; }
-    .challenge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
-    .challenge-card {
-      background-color: #282828; border: 1px solid #404040; border-radius: 10px; padding: 20px;
-      cursor: pointer; transition: 0.2s; position: relative;
-    }
-    .challenge-card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
-    .challenge-card h3 { margin-bottom: 8px; color: #fff; }
-    .card-description { font-size: 14px; color: #bbb; }
-    .difficulty { position: absolute; top: 10px; right: 10px; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; }
-    .easy { background-color: #2e7d32; color: #a5d6a7; }
-    .medium { background-color: #ef6c00; color: #ffcc80; }
-    .hard { background-color: #b71c1c; color: #ef9a9a; }
+    /* Challenge page */
+    .problem-header { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #404040; padding-bottom:10px; margin-bottom:20px; }
+    .header-actions { display:flex; align-items:center; gap:12px; }
+    .completed-badge { background:#2e7d32; color:#fff; padding:4px 8px; border-radius:4px; font-size:14px; display:inline-flex; gap:4px; align-items:center; }
+    .language-selector { display:flex; align-items:center; gap:10px; margin:20px 0; padding:10px; background:#282828; border-radius:6px; }
+    .language-select { background:#1e1e1e; color:#fff; border:1px solid #404040; padding:6px 12px; border-radius:4px; font-size:14px; cursor:pointer; outline:none; }
+    .language-select:hover { border-color:#60a5fa; }
 
-    /* Problem page */
-    .problem-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #404040; padding-bottom: 10px; margin-bottom: 20px; }
-    .header-actions { display: flex; align-items: center; gap: 12px; }
-    .completed-badge { background-color: #2e7d32; color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 14px; display: flex; align-items: center; gap: 4px; }
-    .tabs { display: flex; gap: 20px; border-bottom: 1px solid #404040; margin-bottom: 20px; }
-    .tab { background: none; border: none; color: #bbb; cursor: pointer; padding-bottom: 8px; }
-    .tab.active { color: #60a5fa; border-bottom: 2px solid #60a5fa; }
-    .example-section { background: #282828; border-radius: 8px; padding: 16px; margin: 20px 0; }
-    pre { background: #1e1e1e; padding: 10px; border-radius: 6px; color: #ccc; }
+    textarea { width:100%; height:220px; background:#282828; color:#fff; border:1px solid #404040; border-radius:6px; padding:10px; font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace; resize:vertical; }
+    .button-row { display:flex; gap:10px; margin-top:10px; }
+    .run-button { background:transparent; color:#a5d8ff; border:1px solid #a5d8ff; padding:8px 14px; border-radius:6px; font-weight:600; cursor:pointer; }
+    .submit-button { background:#a5d8ff; color:#000; border:none; padding:8px 14px; border-radius:6px; font-weight:600; cursor:pointer; }
+    .autosave-indicator { font-size:12px; color:#888; margin-left:auto; align-self:center; }
 
-    /* Language select & editor */
-    .language-selector { display: flex; align-items: center; gap: 10px; margin: 20px 0; padding: 10px; background: #282828; border-radius: 6px; }
-    .language-selector label { font-size: 14px; color: #bbb; }
-    .language-select { background: #1e1e1e; color: #fff; border: 1px solid #404040; padding: 6px 12px; border-radius: 4px; font-size: 14px; cursor: pointer; outline: none; }
-    .language-select:hover { border-color: #60a5fa; }
-    .language-select option { background: #1e1e1e; color: #fff; }
+    .example-section { background:#282828; border-radius:8px; padding:16px; margin:20px 0; }
+    pre { background:#1e1e1e; padding:10px; border-radius:6px; color:#ccc; white-space:pre-wrap; }
 
-    textarea {
-      width: 100%; height: 200px; background: #282828; color: #fff;
-      border: 1px solid #404040; border-radius: 6px; padding: 10px;
-      font-family: monospace; resize: vertical;
-    }
-    .button-row { display: flex; gap: 10px; margin-top: 10px; }
-    .run-button, .submit-button { padding: 8px 14px; border-radius: 6px; font-weight: 500; cursor: pointer; }
-    .run-button { background: transparent; color: #a5d8ff; border: 1px solid #a5d8ff; }
-    .submit-button { background: #a5d8ff; border: none; color: #000; }
-    .submit-button:disabled { background-color: #2e7d32; cursor: default; opacity: 0.8; }
-    .autosave-indicator { font-size: 12px; color: #666; margin-left: auto; }
-
-    /* Split-screen (versus/collab) */
-    .split-screen { display: none; gap: 20px; margin-top: 20px; }
-    .split-screen.active { display: flex; }
-    .code-panel { flex: 1; display: flex; flex-direction: column; }
-    .code-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #282828; border-radius: 6px 6px 0 0; }
-    .user-indicator { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #bbb; }
-    .winner-badge { background: #2e7d32; color: white; padding: 4px 8px; border-radius: 12px; font-size: 12px; display: flex; align-items: center; gap: 4px; }
+    /* Output console */
+    #run-output { margin-top:12px; padding:12px; background:#151515; border:1px solid #383838; border-radius:6px; min-height:64px; color:#d7d7d7; white-space:pre-wrap; }
 
     /* Progress bar */
-    #progress-container { position: fixed; bottom: 0; left: 250px; right: 0; height: 4px; background-color: #282828; }
-    #progress-bar { height: 100%; background-color: #60a5fa; width: 0; transition: 0.3s ease; }
+    #progress-container { position:fixed; bottom:0; left:250px; right:0; height:4px; background:#282828; }
+    #progress-bar { height:100%; background:#60a5fa; width:0; transition:width .3s ease; }
 
+    /* Mobile */
     @media (max-width: 768px) {
-      #progress-container { left: 0; }
-      #sidebar { position: fixed; left: 0; top: 50px; bottom: 0; transform: translateX(-100%); z-index: 1000; }
-      #sidebar.active { transform: translateX(0); }
+      .sidebar-toggle { display:flex; align-items:center; justify-content:center; }
+      #sidebar { position:fixed; left:0; top:50px; bottom:0; transform:translateX(-100%); z-index:1000; }
+      #sidebar.active { transform:translateX(0); }
+      #progress-container { left:0; }
     }
   </style>
 </head>
 <body>
-  <!-- NAVBAR -->
+
   <nav class="navbar">
     <div class="navbar-brand" onclick="goHome()">
       <span class="material-icons">favorite</span>
       <span>Our Code Challenges</span>
     </div>
-    <div class="user-profiles">
-      <div class="user-profile">
-        <div class="user-avatar">1</div>
-        <div class="user-info">
-          <div class="user-name" id="user1-name" contenteditable="false">Player 1</div>
-          <div class="user-score">Score: <span id="user1-score">0</span></div>
+    <div class="nav-right">
+      <div class="user-profiles">
+        <div class="user-profile">
+          <div class="user-avatar" id="p1-avatar">P1</div>
+          <div class="user-info">
+            <div class="user-name" id="p1-name" contenteditable="false" spellcheck="false"></div>
+            <span class="material-icons edit-icon" title="Rename" onclick="enableRename('p1')">edit</span>
+          </div>
         </div>
-      </div>
-      <span class="material-icons">favorite</span>
-      <div class="user-profile">
-        <div class="user-avatar">2</div>
-        <div class="user-info">
-          <div class="user-name" id="user2-name" contenteditable="false">Player 2</div>
-          <div class="user-score">Score: <span id="user2-score">0</span></div>
+        <span class="material-icons" style="opacity:.65">favorite</span>
+        <div class="user-profile">
+          <div class="user-avatar" id="p2-avatar">P2</div>
+          <div class="user-info">
+            <div class="user-name" id="p2-name" contenteditable="false" spellcheck="false"></div>
+            <span class="material-icons edit-icon" title="Rename" onclick="enableRename('p2')">edit</span>
+          </div>
         </div>
       </div>
     </div>
   </nav>
 
-  <!-- MAIN LAYOUT -->
+  <button class="sidebar-toggle" onclick="toggleSidebar()">
+    <span class="material-icons">menu</span>
+  </button>
+
   <div class="main-container">
     <div id="sidebar">
       <h3><span class="material-icons">code</span> Challenges</h3>
@@ -169,96 +140,43 @@
         <div id="sections"></div>
       </div>
 
-      <div id="challenge-panel" style="display: none;"></div>
+      <div id="challenge-panel" style="display:none;"></div>
     </div>
   </div>
 
   <div id="progress-container"><div id="progress-bar"></div></div>
 
-  <!-- APP SCRIPT -->
+  <!-- Load Pyodide (Python runner) -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+
+  <!-- App script -->
   <script>
-    /* =========================
-     * Player names: storage & sync
-     * ========================= */
-    const PLAYER_KEYS = { user1: 'user1Name', user2: 'user2Name' };
+    /* -------------------------------
+       Config: icons, languages, challenges
+    ----------------------------------*/
+    const sectionIcons = {
+      'Football': 'sports_soccer',
+      'Relationship': 'favorite',
+      'Games': 'sports_esports'
+    };
 
-    function getPlayerName(id) {
-      const key = PLAYER_KEYS[id];
-      return localStorage.getItem(key) || (id === 'user1' ? 'Player 1' : 'Player 2');
-    }
-
-    function setPlayerName(id, name) {
-      const key = PLAYER_KEYS[id];
-      localStorage.setItem(key, name);
-      // Update navbar labels
-      const el = document.getElementById(id + '-name');
-      if (el) el.textContent = name;
-      // Update any open challenge panel headers
-      syncNamesInChallengePanel();
-    }
-
-    function initInlineRename() {
-      ['user1', 'user2'].forEach(id => {
-        const el = document.getElementById(id + '-name');
-        // load saved name
-        el.textContent = getPlayerName(id);
-
-        // activate inline edit on click
-        el.addEventListener('click', () => {
-          el.setAttribute('contenteditable', 'true');
-          // place caret at end
-          const range = document.createRange();
-          range.selectNodeContents(el);
-          range.collapse(false);
-          const sel = window.getSelection();
-          sel.removeAllRanges();
-          sel.addRange(range);
-          el.focus();
-        });
-
-        // save on blur
-        el.addEventListener('blur', () => {
-          el.removeAttribute('contenteditable');
-          const newName = (el.textContent || '').trim() || (id === 'user1' ? 'Player 1' : 'Player 2');
-          setPlayerName(id, newName);
-        });
-
-        // Enter = save, Esc = cancel
-        el.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            el.blur();
-          } else if (e.key === 'Escape') {
-            e.preventDefault();
-            el.textContent = getPlayerName(id);
-            el.blur();
-          }
-        });
-      });
-    }
-
-    function syncNamesInChallengePanel() {
-      // Replace labels inside challenge code headers (if panel is visible)
-      const p1Labels = document.querySelectorAll('.player1-panel .user-indicator span.player-name-label, .player1-panel .user-indicator span:not(.material-icons).name-slot');
-      const p2Labels = document.querySelectorAll('.player2-panel .user-indicator span.player-name-label, .player2-panel .user-indicator span:not(.material-icons).name-slot');
-
-      const n1 = getPlayerName('user1');
-      const n2 = getPlayerName('user2');
-
-      p1Labels.forEach(el => el.textContent = n1);
-      p2Labels.forEach(el => el.textContent = n2);
-    }
-
-    /* =========================
-     * App data (icons, langs, challenges)
-     * ========================= */
-    const sectionIcons = { Football: 'sports_soccer', Relationship: 'favorite', Games: 'sports_esports' };
-
+    // Python only (C/C++ present but not runnable yet)
     const languageOptions = {
-      javascript: { name: 'JavaScript', extension: 'js', template: '// JS\nfunction solution(){\n  // Your code here\n}\n' },
-      python:     { name: 'Python',    extension: 'py', template: '# Python\ndef solution():\n    pass\n' },
-      cpp:        { name: 'C++',       extension: 'cpp', template: '// C++\n#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n  // Your code here\n  return 0;\n}\n' },
-      c:          { name: 'C',         extension: 'c', template: '#include <stdio.h>\nint main(){\n  // Your code here\n  return 0;\n}\n' }
+      'python': {
+        name: 'Python',
+        extension: 'py',
+        template: `# Define solution() and print or return something\n\ndef solution():\n    print("Hello from Python!")\n    return 42\n`
+      },
+      'c': {
+        name: 'C',
+        extension: 'c',
+        template: `#include <stdio.h>\nint main(){ printf("C to WASM soon!\\n"); return 0; }\n`
+      },
+      'cpp': {
+        name: 'C++',
+        extension: 'cpp',
+        template: `#include <iostream>\nint main(){ std::cout << "C++ to WASM soon!\\n"; return 0; }\n`
+      }
     };
 
     const challenges = [
@@ -269,7 +187,7 @@
         title: 'Match Day Simulator',
         description: 'Generate a random football match result between Team You and Team Him.',
         example: 'Example Output:\nTeam Him 3 - 2 Team You\nCommentary: He scored a last-minute goal! ⚽',
-        languages: ['javascript','python','cpp','c']
+        languages: ['python','cpp','c']
       },
       {
         id: 'penalty-shooter',
@@ -278,7 +196,7 @@
         title: 'Penalty Shootout Game',
         description: 'Simulate a 5-shot penalty shootout — see who wins the cup!',
         example: 'Example Output:\nYou ⚽⚽❌⚽⚽\nHim ⚽❌⚽⚽❌\nYou win 4–3! 🏆',
-        languages: ['javascript','python','cpp','c']
+        languages: ['python','cpp','c']
       },
       {
         id: 'love-encoder',
@@ -287,7 +205,7 @@
         title: 'Love Message Encoder',
         description: 'Create a program that encodes a secret message only the two of you can decode.',
         example: 'Input: I love you\nOutput: ❤️🌹#you#love#I',
-        languages: ['javascript','python']
+        languages: ['python']
       },
       {
         id: 'anniversary-planner',
@@ -296,7 +214,7 @@
         title: 'Anniversary Date Planner',
         description: 'Build a random date generator using your favorite activities and restaurants.',
         example: 'Output: 🎥 Movie night + 🍝 Italian dinner',
-        languages: ['javascript','python']
+        languages: ['python']
       },
       {
         id: 'game-night',
@@ -305,7 +223,7 @@
         title: 'Game Night Score Tracker',
         description: 'Build a small scoreboard that keeps track of who wins more rounds in your favorite games.',
         example: 'Input: You - 5, Him - 7\nOutput: Him wins tonight! 🎉',
-        languages: ['javascript','python','cpp','c']
+        languages: ['python','cpp','c']
       },
       {
         id: 'guess-the-song',
@@ -314,29 +232,77 @@
         title: 'Guess The Song Challenge',
         description: 'Play random snippets of songs and code a way to guess the title!',
         example: 'Input: 🎶 "da da da daaaa" Output: "Star Wars Theme!"',
-        languages: ['javascript','python']
+        languages: ['python']
       }
     ];
 
-    /* =========================
-     * Sidebar accordion + home cards
-     * ========================= */
+    /* -------------------------------
+       Player names (inline rename + persist)
+    ----------------------------------*/
+    const PLAYER_NAMES_KEY = 'cc_player_names';
+    function getPlayerNames() {
+      const raw = localStorage.getItem(PLAYER_NAMES_KEY);
+      if (raw) return JSON.parse(raw);
+      const defaults = { p1: 'Player 1', p2: 'Player 2' };
+      localStorage.setItem(PLAYER_NAMES_KEY, JSON.stringify(defaults));
+      return defaults;
+    }
+    function savePlayerNames(names) {
+      localStorage.setItem(PLAYER_NAMES_KEY, JSON.stringify(names));
+    }
+    function updateNameUI() {
+      const { p1, p2 } = getPlayerNames();
+      const p1El = document.getElementById('p1-name');
+      const p2El = document.getElementById('p2-name');
+      const p1Av = document.getElementById('p1-avatar');
+      const p2Av = document.getElementById('p2-avatar');
+      p1El.textContent = p1;
+      p2El.textContent = p2;
+      p1Av.textContent = (p1[0] || 'P').toUpperCase();
+      p2Av.textContent = (p2[0] || 'P').toUpperCase();
+
+      // Update any labels inside challenge panel if present
+      document.querySelectorAll('.player-name-label.p1').forEach(n => n.textContent = p1);
+      document.querySelectorAll('.player-name-label.p2').forEach(n => n.textContent = p2);
+    }
+    function enableRename(which) {
+      const el = document.getElementById(which === 'p1' ? 'p1-name' : 'p2-name');
+      el.setAttribute('contenteditable','true');
+      el.focus();
+      const finish = (save) => {
+        el.removeAttribute('contenteditable');
+        if (save) {
+          const val = el.textContent.trim() || (which === 'p1' ? 'Player 1' : 'Player 2');
+          const all = getPlayerNames();
+          all[which] = val;
+          savePlayerNames(all);
+        } else {
+          updateNameUI();
+        }
+        updateNameUI();
+      };
+      const keyHandler = (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); finish(true); }
+        if (e.key === 'Escape') { e.preventDefault(); finish(false); }
+      };
+      el.addEventListener('keydown', keyHandler, { once: true });
+      el.addEventListener('blur', () => finish(true), { once: true });
+    }
+
+    /* -------------------------------
+       Sidebar + Home sections
+    ----------------------------------*/
     function setupAccordionSidebar() {
       const sectionsList = document.getElementById('sections-list');
       sectionsList.innerHTML = '';
-      const categories = [...new Set(challenges.map(c => c.category))];
-
-      categories.forEach(category => {
+      const cats = [...new Set(challenges.map(c => c.category))];
+      cats.forEach(category => {
         const section = document.createElement('div');
         section.className = 'section-accordion';
-        const categoryIcon = sectionIcons[category] || 'code';
-
+        const icon = sectionIcons[category] || 'folder';
         section.innerHTML = `
           <div class="section-header">
-            <div class="title">
-              <span class="material-icons">${categoryIcon}</span>
-              ${category}
-            </div>
+            <div class="title"><span class="material-icons">${icon}</span>${category}</div>
             <span class="material-icons">expand_more</span>
           </div>
           <div class="section-content">
@@ -352,35 +318,28 @@
             </ul>
           </div>
         `;
-
-        // Toggle accordion
         section.querySelector('.section-header').addEventListener('click', () => {
           section.classList.toggle('active');
         });
-
-        // Click challenge
         section.querySelectorAll('li').forEach(li => {
           li.addEventListener('click', (e) => {
             e.stopPropagation();
             location.hash = li.dataset.id;
           });
         });
-
         sectionsList.appendChild(section);
       });
     }
 
-    function populateHomeSections() {
-      const sectionsContainer = document.getElementById('sections');
-      sectionsContainer.innerHTML = '';
-      const categories = [...new Set(challenges.map(c => c.category))];
-
-      categories.forEach(cat => {
-        const section = document.createElement('div');
-        section.className = 'section';
-        section.innerHTML = `<h2>${cat}</h2><div class="challenge-grid"></div>`;
-        const grid = section.querySelector('.challenge-grid');
-
+    function buildHomeSections() {
+      const container = document.getElementById('sections');
+      container.innerHTML = '';
+      const cats = [...new Set(challenges.map(c => c.category))];
+      cats.forEach(cat => {
+        const wrap = document.createElement('div');
+        wrap.className = 'section';
+        wrap.innerHTML = `<h2>${cat}</h2><div class="challenge-grid"></div>`;
+        const grid = wrap.querySelector('.challenge-grid');
         challenges.filter(c => c.category === cat).forEach(ch => {
           const card = document.createElement('div');
           card.className = 'challenge-card';
@@ -392,244 +351,168 @@
           `;
           grid.appendChild(card);
         });
-
-        sectionsContainer.appendChild(section);
+        container.appendChild(wrap);
       });
     }
 
-    /* =========================
-     * Progress / code storage
-     * ========================= */
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+    }
+
+    /* -------------------------------
+       Progress + Code persistence
+    ----------------------------------*/
     const USER_PROGRESS_KEY = 'userChallengeProgress';
     const USER_CODE_KEY = 'userChallengeCode';
-    const COMPETITION_STATE_KEY = 'competitionState';
 
     function loadUserProgress() {
-      const saved = localStorage.getItem(USER_PROGRESS_KEY);
-      return saved ? JSON.parse(saved) : {};
+      const raw = localStorage.getItem(USER_PROGRESS_KEY);
+      return raw ? JSON.parse(raw) : {};
     }
-    function saveUserProgress(p) { localStorage.setItem(USER_PROGRESS_KEY, JSON.stringify(p)); }
-
-    function loadUserCode() {
-      const saved = localStorage.getItem(USER_CODE_KEY);
-      return saved ? JSON.parse(saved) : {};
+    function saveUserProgress(obj) {
+      localStorage.setItem(USER_PROGRESS_KEY, JSON.stringify(obj));
     }
-    function saveUserCode(c) { localStorage.setItem(USER_CODE_KEY, JSON.stringify(c)); }
-
     function updateProgress() {
       const progress = loadUserProgress();
-      const completedCount = Object.keys(progress).length;
+      const completedCount = Object.values(progress).filter(p => p.completed).length;
       const percentage = (completedCount / challenges.length) * 100;
       document.getElementById('progress-bar').style.width = percentage + '%';
-    }
 
+      // mark completed in sidebar
+      Object.entries(progress).forEach(([id, val]) => {
+        const li = document.querySelector(`#sections-list li[data-id="${id}"]`);
+        if (li && val.completed) li.classList.add('completed');
+      });
+    }
     function markCompleted(id) {
-      const prog = loadUserProgress();
-      prog[id] = { completed: true, completedAt: new Date().toISOString() };
-      saveUserProgress(prog);
+      const p = loadUserProgress();
+      p[id] = { ...(p[id] || {}), completed: true, completedAt: new Date().toISOString() };
+      saveUserProgress(p);
       updateProgress();
-      const item = document.querySelector(`#sections-list li[data-id="${id}"]`);
-      if (item) item.classList.add('completed');
-      // also add a badge on header if visible
-      const badgeWrap = document.querySelector('.header-actions');
-      if (badgeWrap && !badgeWrap.querySelector('.completed-badge')) {
-        const b = document.createElement('span');
-        b.className = 'completed-badge';
-        b.textContent = '✓ Completed';
-        badgeWrap.prepend(b);
-      }
     }
 
+    function loadUserCode() {
+      const raw = localStorage.getItem(USER_CODE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    }
+    function saveUserCode(obj) {
+      localStorage.setItem(USER_CODE_KEY, JSON.stringify(obj));
+    }
     function saveCode(id, code, language) {
       const data = loadUserCode();
       if (!data[id]) data[id] = {};
       data[id][language] = { code, lastModified: new Date().toISOString() };
       saveUserCode(data);
     }
-
     function loadSavedCode(id, language) {
       const data = loadUserCode();
-      return data[id]?.[language]?.code || languageOptions[language].template;
+      return (data[id] && data[id][language] && data[id][language].code) || languageOptions[language].template;
+    }
+    function getLastUsedLanguage(id) {
+      const p = loadUserProgress();
+      return p[id]?.lastUsedLanguage || (challenges.find(c => c.id === id).languages[0]);
+    }
+    function setLastUsedLanguage(id, lang) {
+      const p = loadUserProgress();
+      p[id] = { ...(p[id] || {}), lastUsedLanguage: lang };
+      saveUserProgress(p);
     }
 
-    function getLastUsedLanguage(id) {
-      const progress = loadUserProgress();
-      return progress[id]?.lastUsedLanguage || challenges.find(c => c.id === id).languages[0];
+    /* -------------------------------
+       Challenge view + runner
+    ----------------------------------*/
+    let pyodideReadyPromise = null;
+
+    function writeOutput(text) {
+      const out = document.getElementById('run-output');
+      if (out) out.textContent = String(text);
+    }
+    async function ensurePyodide() {
+      if (!pyodideReadyPromise) {
+        pyodideReadyPromise = (async () => {
+          const py = await loadPyodide();
+          return py;
+        })();
+      }
+      return pyodideReadyPromise;
+    }
+
+    function getSelectedLanguage() {
+      const sel = document.getElementById('language-select');
+      return sel ? sel.value : 'python';
+    }
+
+    async function runCode(challengeId) {
+      const editor = document.querySelector('#code-workspace .solo-mode textarea');
+      if (!editor) { writeOutput('No editor found.'); return; }
+
+      // persist current code & language
+      const lang = editor.dataset.currentLanguage || getSelectedLanguage();
+      saveCode(challengeId, editor.value, lang);
+
+      writeOutput('Running...');
+      if (lang === 'python') {
+        try {
+          const pyodide = await ensurePyodide();
+          const code = editor.value;
+          const pyWrapper = `
+import sys, io
+_buffer = io.StringIO()
+_stdout = sys.stdout
+sys.stdout = _buffer
+
+# --- user code start ---
+${code}
+# --- user code end ---
+
+_out = None
+try:
+    if 'solution' in globals():
+        _out = solution()
+        if _out is not None:
+            print(_out)
+finally:
+    sys.stdout = _stdout
+
+_result = _buffer.getvalue()
+          `.trim();
+          await pyodide.runPythonAsync(pyWrapper);
+          const result = pyodide.runPython('_result');
+          writeOutput(result && result.trim().length ? result : '✔ Ran (no output printed)');
+        } catch (err) {
+          writeOutput('❌ Python Error: ' + (err.message || err));
+        }
+        return;
+      }
+
+      if (lang === 'c' || lang === 'cpp') {
+        writeOutput('C/C++ in-browser requires a WebAssembly toolchain (coming soon). Keep code saved here for now.');
+        return;
+      }
+
+      writeOutput('Unknown language: ' + lang);
     }
 
     function handleLanguageChange(id, language) {
       const textarea = document.querySelector('#code-workspace .solo-mode textarea');
-      if (textarea?.dataset.currentLanguage) {
+      if (!textarea) return;
+
+      // Save current before switching
+      if (textarea.dataset.currentLanguage) {
         saveCode(id, textarea.value, textarea.dataset.currentLanguage);
       }
-      if (textarea) {
-        textarea.value = loadSavedCode(id, language);
-        textarea.dataset.currentLanguage = language;
-      }
-      const progress = loadUserProgress();
-      progress[id] = progress[id] || {};
-      progress[id].lastUsedLanguage = language;
-      saveUserProgress(progress);
+      // Load new language code
+      textarea.value = loadSavedCode(id, language);
+      textarea.dataset.currentLanguage = language;
+
+      // Remember choice
+      setLastUsedLanguage(id, language);
     }
 
-    /* =========================
-     * Challenge panel rendering
-     * ========================= */
-    function highlightActive(hash) {
-      document.querySelectorAll('#sections-list li').forEach(li => {
-        li.classList.toggle('active', li.dataset.id === hash);
-      });
-      if (hash) {
-        const activeItem = document.querySelector(`#sections-list li[data-id="${hash}"]`);
-        if (activeItem) {
-          const section = activeItem.closest('.section-accordion');
-          if (section) section.classList.add('active');
-        }
-      }
-    }
-
-    function loadChallengeFromHash() {
-      const hash = location.hash.slice(1);
-      const challenge = challenges.find(c => c.id === hash);
-      const panel = document.getElementById('challenge-panel');
-      const homePage = document.getElementById('home-page');
-
-      highlightActive(hash);
-
-      if (!challenge) {
-        panel.style.display = 'none';
-        homePage.style.display = 'block';
-        return;
-      }
-
-      panel.style.display = 'block';
-      homePage.style.display = 'none';
-
-      const progress = loadUserProgress();
-      const isCompleted = progress[challenge.id]?.completed;
-      const currentLanguage = getLastUsedLanguage(challenge.id);
-      const savedCode = loadSavedCode(challenge.id, currentLanguage);
-
-      // Use current player names wherever shown
-      const player1Name = getPlayerName('user1');
-      const player2Name = getPlayerName('user2');
-
-      panel.innerHTML = `
-        <div class="problem-header">
-          <h2>${challenge.title}</h2>
-          <div class="header-actions">
-            ${isCompleted ? '<span class="completed-badge">✓ Completed</span>' : ''}
-            <button class="run-button" onclick="goHome()">← Back</button>
-          </div>
-        </div>
-
-        <div class="competition-modes">
-          <button class="run-button mode-button active" onclick="setMode('solo')">
-            <span class="material-icons">person</span>
-            Solo Practice
-          </button>
-          <button class="run-button mode-button" onclick="setMode('versus')">
-            <span class="material-icons">sports_kabaddi</span>
-            Versus Mode
-          </button>
-          <button class="run-button mode-button" onclick="setMode('collaborative')">
-            <span class="material-icons">handshake</span>
-            Solve Together
-          </button>
-        </div>
-
-        <div class="language-selector">
-          <label for="language-select">Language:</label>
-          <select id="language-select" class="language-select" onchange="handleLanguageChange('${challenge.id}', this.value)">
-            ${challenge.languages.map(lang => `
-              <option value="${lang}" ${lang === currentLanguage ? 'selected' : ''}>
-                ${languageOptions[lang].name}
-              </option>
-            `).join('')}
-          </select>
-        </div>
-
-        <div class="tabs">
-          <button class="tab active">Description</button>
-          <button class="tab">Code</button>
-          <button class="tab">Notes</button>
-        </div>
-
-        <div class="problem-content">
-          <p>${challenge.description}</p>
-          <div class="example-section">
-            <h4>Example</h4>
-            <pre>${challenge.example}</pre>
-          </div>
-        </div>
-
-        <div id="code-workspace">
-          <!-- SOLO -->
-          <div class="solo-mode">
-            <textarea placeholder="Write your code here..."
-              data-language="${currentLanguage}"
-              data-current-language="${currentLanguage}"
-            >${savedCode}</textarea>
-            <div class="button-row">
-              <button class="run-button" onclick="runCode('${challenge.id}')">Run</button>
-              <button class="submit-button" onclick="markCompleted('${challenge.id}')" ${isCompleted ? 'disabled' : ''}>
-                ${isCompleted ? 'Completed ✓' : 'Submit'}
-              </button>
-              <div class="autosave-indicator">Changes saved automatically</div>
-            </div>
-          </div>
-
-          <!-- VERSUS / COLLAB -->
-          <div class="split-screen">
-            <div class="code-panel player1-panel">
-              <div class="code-panel-header">
-                <div class="user-indicator">
-                  <div class="user-avatar">1</div>
-                  <span class="player-name-label">${player1Name}</span>
-                </div>
-                <div class="panel-actions">
-                  <button class="run-button" onclick="runCode('${challenge.id}', 'user1')">Run</button>
-                  <button class="submit-button" onclick="submitSolution('${challenge.id}', 'user1')">Submit</button>
-                </div>
-              </div>
-              <textarea placeholder="${player1Name}'s code here..."
-                data-language="${currentLanguage}"
-                data-current-language="${currentLanguage}"
-              >${loadSavedCode(challenge.id, currentLanguage)}</textarea>
-            </div>
-
-            <div class="code-panel player2-panel">
-              <div class="code-panel-header">
-                <div class="user-indicator">
-                  <div class="user-avatar">2</div>
-                  <span class="player-name-label">${player2Name}</span>
-                </div>
-                <div class="panel-actions">
-                  <button class="run-button" onclick="runCode('${challenge.id}', 'user2')">Run</button>
-                  <button class="submit-button" onclick="submitSolution('${challenge.id}', 'user2')">Submit</button>
-                </div>
-              </div>
-              <textarea placeholder="${player2Name}'s code here..."
-                data-language="${currentLanguage}"
-                data-current-language="${currentLanguage}"
-              >${loadSavedCode(challenge.id, currentLanguage)}</textarea>
-            </div>
-          </div>
-        </div>
-      `;
-
-      setupTabs();
-      attachAutosave(challenge.id);
-      // Ensure current names appear in headers (in case of later edits)
-      syncNamesInChallengePanel();
-    }
-
-    function setupTabs() {
+    function setupTabs(challengeId) {
       const tabs = document.querySelectorAll('.tab');
       const content = document.querySelector('.problem-content');
-      const challengeId = location.hash.slice(1);
       const ch = challenges.find(c => c.id === challengeId);
-
       tabs.forEach(tab => {
         tab.onclick = () => {
           tabs.forEach(t => t.classList.remove('active'));
@@ -643,91 +526,32 @@
           }
         };
       });
-    }
 
-    function attachAutosave(challengeId) {
+      // Autosave typing
       const textarea = document.querySelector('#code-workspace .solo-mode textarea');
-      if (!textarea) return;
       let saveTimeout;
       textarea.addEventListener('input', () => {
         clearTimeout(saveTimeout);
         saveTimeout = setTimeout(() => {
-          saveCode(challengeId, textarea.value, textarea.dataset.currentLanguage);
-        }, 700);
+          const lang = textarea.dataset.currentLanguage || getSelectedLanguage();
+          saveCode(challengeId, textarea.value, lang);
+        }, 800);
       });
     }
 
-    /* =========================
-     * Modes / run / submit
-     * ========================= */
-    let currentMode = 'solo';
-
-    function setMode(mode) {
-      currentMode = mode;
-      const workspace = document.getElementById('code-workspace');
-      const modeButtons = document.querySelectorAll('.mode-button');
-      modeButtons.forEach(btn => {
-        const isActive = btn.textContent.trim().toLowerCase().includes(mode);
-        btn.classList.toggle('active', isActive);
+    function highlightActive(hash) {
+      document.querySelectorAll('#sections-list li').forEach(li => {
+        li.classList.toggle('active', li.dataset.id === hash);
       });
-      workspace.querySelector('.solo-mode').style.display = mode === 'solo' ? 'block' : 'none';
-      workspace.querySelector('.split-screen').style.display = mode !== 'solo' ? 'flex' : 'none';
-
-      // keep names synced in headers
-      syncNamesInChallengePanel();
-    }
-
-    function submitSolution(challengeId, userId) {
-      // very simple scoring demo (local only)
-      const saved = localStorage.getItem(COMPETITION_STATE_KEY);
-      const state = saved ? JSON.parse(saved) : { scores: { user1: 0, user2: 0 }, winners: {} };
-
-      if (currentMode === 'versus') {
-        state.scores[userId] = (state.scores[userId] || 0) + 1;
-        state.winners[challengeId] = userId;
-      } else if (currentMode === 'collaborative') {
-        state.scores.user1 = (state.scores.user1 || 0) + 1;
-        state.scores.user2 = (state.scores.user2 || 0) + 1;
-        state.winners[challengeId] = 'both';
+      if (hash) {
+        const item = document.querySelector(`#sections-list li[data-id="${hash}"]`);
+        if (item) {
+          const section = item.closest('.section-accordion');
+          if (section) section.classList.add('active');
+        }
       }
-      localStorage.setItem(COMPETITION_STATE_KEY, JSON.stringify(state));
-
-      // show winner badge
-      const panel = document.querySelector(`.${userId}-panel .code-panel-header`);
-      if (panel && !panel.querySelector('.winner-badge')) {
-        panel.insertAdjacentHTML('beforeend', '<span class="winner-badge"><span class="material-icons">emoji_events</span>Winner!</span>');
-      }
-
-      markCompleted(challengeId);
-      updateScoreDisplay();
     }
 
-    function updateScoreDisplay() {
-      const saved = localStorage.getItem(COMPETITION_STATE_KEY);
-      const state = saved ? JSON.parse(saved) : { scores: { user1: 0, user2: 0 } };
-      document.getElementById('user1-score').textContent = state.scores.user1 || 0;
-      document.getElementById('user2-score').textContent = state.scores.user2 || 0;
-    }
-
-    function runCode(challengeId) {
-      const textarea = document.querySelector('#code-workspace .solo-mode textarea');
-      if (!textarea) return;
-      const code = textarea.value;
-      try {
-        // Only safe for JavaScript in browser — other langs are templates.
-        // eslint-disable-next-line no-new-func
-        const output = new Function(code)();
-        alert('Code executed successfully!\nOutput: ' + output);
-      } catch (err) {
-        alert('Error executing code:\n' + err.message);
-      }
-      // Save code regardless
-      saveCode(challengeId, code, textarea.dataset.currentLanguage);
-    }
-
-    /* =========================
-     * Navigation helpers
-     * ========================= */
     function goHome() {
       document.getElementById('home-page').style.display = 'block';
       document.getElementById('challenge-panel').style.display = 'none';
@@ -735,23 +559,86 @@
       location.hash = '';
     }
 
+    function loadChallengeFromHash() {
+      const hash = location.hash.slice(1);
+      const ch = challenges.find(c => c.id === hash);
+      const panel = document.getElementById('challenge-panel');
+      const home = document.getElementById('home-page');
+
+      highlightActive(hash);
+
+      if (!ch) { panel.style.display='none'; home.style.display='block'; return; }
+
+      panel.style.display='block'; home.style.display='none';
+
+      const currentLanguage = getLastUsedLanguage(ch.id);
+      const code = loadSavedCode(ch.id, currentLanguage);
+      const { p1, p2 } = getPlayerNames();
+
+      panel.innerHTML = `
+        <div class="problem-header">
+          <h2>${ch.title}</h2>
+          <div class="header-actions">
+            ${(loadUserProgress()[ch.id]?.completed ? '<span class="completed-badge"><span class="material-icons" style="font-size:16px;">check_circle</span> Completed</span>' : '')}
+            <button class="run-button" onclick="goHome()">← Back</button>
+          </div>
+        </div>
+
+        <div class="language-selector">
+          <label for="language-select">Language:</label>
+          <select id="language-select" class="language-select" onchange="handleLanguageChange('${ch.id}', this.value)">
+            ${ch.languages.map(l => `<option value="${l}" ${l===currentLanguage?'selected':''}>${languageOptions[l].name}</option>`).join('')}
+          </select>
+        </div>
+
+        <div class="tabs">
+          <button class="tab active">Description</button>
+          <button class="tab">Code</button>
+          <button class="tab">Notes</button>
+        </div>
+
+        <div class="problem-content">
+          <p>${ch.description}</p>
+          <div class="example-section">
+            <h4>Example</h4>
+            <pre>${ch.example}</pre>
+          </div>
+        </div>
+
+        <div id="code-workspace">
+          <div class="solo-mode">
+            <textarea placeholder="Write your code here..." data-language="${currentLanguage}" data-current-language="${currentLanguage}">${code}</textarea>
+            <div class="button-row">
+              <button class="run-button" onclick="runCode('${ch.id}')">Run</button>
+              <button class="submit-button" onclick="markCompleted('${ch.id}')" ${(loadUserProgress()[ch.id]?.completed ? 'disabled' : '')}>${(loadUserProgress()[ch.id]?.completed ? 'Completed ✓' : 'Submit')}</button>
+              <div class="autosave-indicator">Changes saved automatically</div>
+            </div>
+            <div id="run-output"></div>
+          </div>
+        </div>
+      `;
+
+      // Replace placeholder labels in split-screen (if you add back later)
+      document.querySelectorAll('.player-name-label.p1').forEach(n => n.textContent = p1);
+      document.querySelectorAll('.player-name-label.p2').forEach(n => n.textContent = p2);
+
+      setupTabs(ch.id);
+    }
+
+    /* -------------------------------
+       Init
+    ----------------------------------*/
     window.addEventListener('hashchange', loadChallengeFromHash);
     window.addEventListener('load', () => {
-      initInlineRename();
+      // Players
+      updateNameUI();
+      // Sidebar + home
       setupAccordionSidebar();
-      populateHomeSections();
+      buildHomeSections();
+      // First view
       loadChallengeFromHash();
+      // Progress
       updateProgress();
-      updateScoreDisplay();
-
-      // mark completed in sidebar
-      const progress = loadUserProgress();
-      Object.keys(progress).forEach(id => {
-        if (progress[id].completed) {
-          const item = document.querySelector(`#sections-list li[data-id="${id}"]`);
-          if (item) item.classList.add('completed');
-        }
-      });
     });
   </script>
 </body>
