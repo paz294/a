@@ -8,15 +8,40 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif; }
     body { background-color: #1e1e1e; color: #fff; }
-    .navbar{display:flex;align-items:center;justify-content:space-between;background-color:#282828;padding:0 20px;height:50px;border-bottom:1px solid #404040;position:fixed;top:0;left:0;right:0;z-index:1000}
-    .navbar-brand{display:flex;align-items:center;gap:8px;color:#a5d8ff;font-weight:600;cursor:pointer}
-    .navbar-brand:hover{color:#74c0fc}
-    .user-profiles{display:flex;align-items:center;gap:20px}
-    .user-profile{display:flex;align-items:center;gap:8px;padding:4px 12px;border-radius:20px;background:#333}
-    .user-avatar{width:30px;height:30px;border-radius:50%;background:#a5d8ff;display:flex;align-items:center;justify-content:center;font-weight:600;color:#1e1e1e}
-    .user-name[contenteditable="true"]{outline:none;border-bottom:1px dashed #a5d8ff}
-    .user-name:hover{color:#a5d8ff;cursor:text}
-    .user-score{font-size:14px;color:#bbb}
+
+    /* Navbar */
+    .navbar {
+      display: flex; align-items: center; justify-content: space-between;
+      background-color: #282828; padding: 0 20px; height: 50px;
+      border-bottom: 1px solid #404040; position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    }
+    .navbar-brand { display: flex; align-items: center; gap: 8px; color: #a5d8ff; font-weight: 600; cursor: pointer; }
+    .navbar-brand:hover { color: #74c0fc; }
+
+    /* User profiles */
+    .user-profiles { display: flex; align-items: center; gap: 20px; }
+    .user-profile { display: flex; align-items: center; gap: 8px; padding: 4px 12px; border-radius: 20px; background: #333; }
+    .user-avatar { width: 30px; height: 30px; border-radius: 50%; background: #a5d8ff; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #1e1e1e; }
+    .user-score { font-size: 14px; color: #bbb; }
+    .user-name { cursor: text; border-bottom: 1px dashed transparent; transition: 0.2s; }
+    .user-name:hover { border-bottom: 1px dashed #a5d8ff; color: #a5d8ff; }
+    .user-name[contenteditable="true"] { outline: none; border-bottom: 1px dashed #a5d8ff; }
+
+    /* Main layout */
+    .main-container { display: flex; margin-top: 50px; height: calc(100vh - 50px); }
+    #sidebar { width: 250px; background-color: #282828; border-right: 1px solid #404040; padding: 20px; overflow-y: auto; }
+    #main-content { flex: 1; padding: 20px; overflow-y: auto; }
+    .welcome-banner { text-align: center; padding: 40px; background: linear-gradient(45deg, #282828, #333); border-radius: 10px; margin-bottom: 30px; }
+    .welcome-banner h1 { color: #60a5fa; margin-bottom: 10px; }
+
+    /* Progress bar */
+    #progress-container { position: fixed; bottom: 0; left: 250px; right: 0; height: 4px; background-color: #282828; }
+    #progress-bar { height: 100%; background-color: #60a5fa; width: 0; transition: 0.3s ease; }
+
+    @media (max-width: 768px) {
+      #progress-container { left: 0; }
+      #sidebar { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -44,8 +69,27 @@
     </div>
   </nav>
 
+  <div class="main-container">
+    <div id="sidebar">
+      <h3><span class="material-icons">code</span> Challenges</h3>
+      <div id="sections-list"></div>
+    </div>
+    <div id="main-content">
+      <div id="home-page">
+        <div class="welcome-banner">
+          <h1>Welcome 💻❤️⚽</h1>
+          <p>Our little coding space — where love meets logic and fun challenges.</p>
+        </div>
+        <div id="sections"></div>
+      </div>
+      <div id="challenge-panel" style="display:none;"></div>
+    </div>
+  </div>
+
+  <div id="progress-container"><div id="progress-bar"></div></div>
+
   <script>
-    // --- Inline rename with autosave ---
+    // --- Inline renaming with persistence ---
     const players = ['user1', 'user2'];
 
     function loadPlayerNames() {
@@ -87,10 +131,9 @@
 
     window.addEventListener('DOMContentLoaded', loadPlayerNames);
 
-    function goHome(){location.hash='';}
+    // Placeholder for navigation
+    function goHome() { location.hash = ''; }
   </script>
 </body>
 </html>
-
-
 
