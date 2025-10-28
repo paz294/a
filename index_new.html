@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeetCode-style Challenges</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: #1e1e1e;
+            color: #ffffff;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #282828;
+            padding: 0 20px;
+            height: 50px;
+            border-bottom: 1px solid #404040;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #a5d8ff;
+            font-weight: 600;
+            font-size: 18px;
+            margin-left: 32px;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-brand {
+                margin-left: 48px;
+            }
+        }
+
+        .nav-items {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-items a {
+            color: #d4d4d4;
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-items a.active {
+            color: #a5d8ff;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background-color: #a5d8ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .main-container {
+            display: flex;
+            margin-top: 50px;
+            height: calc(100vh - 50px);
+        }
+
+        #sidebar {
+            width: 300px;
+            background-color: #282828;
+            border-right: 1px solid #404040;
+            height: 100%;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            #sidebar {
+                position: fixed;
+                left: -300px;
+                top: 50px;
+                bottom: 0;
+                z-index: 100;
+            }
+
+            #sidebar.active {
+                transform: translateX(300px);
+            }
+
+            .main-container {
+                margin-left: 0 !important;
+            }
+
+            #progress-container {
+                left: 0 !important;
+            }
+        }
+
+        .sidebar-toggle {
+            display: none;
+            position: fixed;
+            left: 10px;
+            top: 10px;
+            z-index: 1001;
+            background: none;
+            border: none;
+            color: #a5d8ff;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar-toggle {
+                display: block;
+            }
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #404040;
+        }
+
+        .sidebar-header h3 {
+            color: #a5d8ff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-button {
+            width: 100%;
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            color: #d4d4d4;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .section-button:hover {
+            background-color: #333333;
+        }
+
+        .section-button.active {
+            color: #a5d8ff;
+        }
+
+        .section-icon {
+            margin-right: 8px;
+        }
+
+        .section-content {
+            display: none;
+            background-color: #1e1e1e;
+        }
+
+        .section-content.active {
+            display: block;
+        }
+
+        .challenge-item {
+            padding: 10px 20px 10px 40px;
+            cursor: pointer;
+            color: #d4d4d4;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .challenge-item:hover {
+            background-color: #333333;
+        }
+
+        .challenge-item.active {
+            color: #a5d8ff;
+            background-color: #333333;
+        }
+
+        [Rest of your existing styles...]
+
+    </style>
+</head>
+<body>
+    <button class="sidebar-toggle">
+        <span class="material-icons">menu</span>
+    </button>
+
+    <nav class="navbar">
+        [Rest of your existing navbar...]
+    </nav>
+
+    <div class="main-container">
+        <div id="sidebar">
+            <div class="sidebar-header">
+                <h3>
+                    <span class="material-icons">code</span>
+                    Challenges
+                </h3>
+            </div>
+            <div id="sections-list"></div>
+        </div>
+        
+        [Rest of your existing main-content...]
+    </div>
+
+    <script>
+    const sections = {
+        'football': {
+            icon: '⚽',
+            title: 'Football',
+            challenges: [
+                {
+                    id: 'match-day',
+                    difficulty: 'Easy',
+                    title: 'Match Day Simulator',
+                    description: 'Generate a random football match result between Team You and Team Him.',
+                    example: 'Example Output:\nTeam Him 3 - 2 Team You\nCommentary: He scored a last-minute goal! ⚽',
+                },
+                {
+                    id: 'league-standings',
+                    difficulty: 'Medium',
+                    title: 'League Standings',
+                    description: 'Calculate league standings based on match results.',
+                    example: 'Input: [Match Results]\nOutput: League Table with points',
+                }
+            ]
+        },
+        'love': {
+            icon: '💕',
+            title: 'Love & Relationships',
+            challenges: [
+                {
+                    id: 'love-encoder',
+                    difficulty: 'Easy',
+                    title: 'Love Message Encoder',
+                    description: 'Create a program that encodes a secret message only the two of you can decode.',
+                    example: 'Input: I love you\nOutput: ❤️🌹#you#love#I',
+                },
+                {
+                    id: 'date-planner',
+                    difficulty: 'Medium',
+                    title: 'Date Planner',
+                    description: 'Create an algorithm to suggest perfect date ideas based on preferences.',
+                    example: 'Input: [Preferences]\nOutput: Date suggestions',
+                }
+            ]
+        },
+        'games': {
+            icon: '🎮',
+            title: 'Games',
+            challenges: [
+                {
+                    id: 'tic-tac-toe',
+                    difficulty: 'Easy',
+                    title: 'Tic Tac Toe',
+                    description: 'Implement a classic game of Tic Tac Toe.',
+                    example: 'Player X wins!\n X | O | X\n---------\n O | X | O\n---------\n X | - | O',
+                },
+                {
+                    id: 'memory-game',
+                    difficulty: 'Medium',
+                    title: 'Memory Game',
+                    description: 'Create a card matching memory game.',
+                    example: 'Cards: [🎴🎴🃏🃏]\nMatch found!',
+                }
+            ]
+        }
+    };
+
+    // Populate sidebar sections
+    const sectionsList = document.getElementById('sections-list');
+    let activeSection = null;
+    let activeChallengeId = null;
+
+    Object.entries(sections).forEach(([key, section]) => {
+        const sectionDiv = document.createElement('div');
+        sectionDiv.className = 'section';
+        
+        const button = document.createElement('button');
+        button.className = 'section-button';
+        button.innerHTML = `
+            <span>
+                <span class="section-icon">${section.icon}</span>
+                ${section.title}
+            </span>
+            <span class="material-icons">expand_more</span>
+        `;
+        
+        const content = document.createElement('div');
+        content.className = 'section-content';
+        
+        section.challenges.forEach(challenge => {
+            const item = document.createElement('div');
+            item.className = 'challenge-item';
+            item.innerHTML = `
+                <span>${challenge.title}</span>
+                <span class="challenge-difficulty ${challenge.difficulty.toLowerCase()}">${challenge.difficulty}</span>
+            `;
+            item.onclick = () => {
+                location.hash = challenge.id;
+                updateActiveChallenge(challenge.id);
+            };
+            content.appendChild(item);
+        });
+        
+        button.onclick = () => {
+            if (activeSection === key) {
+                content.classList.remove('active');
+                button.classList.remove('active');
+                activeSection = null;
+            } else {
+                // Close previously active section
+                if (activeSection) {
+                    const prevButton = document.querySelector(`.section-button.active`);
+                    const prevContent = document.querySelector(`.section-content.active`);
+                    if (prevButton) prevButton.classList.remove('active');
+                    if (prevContent) prevContent.classList.remove('active');
+                }
+                content.classList.add('active');
+                button.classList.add('active');
+                activeSection = key;
+            }
+        };
+        
+        sectionDiv.appendChild(button);
+        sectionDiv.appendChild(content);
+        sectionsList.appendChild(sectionDiv);
+    });
+
+    // Handle mobile sidebar toggle
+    const sidebarToggle = document.querySelector('.sidebar-toggle');
+    const sidebar = document.getElementById('sidebar');
+    
+    sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+    });
+
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768 && 
+            !sidebar.contains(e.target) && 
+            !sidebarToggle.contains(e.target) &&
+            sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+        }
+    });
+
+    function updateActiveChallenge(challengeId) {
+        const items = document.querySelectorAll('.challenge-item');
+        items.forEach(item => item.classList.remove('active'));
+        
+        if (challengeId) {
+            Object.values(sections).forEach(section => {
+                const challenge = section.challenges.find(c => c.id === challengeId);
+                if (challenge) {
+                    const index = section.challenges.indexOf(challenge);
+                    const sectionItems = document.querySelectorAll(`#${section.id} .challenge-item`);
+                    if (sectionItems[index]) {
+                        sectionItems[index].classList.add('active');
+                    }
+                }
+            });
+        }
+    }
+
+    // Your existing loadChallengeFromHash function with modifications
+    function loadChallengeFromHash() {
+        const hash = location.hash.slice(1);
+        let challenge = null;
+        
+        // Find challenge in sections
+        Object.values(sections).forEach(section => {
+            const found = section.challenges.find(c => c.id === hash);
+            if (found) challenge = found;
+        });
+
+        const panel = document.getElementById('challenge-panel');
+        const homePage = document.getElementById('home-page');
+
+        if (!challenge) {
+            panel.style.display = 'none';
+            homePage.style.display = 'block';
+            return;
+        }
+
+        panel.style.display = 'block';
+        homePage.style.display = 'none';
+
+        updateActiveChallenge(challenge.id);
+
+        panel.innerHTML = `
+            <div class="problem-header">
+                <div class="challenge-title">${challenge.title}</div>
+                <div class="header-right">
+                    <div class="challenge-difficulty ${challenge.difficulty.toLowerCase()}">${challenge.difficulty}</div>
+                    <button class="icon-button"><span class="material-icons">bookmark_border</span></button>
+                    <button class="icon-button"><span class="material-icons">thumb_up_off_alt</span></button>
+                    <button class="icon-button"><span class="material-icons">share</span></button>
+                </div>
+            </div>
+            [Rest of your existing challenge panel HTML...]
+        `;
+    }
+
+    // Your existing event listeners and functions
+    window.addEventListener('hashchange', loadChallengeFromHash);
+    window.addEventListener('load', loadChallengeFromHash);
+
+    // Your existing markCompleted and updateProgress functions
+    </script>
+</body>
+</html>

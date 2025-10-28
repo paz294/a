@@ -18,19 +18,118 @@
     .navbar-brand { display: flex; align-items: center; gap: 8px; color: #a5d8ff; font-weight: 600; cursor: pointer; }
     .navbar-brand:hover { color: #74c0fc; }
 
+    /* Sidebar Toggle */
+    .sidebar-toggle {
+      display: none; /* Hidden by default, shown on mobile */
+      position: fixed;
+      left: 10px;
+      top: 60px;
+      z-index: 1001;
+      background: #a5d8ff;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .sidebar-toggle .material-icons {
+      color: #1e1e1e;
+      font-size: 24px;
+    }
+
     /* Main layout */
     .main-container { display: flex; margin-top: 50px; height: calc(100vh - 50px); }
     #sidebar {
       width: 250px; background-color: #282828; border-right: 1px solid #404040;
       padding: 20px; overflow-y: auto;
+      transition: transform 0.3s ease;
     }
-    #sidebar h3 { color: #60a5fa; margin-bottom: 15px; }
-    #challenge-list { list-style: none; }
-    #challenge-list li {
-      padding: 10px; border-radius: 6px; cursor: pointer; transition: 0.2s;
+    #sidebar h3 { 
+      color: #60a5fa; 
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    #challenge-list li:hover, #challenge-list li.active {
-      background-color: #333; color: #60a5fa;
+    
+    /* Accordion Sections */
+    .section-accordion {
+      margin-bottom: 10px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      background: #333;
+      border-radius: 6px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .section-header:hover {
+      background: #404040;
+    }
+    .section-header .title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+    }
+    .section-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+    }
+    .section-accordion.active .section-content {
+      max-height: 500px; /* Adjust based on content */
+    }
+    .section-content ul {
+      list-style: none;
+      padding: 10px;
+    }
+    .section-content li {
+      padding: 8px 10px;
+      margin: 4px 0;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-content li:hover {
+      background: #333;
+    }
+    .section-content li.active {
+      background: #404040;
+      color: #a5d8ff;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .sidebar-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #sidebar {
+        position: fixed;
+        left: 0;
+        top: 50px;
+        bottom: 0;
+        transform: translateX(-100%);
+        z-index: 1000;
+      }
+      #sidebar.active {
+        transform: translateX(0);
+      }
+      .main-container {
+        margin-left: 0;
+      }
+      #main-content {
+        padding: 20px;
+      }
     }
 
     #main-content { flex: 1; padding: 20px; overflow-y: auto; }
@@ -105,6 +204,12 @@
     #progress-bar {
       height: 100%; background-color: #60a5fa; width: 0; transition: 0.3s ease;
     }
+
+    @media (max-width: 768px) {
+      #progress-container {
+        left: 0;
+      }
+    }
   </style>
 </head>
 <body>
@@ -115,10 +220,17 @@
     </div>
   </nav>
 
+  <button class="sidebar-toggle" onclick="toggleSidebar()">
+    <span class="material-icons">menu</span>
+  </button>
+
   <div class="main-container">
     <div id="sidebar">
-      <h3>Challenges</h3>
-      <ul id="challenge-list"></ul>
+      <h3>
+        <span class="material-icons">code</span>
+        Challenges
+      </h3>
+      <div id="sections-list"></div>
     </div>
 
     <div id="main-content">
@@ -137,6 +249,12 @@
   <div id="progress-container"><div id="progress-bar"></div></div>
 
   <script>
+    const sectionIcons = {
+      'Football': 'sports_soccer',
+      'Relationship': 'favorite',
+      'Games': 'sports_esports'
+    };
+
     const challenges = [
       {
         id: 'match-day',
@@ -188,9 +306,67 @@
       }
     ];
 
-    const sectionsContainer = document.getElementById('sections');
-    const sidebarList = document.getElementById('challenge-list');
+    function setupAccordionSidebar() {
+      const sectionsList = document.getElementById('sections-list');
+      const categories = [...new Set(challenges.map(c => c.category))];
+      
+      categories.forEach(category => {
+        const section = document.createElement('div');
+        section.className = 'section-accordion';
+        
+        const categoryIcon = sectionIcons[category] || 'code';
+        
+        section.innerHTML = `
+          <div class="section-header">
+            <div class="title">
+              <span class="material-icons">${categoryIcon}</span>
+              ${category}
+            </div>
+            <span class="material-icons">expand_more</span>
+          </div>
+          <div class="section-content">
+            <ul>
+              ${challenges
+                .filter(ch => ch.category === category)
+                .map(ch => `
+                  <li data-id="${ch.id}">
+                    <span class="material-icons">
+                      ${ch.difficulty === 'Easy' ? 'assignment' : 
+                        ch.difficulty === 'Medium' ? 'assignment_late' : 
+                        'assignment_turned_in'}
+                    </span>
+                    ${ch.title}
+                  </li>
+                `).join('')}
+            </ul>
+          </div>
+        `;
+        
+        // Add click event for accordion toggle
+        const header = section.querySelector('.section-header');
+        header.addEventListener('click', () => {
+          section.classList.toggle('active');
+        });
+        
+        // Add click events for challenges
+        const challengeItems = section.querySelectorAll('li');
+        challengeItems.forEach(item => {
+          item.addEventListener('click', (e) => {
+            e.stopPropagation();
+            location.hash = item.dataset.id;
+          });
+        });
+        
+        sectionsList.appendChild(section);
+      });
+    }
 
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('active');
+    }
+
+    const sectionsContainer = document.getElementById('sections');
     const categories = [...new Set(challenges.map(c => c.category))];
 
     categories.forEach(cat => {
@@ -220,7 +396,10 @@
     });
 
     window.addEventListener('hashchange', loadChallengeFromHash);
-    window.addEventListener('load', loadChallengeFromHash);
+    window.addEventListener('load', () => {
+      setupAccordionSidebar();
+      loadChallengeFromHash();
+    });
 
     function loadChallengeFromHash() {
       const hash = location.hash.slice(1);
@@ -228,10 +407,14 @@
       const panel = document.getElementById('challenge-panel');
       const homePage = document.getElementById('home-page');
 
+      // Update active state in sidebar
+      document.querySelectorAll('#sections-list li').forEach(li => {
+        li.classList.toggle('active', li.dataset.id === hash);
+      });
+
       if (!challenge) {
         panel.style.display = 'none';
         homePage.style.display = 'block';
-        sidebarList.querySelectorAll('li').forEach(li => li.classList.remove('active'));
         return;
       }
 
@@ -293,7 +476,7 @@
     function goHome() {
       document.getElementById('home-page').style.display = 'block';
       document.getElementById('challenge-panel').style.display = 'none';
-      sidebarList.querySelectorAll('li').forEach(li => li.classList.remove('active'));
+      document.querySelectorAll('#sections-list li').forEach(li => li.classList.remove('active'));
       location.hash = '';
     }
 
