@@ -193,6 +193,25 @@
   from { opacity: .55; text-shadow: 0 0 6px rgba(255,255,255,.25); }
   to   { opacity: .95; text-shadow: 0 0 12px rgba(255,255,255,.55); }
 }
+.photo-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+.photo-gallery img {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 2px solid #404040;
+  box-shadow: 0 4px 8px rgba(0,0,0,.3);
+  transition: transform .2s;
+}
+.photo-gallery img:hover {
+  transform: scale(1.05);
+}
 
   </style>
 </head>
@@ -200,10 +219,15 @@
 
   <!-- NAVBAR -->
   <nav class="navbar">
-    <div class="navbar-brand" onclick="goHome()">
+    <div class="navbar-brand" onclick="showHomePage()">
       <span class="material-icons">favorite</span>
-      <span>Our Code Challenges</span>
+      <span>Our Space 💻❤️</span>
     </div>
+    <div class="nav-right">
+      <button class="reset-btn" onclick="showChallengesPage()">Challenges</button>
+      <div class="user-profiles"> ... </div>
+    </div>
+
     <div class="nav-right">
       <div class="user-profiles">
         <div class="user-profile">
@@ -258,10 +282,28 @@
 
     <!-- CONTENT -->
     <main id="main-content">
+      <!-- HOME PAGE -->
       <div id="home-page">
         <div class="welcome-banner">
-          <h1>Welcome 💻❤️⚽</h1>
-          <p>Our little coding space — where love meets logic and fun challenges.</p>
+          <h1>Hi love 💕</h1>
+          <p>This is our little space — where we code, laugh, and make memories together.</p>
+          <p>You make even debugging fun. I love you. 💻❤️</p>
+        </div>
+
+        <div class="photo-gallery">
+          <img src="photo1.jpg" alt="Us together">
+          <img src="photo2.jpg" alt="A cute selfie">
+          <img src="photo3.jpg" alt="A memory">
+        </div>
+
+        <button class="submit-button" onclick="showChallengesPage()">Start Challenges →</button>
+      </div>
+
+      <!-- CHALLENGES PAGE -->
+      <div id="challenges-page" style="display:none;">
+        <div class="welcome-banner">
+          <h1>Our Coding Challenges ⚡</h1>
+          <p>Where logic meets love 💖</p>
         </div>
         <div id="sections"></div>
       </div>
@@ -750,6 +792,20 @@ _result = _buffer.getvalue()`;
       document.getElementById('home-page').style.display='block';
       location.hash='';
       highlightActive('');
+    }
+    function showHomePage() {
+      document.getElementById('home-page').style.display = 'block';
+      document.getElementById('challenges-page').style.display = 'none';
+      document.getElementById('challenge-panel').style.display = 'none';
+      highlightActive('');
+      location.hash = '';
+    }
+
+    function showChallengesPage() {
+      document.getElementById('home-page').style.display = 'none';
+      document.getElementById('challenges-page').style.display = 'block';
+      document.getElementById('challenge-panel').style.display = 'none';
+      buildHome(); // rebuild the challenges grid
     }
 
     /* ========= Complete + Scoring ========= */
