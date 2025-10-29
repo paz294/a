@@ -285,7 +285,8 @@
   display: flex;
   flex-wrap: nowrap;
   gap: 6px;
-  animation: scrollLoop 180s linear infinite;
+  width: max-content;
+  animation: scrollLoop 90s linear infinite;
 }
 
 .scroll-strip img {
@@ -311,6 +312,11 @@
 /* Optional: pause on hover */
 .infinite-collage:hover .scroll-strip {
   animation-play-state: paused;
+}
+
+.infinite-collage.active .scroll-strip {
+  animation-play-state: paused;
+  cursor: grabbing;
 }
 
   </style>
@@ -1095,6 +1101,36 @@ _result = _buffer.getvalue()`;
     }
 
     window.onload = init;
+  /* === Enable drag-to-scroll for collage === */
+  const collage = document.querySelector('.infinite-collage');
+  let isDown = false;
+  let startX;
+  let scrollLeft;
+
+  collage.addEventListener('mousedown', e => {
+    isDown = true;
+    collage.classList.add('active');
+    startX = e.pageX - collage.offsetLeft;
+    scrollLeft = collage.scrollLeft;
+  });
+
+  collage.addEventListener('mouseleave', () => {
+    isDown = false;
+    collage.classList.remove('active');
+  });
+
+  collage.addEventListener('mouseup', () => {
+    isDown = false;
+    collage.classList.remove('active');
+  });
+
+  collage.addEventListener('mousemove', e => {
+    if(!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - collage.offsetLeft;
+    const walk = (x - startX) * 2; // change 2 → 1 or 3 to adjust sensitivity
+    collage.scrollLeft = scrollLeft - walk;
+  });
   </script>
   <!-- Celebration Popup -->
 <div id="celebration-overlay"></div>
