@@ -1105,48 +1105,18 @@ _result = _buffer.getvalue()`;
     }
 
     window.onload = init;
-  /* === Enable drag-to-scroll for collage === */
-  const collage = document.querySelector('.infinite-collage');
-  let isDown = false;
-  let startX;
-  let scrollLeft;
 
-  collage.addEventListener('mousedown', e => {
-    isDown = true;
-    collage.classList.add('active');
-    startX = e.pageX - collage.offsetLeft;
-    scrollLeft = collage.scrollLeft;
-  });
-
-  collage.addEventListener('mouseleave', () => {
-    isDown = false;
-    collage.classList.remove('active');
-  });
-
-  collage.addEventListener('mouseup', () => {
-    isDown = false;
-    collage.classList.remove('active');
-  });
-
-  collage.addEventListener('mousemove', e => {
-    if(!isDown) return;
-    e.preventDefault();
-    const x = e.pageX - collage.offsetLeft;
-    const walk = (x - startX) * 2; // change 2 → 1 or 3 to adjust sensitivity
-    collage.scrollLeft = scrollLeft - walk;
-  });
-      /* === Smooth auto-scroll + drag control === */
+    /* === Smooth auto-scroll + drag control === */
     const collage = document.querySelector('.infinite-collage');
     const track = document.querySelector('.scroll-strip');
 
     let scrollSpeed = 1; // control speed (higher = faster)
     let offset = 0;
 
-    // Automatic loop
     function loop() {
       offset -= scrollSpeed;
       if (Math.abs(offset) >= track.scrollWidth / 2) {
-        offset = 0; // reset when half scrolled to keep it seamless
+        offset = 0;
       }
       track.style.transform = `translateX(${offset}px)`;
       requestAnimationFrame(loop);
