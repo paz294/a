@@ -224,9 +224,25 @@
       <span>Our Space 💻❤️</span>
     </div>
     <div class="nav-right">
-      <button class="reset-btn" onclick="showChallengesPage()">Challenges</button>
-      <div class="user-profiles"> ... </div>
+      <div class="user-profiles">
+        <div class="user-profile">
+          <div class="user-avatar" id="p1-avatar">P1</div>
+          <div class="user-info">
+            <div class="user-name" id="p1-name" contenteditable="false"></div>
+            <span class="material-icons edit-icon" onclick="enableRename('p1')">edit</span>
+          </div>
+        </div>
+        <span class="material-icons" style="opacity:.65">favorite</span>
+        <div class="user-profile">
+          <div class="user-avatar" id="p2-avatar">P2</div>
+          <div class="user-info">
+            <div class="user-name" id="p2-name" contenteditable="false"></div>
+            <span class="material-icons edit-icon" onclick="enableRename('p2')">edit</span>
+          </div>
+        </div>
+      </div>
     </div>
+
 
     <div class="nav-right">
       <div class="user-profiles">
