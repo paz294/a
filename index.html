@@ -286,7 +286,7 @@
   flex-wrap: nowrap;
   gap: 6px;
   width: max-content;
-  animation: scrollLoop 90s linear infinite;
+  transition: transform 0.1s linear;
 }
 
 .scroll-strip img {
@@ -301,6 +301,10 @@
 .scroll-strip img:hover {
   transform: scale(1.05);
   filter: brightness(1.1);
+}
+
+.infinite-collage.active {
+  cursor: grabbing;
 }
 
 /* Continuous scrolling */
@@ -1131,6 +1135,52 @@ _result = _buffer.getvalue()`;
     const walk = (x - startX) * 2; // change 2 → 1 or 3 to adjust sensitivity
     collage.scrollLeft = scrollLeft - walk;
   });
+      /* === Smooth auto-scroll + drag control === */
+    const collage = document.querySelector('.infinite-collage');
+    const track = document.querySelector('.scroll-strip');
+
+    let scrollSpeed = 1; // control speed (higher = faster)
+    let offset = 0;
+
+    // Automatic loop
+    function loop() {
+      offset -= scrollSpeed;
+      if (Math.abs(offset) >= track.scrollWidth / 2) {
+        offset = 0; // reset when half scrolled to keep it seamless
+      }
+      track.style.transform = `translateX(${offset}px)`;
+      requestAnimationFrame(loop);
+    }
+    loop();
+
+    // === Drag-to-scroll ===
+    let isDown = false;
+    let startX;
+    let startOffset;
+
+    collage.addEventListener('mousedown', e => {
+      isDown = true;
+      collage.classList.add('active');
+      startX = e.pageX;
+      startOffset = offset;
+    });
+
+    collage.addEventListener('mouseup', () => {
+      isDown = false;
+      collage.classList.remove('active');
+    });
+
+    collage.addEventListener('mouseleave', () => {
+      isDown = false;
+      collage.classList.remove('active');
+    });
+
+    collage.addEventListener('mousemove', e => {
+      if (!isDown) return;
+      e.preventDefault();
+      const dx = e.pageX - startX;
+      offset = startOffset + dx;
+    });
   </script>
   <!-- Celebration Popup -->
 <div id="celebration-overlay"></div>
