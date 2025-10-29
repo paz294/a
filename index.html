@@ -14,6 +14,42 @@
     .navbar-brand{display:flex;align-items:center;gap:8px;color:#a5d8ff;font-weight:600;cursor:pointer}
     .navbar-brand:hover{color:#74c0fc}
     .nav-right{display:flex;align-items:center;gap:16px}
+    .navbar {
+      justify-content: space-between;
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #a5d8ff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .navbar-brand:hover {
+      color: #74c0fc;
+    }
+
+    .user-profiles {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-right: 8px;
+    }
+
+    .navbar .material-icons {
+      vertical-align: middle;
+    }
+    .navbar-brand:hover .material-icons {
+      animation: pulse 0.8s infinite alternate;
+    }
+
+    @keyframes pulse {
+      from { transform: scale(1); color: #a5d8ff; }
+      to { transform: scale(1.2); color: #ff99c8; }
+    }
 
     /* Player chips */
     .user-profiles{display:flex;align-items:center;gap:12px}
@@ -223,43 +259,21 @@
       <span class="material-icons">favorite</span>
       <span>Our Space 💻❤️</span>
     </div>
-    <div class="nav-right">
-      <div class="user-profiles">
-        <div class="user-profile">
-          <div class="user-avatar" id="p1-avatar">P1</div>
-          <div class="user-info">
-            <div class="user-name" id="p1-name" contenteditable="false"></div>
-            <span class="material-icons edit-icon" onclick="enableRename('p1')">edit</span>
-          </div>
-        </div>
-        <span class="material-icons" style="opacity:.65">favorite</span>
-        <div class="user-profile">
-          <div class="user-avatar" id="p2-avatar">P2</div>
-          <div class="user-info">
-            <div class="user-name" id="p2-name" contenteditable="false"></div>
-            <span class="material-icons edit-icon" onclick="enableRename('p2')">edit</span>
-          </div>
+
+    <div class="user-profiles">
+      <div class="user-profile">
+        <div class="user-avatar" id="p1-avatar">P1</div>
+        <div class="user-info">
+          <div class="user-name" id="p1-name" contenteditable="false"></div>
+          <span class="material-icons edit-icon" onclick="enableRename('p1')">edit</span>
         </div>
       </div>
-    </div>
-
-
-    <div class="nav-right">
-      <div class="user-profiles">
-        <div class="user-profile">
-          <div class="user-avatar" id="p1-avatar">P1</div>
-          <div class="user-info">
-            <div class="user-name" id="p1-name" contenteditable="false"></div>
-            <span class="material-icons edit-icon" onclick="enableRename('p1')">edit</span>
-          </div>
-        </div>
-        <span class="material-icons" style="opacity:.65">favorite</span>
-        <div class="user-profile">
-          <div class="user-avatar" id="p2-avatar">P2</div>
-          <div class="user-info">
-            <div class="user-name" id="p2-name" contenteditable="false"></div>
-            <span class="material-icons edit-icon" onclick="enableRename('p2')">edit</span>
-          </div>
+      <span class="material-icons" style="opacity:.65">favorite</span>
+      <div class="user-profile">
+        <div class="user-avatar" id="p2-avatar">P2</div>
+        <div class="user-info">
+          <div class="user-name" id="p2-name" contenteditable="false"></div>
+          <span class="material-icons edit-icon" onclick="enableRename('p2')">edit</span>
         </div>
       </div>
     </div>
