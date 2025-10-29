@@ -1128,7 +1128,6 @@ _result = _buffer.getvalue()`;
 
     if (collage && track) {
       let offset = 0;
-      let direction = -1;         // -1 = left, 1 = right
       let minOffset = 0;          // negative value once images overflow the frame
       const maxOffset = 0;
       const scrollSpeed = 1.7;    // pixels per frame
@@ -1170,13 +1169,13 @@ _result = _buffer.getvalue()`;
 
       const step = () => {
         if (shouldAutoScroll()) {
-          let next = offset + direction * scrollSpeed;
-          if (next <= minOffset) {
-            next = minOffset;
-            direction = 1;
-          } else if (next >= maxOffset) {
-            next = maxOffset;
-            direction = -1;
+          let next = offset - scrollSpeed;
+          if (next <= minOffset) { // wrap seamlessly back to the start
+            const overflow = minOffset - next;
+            const range = maxOffset - minOffset;
+            next = range > 0
+              ? maxOffset - (overflow % range)
+              : maxOffset;
           }
           applyOffset(next);
         }
