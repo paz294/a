@@ -237,6 +237,10 @@
       <span class="material-icons" style="font-size:18px">restart_alt</span>
       Reset
     </button>
+    <button class="reset-btn" id="reset-all-btn" title="Reset all progress, code, and notes">
+      <span class="material-icons" style="font-size:18px">delete_sweep</span>
+      Full Reset
+    </button>
   </div>
 
   <!-- Mobile toggle -->
@@ -457,6 +461,29 @@ int main(){
       saveScores({p1:0,p2:0});
       saveScoreLog({});
     }
+    function fullReset(){
+      if (!confirm("Are you sure you want to reset ALL progress, code, and notes? This cannot be undone.")) return;
+
+      // Keep player names
+      const names = getNames();
+
+      // Remove progress, code, notes, and scores
+      localStorage.removeItem(PROGRESS_KEY);
+      localStorage.removeItem(CODE_KEY);
+      localStorage.removeItem(NOTES_KEY);
+      resetScores(); // clears score and log
+
+      // Reapply names and refresh UI
+      saveNames(names);
+      setupSidebar();
+      buildHome();
+      updateProgress();
+      updateScorebar();
+      goHome();
+
+      alert("Everything has been reset! 💥");
+}
+
 
     /* ========= Code & Notes persistence (per lang & slot) ========= */
     function getCodeStore(){ return JSON.parse(localStorage.getItem(CODE_KEY)||'{}'); }
@@ -793,6 +820,8 @@ _result = _buffer.getvalue()`;
       updateNamesUI();
       updateScorebar();
       document.getElementById('reset-scores-btn').onclick = resetScores;
+      document.getElementById('reset-all-btn').onclick = fullReset;
+
 
       // Sidebar & home
       setupSidebar();
