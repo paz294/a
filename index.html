@@ -388,6 +388,65 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* ===== Infinite Collage Loop ===== */
+.carousel-header {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 700;
+  color: #ffb6c1;
+  margin: 20px 0;
+  text-shadow: 0 0 12px rgba(255,153,200,0.35);
+  animation: fadeIn 1.8s ease;
+  letter-spacing: 1px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.infinite-collage {
+  overflow: hidden;
+  width: 100%;
+  max-width: 100vw;
+  margin: 0 auto 40px;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  background: #1e1e1e;
+}
+
+.scroll-strip {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  animation: scrollLoop 180s linear infinite;
+}
+
+.scroll-strip img {
+  height: 220px;
+  width: auto;
+  object-fit: cover;
+  border-radius: 10px;
+  flex-shrink: 0;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.scroll-strip img:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+/* Continuous scrolling */
+@keyframes scrollLoop {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Optional: pause on hover */
+.infinite-collage:hover .scroll-strip {
+  animation-play-state: paused;
+}
+
   </style>
 </head>
 <body>
@@ -459,29 +518,33 @@
           <p>You make even debugging fun. I love you. 💻❤️</p>
         </div>
 
-        <h2 class="carousel-header">🌸 Our First Year Together 🌸</h2>
+        <h2 class="carousel-header"> Our First Year </h2>
 
-        <div class="collage-carousel">
-          <button class="carousel-btn prev" onclick="moveCarousel(-1)">❮</button>
-          <div class="collage-track" id="carousel-track">
-            <img src="images/photo1.jpeg" alt="Us 1" class="outline-pink">
-            <img src="images/photo2.heic" alt="Us 2" class="outline-blue">
-            <img src="images/photo3.heic" alt="Us 3" class="outline-yellow">
-            <img src="images/photo4.jpg" alt="Us 4" class="outline-pink">
-            <img src="images/photo5.jpg" alt="Us 5" class="outline-blue">
-            <img src="images/photo6.jpg" alt="Us 6" class="outline-yellow">
-            <img src="images/photo7.jpg" alt="Us 7" class="outline-pink">
-            <img src="images/photo8.jpg" alt="Us 8" class="outline-blue">
-            <img src="images/photo9.jpg" alt="Us 9" class="outline-yellow">
-            <img src="images/photo10.jpg" alt="Us 10" class="outline-pink">
-            <img src="images/photo11.jpg" alt="Us 11" class="outline-blue">
-            <img src="images/photo12.jpg" alt="Us 12" class="outline-yellow">
-            <img src="images/photo13.jpg" alt="Us 13" class="outline-pink">
-            <img src="images/photo14.jpg" alt="Us 14" class="outline-blue">
-            <img src="images/photo15.jpg" alt="Us 15" class="outline-yellow">
-          </div>
-          <button class="carousel-btn next" onclick="moveCarousel(1)">❯</button>
+        <div class="infinite-collage">
+          <div class="scroll-strip" id="scroll-strip"></div>
         </div>
+
+        <script>
+          // === Generate photo collage dynamically ===
+          const track = document.getElementById('scroll-strip');
+          const totalPhotos = 71; // number of photos you have
+
+          // Add all photos once
+          for (let i = 1; i <= totalPhotos; i++) {
+            const img = document.createElement('img');
+            img.src = `images/photo${i}.png`;
+            img.alt = `Us ${i}`;
+            track.appendChild(img);
+          }
+
+          // Duplicate them for seamless looping
+          for (let i = 1; i <= totalPhotos; i++) {
+            const img = document.createElement('img');
+            img.src = `images/photo${i}.png`;
+            img.alt = `Us ${i} duplicate`;
+            track.appendChild(img);
+          }
+        </script>
 
         <button class="submit-button" onclick="showChallengesPage()">Start Challenges →</button>
       </div>
