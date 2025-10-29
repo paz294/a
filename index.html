@@ -279,6 +279,9 @@
   border-radius: 20px;
   box-shadow: 0 6px 20px rgba(0,0,0,0.5);
   background: #1e1e1e;
+  cursor: grab;
+  user-select: none;
+  touch-action: pan-y;
 }
 
 .scroll-strip {
@@ -287,6 +290,8 @@
   gap: 6px;
   width: max-content;
   transition: transform 0.1s linear;
+  will-change: transform;          /* add */
+  backface-visibility: hidden;     /* add */
 }
 
 .scroll-strip img {
@@ -295,10 +300,18 @@
   object-fit: cover;
   border-radius: 10px;
   flex-shrink: 0;
-  transition: transform 0.3s ease, filter 0.3s ease;
+  transition: transform 0.3s ease, filter 0.3s ease, opacity 0.4s ease;
+  opacity: 0.25;
+  filter: brightness(0.78) saturate(0.9);
+  background: #252525;
 }
 
-.scroll-strip img:hover {
+.scroll-strip img[data-loaded="true"] {
+  opacity: 1;
+  filter: none;
+}
+
+.scroll-strip img[data-loaded="true"]:hover {
   transform: scale(1.05);
   filter: brightness(1.1);
 }
@@ -402,77 +415,77 @@
         <div class="infinite-collage">
           <div class="scroll-strip">
             <!-- Add your 71 photos below -->
-            <img src="images/photo1.png" alt="Us 1" loading="lazy">
-            <img src="images/photo2.png" alt="Us 2" loading="lazy">
-            <img src="images/photo3.png" alt="Us 3" loading="lazy">
-            <img src="images/photo4.png" alt="Us 4" loading="lazy">
-            <img src="images/photo5.png" alt="Us 5" loading="lazy">
-            <img src="images/photo6.png" alt="Us 6" loading="lazy">
-            <img src="images/photo7.png" alt="Us 7" loading="lazy">
-            <img src="images/photo8.png" alt="Us 8" loading="lazy">
-            <img src="images/photo9.png" alt="Us 9" loading="lazy">
-            <img src="images/photo10.png" alt="Us 10" loading="lazy">
-            <img src="images/photo11.png" alt="Us 11" loading="lazy">
-            <img src="images/photo12.png" alt="Us 12" loading="lazy">
-            <img src="images/photo13.png" alt="Us 13" loading="lazy">
-            <img src="images/photo14.png" alt="Us 14" loading="lazy">
-            <img src="images/photo15.png" alt="Us 15" loading="lazy">
-            <img src="images/photo16.png" alt="Us 16" loading="lazy">
-            <img src="images/photo17.png" alt="Us 17" loading="lazy">
-            <img src="images/photo18.png" alt="Us 18" loading="lazy">
-            <img src="images/photo19.png" alt="Us 19" loading="lazy">
-            <img src="images/photo20.png" alt="Us 20" loading="lazy">
-            <img src="images/photo21.png" alt="Us 21" loading="lazy">
-            <img src="images/photo22.png" alt="Us 22" loading="lazy">
-            <img src="images/photo23.png" alt="Us 23" loading="lazy">
-            <img src="images/photo24.png" alt="Us 24" loading="lazy">
-            <img src="images/photo25.png" alt="Us 25" loading="lazy">
-            <img src="images/photo26.png" alt="Us 26" loading="lazy">
-            <img src="images/photo27.png" alt="Us 27" loading="lazy">
-            <img src="images/photo28.png" alt="Us 28" loading="lazy">
-            <img src="images/photo29.png" alt="Us 29" loading="lazy">
-            <img src="images/photo30.png" alt="Us 30" loading="lazy">
-            <img src="images/photo31.png" alt="Us 31" loading="lazy">
-            <img src="images/photo32.png" alt="Us 32" loading="lazy">
-            <img src="images/photo33.png" alt="Us 33" loading="lazy">
-            <img src="images/photo34.png" alt="Us 34" loading="lazy">
-            <img src="images/photo35.png" alt="Us 35" loading="lazy">
-            <img src="images/photo36.png" alt="Us 36" loading="lazy">
-            <img src="images/photo37.png" alt="Us 37" loading="lazy">
-            <img src="images/photo38.png" alt="Us 38" loading="lazy">
-            <img src="images/photo39.png" alt="Us 39" loading="lazy">
-            <img src="images/photo40.png" alt="Us 40" loading="lazy">
-            <img src="images/photo41.png" alt="Us 41" loading="lazy">
-            <img src="images/photo42.png" alt="Us 42" loading="lazy">
-            <img src="images/photo43.png" alt="Us 43" loading="lazy">
-            <img src="images/photo44.png" alt="Us 44" loading="lazy">
-            <img src="images/photo45.png" alt="Us 45" loading="lazy">
-            <img src="images/photo46.png" alt="Us 46" loading="lazy">
-            <img src="images/photo47.png" alt="Us 47" loading="lazy">
-            <img src="images/photo48.png" alt="Us 48" loading="lazy">
-            <img src="images/photo49.png" alt="Us 49" loading="lazy">
-            <img src="images/photo50.png" alt="Us 50" loading="lazy">
-            <img src="images/photo51.png" alt="Us 51" loading="lazy">
-            <img src="images/photo52.png" alt="Us 52" loading="lazy">
-            <img src="images/photo53.png" alt="Us 53" loading="lazy">
-            <img src="images/photo54.png" alt="Us 54" loading="lazy">
-            <img src="images/photo55.png" alt="Us 55" loading="lazy">
-            <img src="images/photo56.png" alt="Us 56" loading="lazy">
-            <img src="images/photo57.png" alt="Us 57" loading="lazy">
-            <img src="images/photo58.png" alt="Us 58" loading="lazy">
-            <img src="images/photo59.png" alt="Us 59" loading="lazy">
-            <img src="images/photo60.png" alt="Us 60" loading="lazy">
-            <img src="images/photo61.png" alt="Us 61" loading="lazy">
-            <img src="images/photo62.png" alt="Us 62" loading="lazy">
-            <img src="images/photo63.png" alt="Us 63" loading="lazy">
-            <img src="images/photo64.png" alt="Us 64" loading="lazy">
-            <img src="images/photo65.png" alt="Us 65" loading="lazy">
-            <img src="images/photo66.png" alt="Us 66" loading="lazy">
-            <img src="images/photo67.png" alt="Us 67" loading="lazy">
-            <img src="images/photo68.png" alt="Us 68" loading="lazy">
-            <img src="images/photo69.png" alt="Us 69" loading="lazy">
-            <img src="images/photo70.png" alt="Us 70" loading="lazy">
-            <img src="images/photo71.png" alt="Us 71" loading="lazy">
+            <img src="images/photo1.png" alt="Us 1" loading="eager" fetchpriority="high" decoding="async" data-loaded="false">
+            <img src="images/photo2.png" alt="Us 2" loading="eager" fetchpriority="high" decoding="async" data-loaded="false">
+            <img src="images/photo3.png" alt="Us 3" loading="eager" fetchpriority="high" decoding="async" data-loaded="false">
+            <img src="images/photo4.png" alt="Us 4" loading="eager" fetchpriority="high" decoding="async" data-loaded="false">
+            <img src="images/photo5.png" alt="Us 5" loading="eager" fetchpriority="high" decoding="async" data-loaded="false">
+            <img src="images/photo6.png" alt="Us 6" loading="eager" fetchpriority="high" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo7.png" alt="Us 7" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo8.png" alt="Us 8" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo9.png" alt="Us 9" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo10.png" alt="Us 10" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo11.png" alt="Us 11" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo12.png" alt="Us 12" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo13.png" alt="Us 13" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo14.png" alt="Us 14" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo15.png" alt="Us 15" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo16.png" alt="Us 16" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo17.png" alt="Us 17" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo18.png" alt="Us 18" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo19.png" alt="Us 19" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo20.png" alt="Us 20" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo21.png" alt="Us 21" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo22.png" alt="Us 22" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo23.png" alt="Us 23" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo24.png" alt="Us 24" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo25.png" alt="Us 25" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo26.png" alt="Us 26" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo27.png" alt="Us 27" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo28.png" alt="Us 28" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo29.png" alt="Us 29" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo30.png" alt="Us 30" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo31.png" alt="Us 31" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo32.png" alt="Us 32" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo33.png" alt="Us 33" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo34.png" alt="Us 34" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo35.png" alt="Us 35" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo36.png" alt="Us 36" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo37.png" alt="Us 37" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo38.png" alt="Us 38" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo39.png" alt="Us 39" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo40.png" alt="Us 40" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo41.png" alt="Us 41" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo42.png" alt="Us 42" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo43.png" alt="Us 43" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo44.png" alt="Us 44" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo45.png" alt="Us 45" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo46.png" alt="Us 46" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo47.png" alt="Us 47" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo48.png" alt="Us 48" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo49.png" alt="Us 49" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo50.png" alt="Us 50" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo51.png" alt="Us 51" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo52.png" alt="Us 52" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo53.png" alt="Us 53" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo54.png" alt="Us 54" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo55.png" alt="Us 55" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo56.png" alt="Us 56" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo57.png" alt="Us 57" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo58.png" alt="Us 58" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo59.png" alt="Us 59" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo60.png" alt="Us 60" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo61.png" alt="Us 61" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo62.png" alt="Us 62" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo63.png" alt="Us 63" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo64.png" alt="Us 64" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo65.png" alt="Us 65" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo66.png" alt="Us 66" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo67.png" alt="Us 67" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo68.png" alt="Us 68" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo69.png" alt="Us 69" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo70.png" alt="Us 70" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
+            <img src="data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="images/photo71.png" alt="Us 71" loading="lazy" fetchpriority="low" decoding="async" data-loaded="false">
           </div>
         </div>
 
@@ -1113,52 +1126,198 @@ _result = _buffer.getvalue()`;
     const collage = document.querySelector('.infinite-collage');
     const track = document.querySelector('.scroll-strip');
 
-    let offset = 0;
-    let direction = -1;       // -1 = left, 1 = right
-    let scrollSpeed = 2;    // smaller = slower, larger = faster
-    let range = 600;          // how far the strip glides before reversing
+    if (collage && track) {
+      let offset = 0;
+      let direction = -1;         // -1 = left, 1 = right
+      let minOffset = 0;          // negative value once images overflow the frame
+      const maxOffset = 0;
+      const scrollSpeed = 0.5;    // pixels per frame
 
-    function loop() {
-      offset += direction * scrollSpeed;
-      track.style.transform = `translateX(${offset}px)`;
+      let isHovering = false;
+      let isDragging = false;
+      let isManualPause = false;
+      let manualPauseTimer;
+      let startX = 0;
+      let startY = 0;
+      let startOffset = 0;
 
-      // reverse direction gently at ends
-      if (offset <= -range || offset >= 0) {
-        direction *= -1;
+      const clampOffset = value => {
+        if (value > maxOffset) return maxOffset;
+        if (value < minOffset) return minOffset;
+        return value;
+      };
+
+      const applyOffset = value => {
+        offset = clampOffset(value);
+        track.style.transform = `translateX(${offset}px)`;
+      };
+
+      const updateBounds = () => {
+        const overflow = track.scrollWidth - collage.clientWidth;
+        minOffset = overflow > 0 ? -overflow : 0;
+        applyOffset(offset);
+      };
+
+      const temporarilyPauseAuto = (delay = 1800) => {
+        isManualPause = true;
+        clearTimeout(manualPauseTimer);
+        manualPauseTimer = setTimeout(() => {
+          isManualPause = false;
+        }, delay);
+      };
+
+      const shouldAutoScroll = () => minOffset < 0 && !isHovering && !isDragging && !isManualPause;
+
+      const step = () => {
+        if (shouldAutoScroll()) {
+          let next = offset + direction * scrollSpeed;
+          if (next <= minOffset) {
+            next = minOffset;
+            direction = 1;
+          } else if (next >= maxOffset) {
+            next = maxOffset;
+            direction = -1;
+          }
+          applyOffset(next);
+        }
+        requestAnimationFrame(step);
+      };
+
+      const beginDrag = (x, y = null) => {
+        isDragging = true;
+        collage.classList.add('active');
+        startX = x;
+        startY = y ?? 0;
+        startOffset = offset;
+        temporarilyPauseAuto(2000);
+      };
+
+      const moveDrag = (x, y = null) => {
+        if (!isDragging) return;
+        if (y !== null && Math.abs(y - startY) > Math.abs(x - startX)) {
+          // User is scrolling vertically — end drag so page scroll feels natural.
+          endDrag();
+          return;
+        }
+        applyOffset(startOffset + (x - startX));
+      };
+
+      const endDrag = () => {
+        if (!isDragging) return;
+        isDragging = false;
+        collage.classList.remove('active');
+        temporarilyPauseAuto(1500);
+      };
+
+      collage.addEventListener('mouseenter', () => {
+        isHovering = true;
+      });
+
+      collage.addEventListener('mouseleave', () => {
+        isHovering = false;
+      });
+
+      collage.addEventListener('mousedown', e => {
+        e.preventDefault();
+        beginDrag(e.clientX);
+      });
+
+      document.addEventListener('mousemove', e => {
+        if (!isDragging) return;
+        e.preventDefault();
+        moveDrag(e.clientX);
+      });
+
+      document.addEventListener('mouseup', () => {
+        endDrag();
+      });
+
+      collage.addEventListener('touchstart', e => {
+        const touch = e.touches[0];
+        beginDrag(touch.clientX, touch.clientY);
+      }, { passive: true });
+
+      collage.addEventListener('touchmove', e => {
+        const touch = e.touches[0];
+        moveDrag(touch.clientX, touch.clientY);
+        if (isDragging) {
+          e.preventDefault();
+        }
+      }, { passive: false });
+
+      collage.addEventListener('touchend', () => {
+        endDrag();
+      });
+
+      collage.addEventListener('touchcancel', () => {
+        endDrag();
+      });
+
+      collage.addEventListener('wheel', e => {
+        const primaryDelta = Math.abs(e.deltaX) > Math.abs(e.deltaY)
+          ? e.deltaX
+          : (e.shiftKey ? e.deltaY : 0);
+
+        if (primaryDelta !== 0) {
+          e.preventDefault();
+          temporarilyPauseAuto();
+          applyOffset(offset - primaryDelta);
+        }
+      }, { passive: false });
+
+      let resizeTimer;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(updateBounds, 150);
+      });
+
+      const collageImages = Array.from(track.querySelectorAll('img'));
+
+      const markAsLoaded = img => {
+        img.dataset.loaded = 'true';
+        updateBounds();
+      };
+
+      const watchUntilLoaded = img => {
+        if (img.complete && img.naturalWidth > 1) {
+          markAsLoaded(img);
+        } else {
+          img.addEventListener('load', () => markAsLoaded(img), { once: true });
+        }
+      };
+
+      const hydrateImage = img => {
+        if (img.dataset.src && img.src !== img.dataset.src) {
+          img.src = img.dataset.src;
+        }
+      };
+
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              observer.unobserve(entry.target);
+              hydrateImage(entry.target);
+            }
+          });
+        }, { root: collage, rootMargin: '160px' });
+
+        collageImages.forEach(img => {
+          if (img.dataset.src) {
+            observer.observe(img);
+          }
+          watchUntilLoaded(img);
+        });
+      } else {
+        collageImages.forEach(img => {
+          hydrateImage(img);
+          watchUntilLoaded(img);
+        });
       }
 
-      requestAnimationFrame(loop);
+      updateBounds();
+      requestAnimationFrame(step);
     }
-    requestAnimationFrame(loop);
-
-    /* === Drag-to-scroll === */
-    let isDown = false;
-    let startX;
-    let startOffset;
-
-    collage.addEventListener('mousedown', e => {
-      isDown = true;
-      collage.classList.add('active');
-      startX = e.pageX;
-      startOffset = offset;
-    });
-
-    collage.addEventListener('mouseup', () => {
-      isDown = false;
-      collage.classList.remove('active');
-    });
-
-    collage.addEventListener('mouseleave', () => {
-      isDown = false;
-      collage.classList.remove('active');
-    });
-
-    collage.addEventListener('mousemove', e => {
-      if (!isDown) return;
-      e.preventDefault();
-      const dx = e.pageX - startX;
-      offset = startOffset + dx;
-    });
 
   </script>
   <!-- Celebration Popup -->
