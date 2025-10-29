@@ -793,6 +793,29 @@ _result = _buffer.getvalue()`;
           log[id] = 'solo';
           saveScoreLog(log);
         }
+          // Celebration popup
+        const names = getNames();
+        const p1 = names.p1.toLowerCase();
+        const p2 = names.p2.toLowerCase();
+        let message = "yaayyyy";
+
+        if (who === "p1" || who === "both") {
+          if (p1.startsWith("paul")) {
+            message = "yaaayyyy you did it! you're so smart and nice and pretty! just the best at everything <3";
+          } else if (p1.startsWith("ruben")) {
+            message = "wow congrats, you're really a nerd (still love you I guess <3)";
+          }
+        } 
+        else if (who === "p2") {
+          if (p2.startsWith("paul")) {
+            message = "yaaayyyy you did it! you're so smart and nice and pretty! just the best at everything <3";
+          } else if (p2.startsWith("ruben")) {
+            message = "wow congrats, you're really a nerd (still love you I guess <3)";
+          }
+        }
+
+        showCelebration(message);
+
       }
 
       // UI refresh
@@ -812,6 +835,22 @@ _result = _buffer.getvalue()`;
         if(p2btn) p2btn.textContent = nowCompleted ? 'Mark Incomplete' : 'Mark Completed';
         if(soloBtn) soloBtn.textContent = nowCompleted ? 'Mark Incomplete' : 'Mark Completed';
       }
+    }
+    /* ========= Celebration Popup ========= */
+    function showCelebration(message) {
+      const overlay = document.getElementById("celebration-overlay");
+      overlay.innerHTML = `
+        <div class="celebration-popup">
+          ${message}
+          <div class="hearts">
+            <span>💖</span><span>💗</span><span>💞</span><span>💓</span><span>❤️</span>
+          </div>
+        </div>
+      `;
+      overlay.style.display = "flex";
+
+      // Hide after animation ends (about 3.5s)
+      setTimeout(() => overlay.style.display = "none", 3500);
     }
 
     /* ========= Init ========= */
@@ -834,5 +873,7 @@ _result = _buffer.getvalue()`;
 
     window.onload = init;
   </script>
+  <!-- Celebration Popup -->
+<div id="celebration-overlay"></div>
 </body>
 </html>
