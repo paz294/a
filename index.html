@@ -325,23 +325,6 @@
 .carousel-btn.prev { left: 8px; }
 .carousel-btn.next { right: 8px; }
 
-/* ===== Carousel Header Title ===== */
-.carousel-header {
-  text-align: center;
-  font-size: 32px;
-  font-weight: 700;
-  color: #ffb6c1; /* soft romantic pink */
-  margin-bottom: 20px;
-  margin-top: 10px;
-  text-shadow: 0 0 12px rgba(255,153,200,0.35);
-  animation: fadeIn 1.8s ease;
-  letter-spacing: 1px;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
 
   </style>
 </head>
@@ -414,19 +397,6 @@
           <p>You make even debugging fun. I love you. 💻❤️</p>
         </div>
 
-    <h2 class="carousel-header">🌸 Our First Year Together 🌸</h2>
-
-    <div class="photo-carousel">
-      <button class="carousel-btn prev" onclick="moveCarousel(-1)">❮</button>
-      <div class="carousel-track" id="carousel-track">
-        <img src="images/photo1.jpg" alt="Us 1">
-        <img src="images/photo2.jpg" alt="Us 2">
-        <img src="images/photo3.jpg" alt="Us 3">
-        <!-- ... up to photo15.jpg -->
-      </div>
-      <button class="carousel-btn next" onclick="moveCarousel(1)">❯</button>
-    </div>
-        
         <div class="photo-carousel">
           <button class="carousel-btn prev" onclick="moveCarousel(-1)">❮</button>
           <div class="carousel-track" id="carousel-track">
