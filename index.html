@@ -322,6 +322,9 @@
   animation-play-state: paused;
   cursor: grabbing;
 }
+.infinite-collage:hover .scroll-strip {
+  transition: none;
+}
 
   </style>
 </head>
@@ -1106,24 +1109,29 @@ _result = _buffer.getvalue()`;
 
     window.onload = init;
 
-    /* === Smooth auto-scroll + drag control === */
+    /* === Smooth back-and-forth scroll + drag control === */
     const collage = document.querySelector('.infinite-collage');
     const track = document.querySelector('.scroll-strip');
 
-    let scrollSpeed = 2; // control speed (higher = faster)
     let offset = 0;
+    let direction = -1;       // -1 = left, 1 = right
+    let scrollSpeed = 2;    // smaller = slower, larger = faster
+    let range = 600;          // how far the strip glides before reversing
 
     function loop() {
-      offset -= scrollSpeed;
-      if (Math.abs(offset) >= track.scrollWidth / 2) {
-        offset = 0;
-      }
+      offset += direction * scrollSpeed;
       track.style.transform = `translateX(${offset}px)`;
+
+      // reverse direction gently at ends
+      if (offset <= -range || offset >= 0) {
+        direction *= -1;
+      }
+
       requestAnimationFrame(loop);
     }
-    loop();
+    requestAnimationFrame(loop);
 
-    // === Drag-to-scroll ===
+    /* === Drag-to-scroll === */
     let isDown = false;
     let startX;
     let startOffset;
@@ -1151,6 +1159,7 @@ _result = _buffer.getvalue()`;
       const dx = e.pageX - startX;
       offset = startOffset + dx;
     });
+
   </script>
   <!-- Celebration Popup -->
 <div id="celebration-overlay"></div>
