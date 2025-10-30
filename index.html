@@ -1174,6 +1174,27 @@ _result = _buffer.getvalue()`;
       let startOffset = 0;
       let isLoopAligned = false;
 
+      const wrapVirtual = value => {
+        if (!hasOverflow || loopWidth <= 0) {
+          return 0;
+        }
+        const min = -loopWidth * (totalSets - 1);
+        let next = value;
+        while (next < min) {
+          next += loopWidth;
+          if (isDragging) {
+            startOffset += loopWidth;
+          }
+        }
+        while (next > 0) {
+          next -= loopWidth;
+          if (isDragging) {
+            startOffset -= loopWidth;
+          }
+        }
+        return next;
+      };
+
       const applyOffset = value => {
         if (!hasOverflow || loopWidth <= 0) {
           virtualOffset = 0;
@@ -1181,9 +1202,8 @@ _result = _buffer.getvalue()`;
           track.style.transform = 'translateX(0)';
           return;
         }
-        virtualOffset = value;
-        const normalized = ((value % loopWidth) + loopWidth) % loopWidth;
-        offset = normalized - loopWidth;
+        virtualOffset = wrapVirtual(value);
+        offset = virtualOffset;
         track.style.transform = `translateX(${offset}px)`;
       };
 
@@ -1202,8 +1222,11 @@ _result = _buffer.getvalue()`;
         if (!isLoopAligned && loopWidth > 0) {
           virtualOffset = -loopWidth;
           isLoopAligned = true;
+        } else {
+          virtualOffset = wrapVirtual(virtualOffset);
         }
-        applyOffset(virtualOffset);
+        offset = virtualOffset;
+        track.style.transform = `translateX(${offset}px)`;
       };
 
       const temporarilyPauseAuto = (delay = 1800) => {
@@ -1224,8 +1247,8 @@ _result = _buffer.getvalue()`;
           if (relative > loopWidth - firstWidth && firstWidth > 0) {
             const distancePast = loopWidth - relative;
             const pauseProgress = Math.min(distancePast / firstWidth, 1);
-            const eased = scrollSpeed * (1 - Math.pow(pauseProgress, 2));
-            applyOffset(virtualOffset - Math.max(0.15, eased));
+            const eased = scrollSpeed * (1 - Math.pow(pauseProgress, 1.8));
+            applyOffset(virtualOffset - Math.max(0.2, eased));
           } else {
             applyOffset(virtualOffset - scrollSpeed);
           }
