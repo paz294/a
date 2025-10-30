@@ -1127,31 +1127,41 @@ _result = _buffer.getvalue()`;
 
     if (collage && track) {
       const PLACEHOLDER_SRC = 'data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
-      const LOOP_SET_COUNT = 3;
+      track.style.visibility = 'hidden';
+
       const baseCountAttr = track.dataset.loopBaseCount;
-      const baseCount = baseCountAttr ? parseInt(baseCountAttr, 10) || 0 : track.children.length;
-      const originalItems = Array.from(track.children).slice(0, baseCount);
+      const existingChildren = Array.from(track.children);
+      const baseCount = baseCountAttr ? parseInt(baseCountAttr, 10) || 0 : existingChildren.length;
+      const originalItems = existingChildren.slice(0, baseCount);
 
       if (!baseCountAttr) {
         track.dataset.loopBaseCount = String(baseCount);
       }
 
       if (!track.dataset.loopInitialized && originalItems.length > 0) {
-        const fragment = document.createDocumentFragment();
-        for (let i = 1; i < LOOP_SET_COUNT; i++) {
-          originalItems.forEach(img => {
-            const clone = img.cloneNode(true);
-            clone.dataset.loaded = 'false';
-            if (!clone.dataset.src && clone.src && !clone.src.startsWith('data:image')) {
-              clone.dataset.src = clone.src;
-              clone.src = PLACEHOLDER_SRC;
-              clone.loading = 'lazy';
-              clone.removeAttribute('fetchpriority');
-            }
-            fragment.appendChild(clone);
-          });
-        }
-        track.appendChild(fragment);
+        const cloneForLoop = source => {
+          const clone = source.cloneNode(true);
+          clone.dataset.loaded = 'false';
+          if (!clone.dataset.src && clone.src && !clone.src.startsWith('data:image')) {
+            clone.dataset.src = clone.src;
+            clone.src = PLACEHOLDER_SRC;
+            clone.loading = 'lazy';
+            clone.removeAttribute('fetchpriority');
+          }
+          return clone;
+        };
+
+        const beforeFragment = document.createDocumentFragment();
+        const afterFragment = document.createDocumentFragment();
+        originalItems.forEach(img => {
+          beforeFragment.appendChild(cloneForLoop(img));
+        });
+        originalItems.forEach(img => {
+          afterFragment.appendChild(cloneForLoop(img));
+        });
+
+        track.insertBefore(beforeFragment, track.firstChild);
+        track.appendChild(afterFragment);
         track.dataset.loopInitialized = 'true';
       }
 
@@ -1173,6 +1183,7 @@ _result = _buffer.getvalue()`;
       let startY = 0;
       let startOffset = 0;
       let isLoopAligned = false;
+      let isTrackVisible = false;
 
       const wrapVirtual = value => {
         if (!hasOverflow || loopWidth <= 0) {
@@ -1217,16 +1228,21 @@ _result = _buffer.getvalue()`;
           virtualOffset = 0;
           offset = 0;
           track.style.transform = 'translateX(0)';
+          if (!isTrackVisible && loopWidth > 0) {
+            track.style.visibility = 'visible';
+            isTrackVisible = true;
+          }
           return;
         }
         if (!isLoopAligned && loopWidth > 0) {
           virtualOffset = -loopWidth;
           isLoopAligned = true;
-        } else {
-          virtualOffset = wrapVirtual(virtualOffset);
         }
-        offset = virtualOffset;
-        track.style.transform = `translateX(${offset}px)`;
+        applyOffset(virtualOffset);
+        if (!isTrackVisible) {
+          track.style.visibility = 'visible';
+          isTrackVisible = true;
+        }
       };
 
       const temporarilyPauseAuto = (delay = 1800) => {
@@ -1243,10 +1259,10 @@ _result = _buffer.getvalue()`;
         if (shouldAutoScroll()) {
           const firstImage = originalItems[0];
           const firstWidth = firstImage ? firstImage.getBoundingClientRect().width + 6 : 0; // include gap
-          const relative = ((virtualOffset % loopWidth) + loopWidth) % loopWidth;
-          if (relative > loopWidth - firstWidth && firstWidth > 0) {
-            const distancePast = loopWidth - relative;
-            const pauseProgress = Math.min(distancePast / firstWidth, 1);
+          const progressed = ((-virtualOffset) % loopWidth + loopWidth) % loopWidth;
+          const remaining = loopWidth - progressed;
+          if (remaining < firstWidth && firstWidth > 0) {
+            const pauseProgress = Math.min(remaining / firstWidth, 1);
             const eased = scrollSpeed * (1 - Math.pow(pauseProgress, 1.8));
             applyOffset(virtualOffset - Math.max(0.2, eased));
           } else {
