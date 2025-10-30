@@ -324,19 +324,23 @@
   align-items:center;
   justify-content:center;
   gap:8px;
-  margin:20px auto 0;
-  padding:10px 20px;
+  margin:22px auto 0;
+  padding:10px 24px;
   font-size:14px;
-  background:#a5d8ff;
-  color:#111;
-  border:none;
-  border-radius:10px;
-  box-shadow:0 4px 14px rgba(165,216,255,0.12);
-  transition:transform .16s ease, filter .16s ease;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  background:transparent;
+  color:#a5d8ff;
+  border:1px solid rgba(165,216,255,.55);
+  border-radius:999px;
+  box-shadow:0 6px 18px rgba(0,0,0,.24);
+  transition:transform .16s ease, background .16s ease, border-color .16s ease, color .16s ease;
 }
 .start-button:hover{
-  filter:brightness(1.04);
-  transform:translateY(-0.5px);
+  background:rgba(165,216,255,.12);
+  color:#d0ebff;
+  border-color:rgba(165,216,255,.75);
+  transform:translateY(-1px);
 }
 
 /* Continuous scrolling */
