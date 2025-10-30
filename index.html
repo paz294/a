@@ -323,21 +323,24 @@
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  gap:8px;
-  margin:20px auto 0;
+  gap:10px;
+  margin:26px auto 0;
   padding:9px 22px;
-  font-size:14px;
-  background:linear-gradient(135deg,#a5d8ff,#91c9ff);
-  color:#0b141f;
-  border:none;
-  border-radius:999px;
-  box-shadow:0 12px 28px rgba(22,110,190,0.25);
-  transition:transform .16s ease, box-shadow .16s ease, filter .16s ease;
+  font-size:13px;
+  font-weight:600;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  background:transparent;
+  color:#a5d8ff;
+  border:1px solid rgba(165,216,255,.65);
+  border-radius:20px;
+  box-shadow:none;
+  transition:color .16s ease, border-color .16s ease, transform .16s ease;
 }
 .start-button:hover{
-  filter:brightness(1.05);
+  color:#d0ebff;
+  border-color:rgba(165,216,255,.9);
   transform:translateY(-1px);
-  box-shadow:0 16px 34px rgba(22,110,190,0.28);
 }
 
 /* Continuous scrolling */
@@ -512,7 +515,7 @@
 
         </div>
 
-        <button class="submit-button start-button" onclick="showChallengesPage()">Start Challenges →</button>
+        <button class="start-button" onclick="showChallengesPage()">Start Challenges →</button>
       </div>
 
       <!-- CHALLENGES PAGE -->
