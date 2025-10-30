@@ -324,23 +324,20 @@
   align-items:center;
   justify-content:center;
   gap:8px;
-  margin:22px auto 0;
-  padding:10px 24px;
+  margin:20px auto 0;
+  padding:9px 22px;
   font-size:14px;
-  letter-spacing:.06em;
-  text-transform:uppercase;
-  background:transparent;
-  color:#a5d8ff;
-  border:1px solid rgba(165,216,255,.55);
+  background:linear-gradient(135deg,#a5d8ff,#91c9ff);
+  color:#0b141f;
+  border:none;
   border-radius:999px;
-  box-shadow:0 6px 18px rgba(0,0,0,.24);
-  transition:transform .16s ease, background .16s ease, border-color .16s ease, color .16s ease;
+  box-shadow:0 12px 28px rgba(22,110,190,0.25);
+  transition:transform .16s ease, box-shadow .16s ease, filter .16s ease;
 }
 .start-button:hover{
-  background:rgba(165,216,255,.12);
-  color:#d0ebff;
-  border-color:rgba(165,216,255,.75);
+  filter:brightness(1.05);
   transform:translateY(-1px);
+  box-shadow:0 16px 34px rgba(22,110,190,0.28);
 }
 
 /* Continuous scrolling */
