@@ -324,21 +324,19 @@
   align-items:center;
   justify-content:center;
   gap:8px;
-  margin:24px auto 0;
-  padding:12px 26px;
-  font-size:15px;
-  text-transform:uppercase;
-  letter-spacing:.08em;
+  margin:20px auto 0;
+  padding:10px 20px;
+  font-size:14px;
   background:#a5d8ff;
   color:#111;
   border:none;
-  border-radius:999px;
-  box-shadow:0 10px 30px rgba(165,216,255,0.18);
-  transition:transform .18s ease, filter .18s ease;
+  border-radius:10px;
+  box-shadow:0 4px 14px rgba(165,216,255,0.12);
+  transition:transform .16s ease, filter .16s ease;
 }
 .start-button:hover{
-  filter:brightness(1.05);
-  transform:translateY(-1px);
+  filter:brightness(1.04);
+  transform:translateY(-0.5px);
 }
 
 /* Continuous scrolling */
@@ -1223,6 +1221,7 @@ _result = _buffer.getvalue()`;
       let firstItemWidth = 0;
       let cachedGap = null;
       const scrollSpeed = 1.7;    // pixels per frame
+      const pauseTargetIndex = 4; // zero-based index of image to center on pause
 
       let isHovering = false;
       let isDragging = false;
@@ -1325,11 +1324,16 @@ _result = _buffer.getvalue()`;
         if (shouldAutoScroll()) {
           const firstWidth = firstItemWidth > 0 ? firstItemWidth : measureFirstItemWidth();
           const progressed = ((-virtualOffset) % loopWidth + loopWidth) % loopWidth;
-          const remaining = loopWidth - progressed;
-          if (firstWidth > 0 && remaining < firstWidth) {
-            const pauseProgress = Math.min(remaining / firstWidth, 1);
-            const eased = scrollSpeed * (1 - Math.pow(pauseProgress, 1.8));
-            applyOffset(virtualOffset - Math.max(0.2, eased));
+          if (firstWidth > 0) {
+            const targetProgress = firstWidth * pauseTargetIndex;
+            const distanceToTarget = ((targetProgress - progressed) % loopWidth + loopWidth) % loopWidth;
+            if (distanceToTarget < firstWidth) {
+              const pauseProgress = Math.min(distanceToTarget / firstWidth, 1);
+              const eased = scrollSpeed * (1 - Math.pow(pauseProgress, 1.8));
+              applyOffset(virtualOffset - Math.max(0.2, eased));
+            } else {
+              applyOffset(virtualOffset - scrollSpeed);
+            }
           } else {
             applyOffset(virtualOffset - scrollSpeed);
           }
