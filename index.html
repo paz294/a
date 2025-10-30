@@ -1046,6 +1046,8 @@ _result = _buffer.getvalue()`;
       let virtualOffset = 0;
       let loopWidth = 0;
       let hasOverflow = false;
+      let firstItemWidth = 0;
+      let cachedGap = null;
       const scrollSpeed = 1.7;    // pixels per frame
 
       let isHovering = false;
@@ -1091,11 +1093,28 @@ _result = _buffer.getvalue()`;
         track.style.transform = `translateX(${offset}px)`;
       };
 
+      const measureFirstItemWidth = () => {
+        const first = originalItems[0];
+        if (!first) return 0;
+        const measured = first.offsetWidth;
+        if (measured > 0) {
+          if (cachedGap === null) {
+            const style = window.getComputedStyle(track);
+            cachedGap = parseFloat(style.columnGap || style.gap || '0') || 0;
+          }
+          firstItemWidth = measured + cachedGap;
+        }
+        return firstItemWidth;
+      };
+
       const updateBounds = () => {
         const totalWidth = track.scrollWidth;
         const viewWidth = collage.clientWidth;
         loopWidth = totalSets > 0 ? totalWidth / totalSets : totalWidth;
         hasOverflow = loopWidth > viewWidth;
+        cachedGap = null;
+        firstItemWidth = 0;
+        measureFirstItemWidth();
         if (!hasOverflow) {
           isLoopAligned = false;
           virtualOffset = 0;
@@ -1130,11 +1149,10 @@ _result = _buffer.getvalue()`;
 
       const step = () => {
         if (shouldAutoScroll()) {
-          const firstImage = originalItems[0];
-          const firstWidth = firstImage ? firstImage.getBoundingClientRect().width + 6 : 0; // include gap
+          const firstWidth = firstItemWidth > 0 ? firstItemWidth : measureFirstItemWidth();
           const progressed = ((-virtualOffset) % loopWidth + loopWidth) % loopWidth;
           const remaining = loopWidth - progressed;
-          if (remaining < firstWidth && firstWidth > 0) {
+          if (firstWidth > 0 && remaining < firstWidth) {
             const pauseProgress = Math.min(remaining / firstWidth, 1);
             const eased = scrollSpeed * (1 - Math.pow(pauseProgress, 1.8));
             applyOffset(virtualOffset - Math.max(0.2, eased));
