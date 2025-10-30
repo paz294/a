@@ -289,7 +289,6 @@
   flex-wrap: nowrap;
   gap: 6px;
   width: max-content;
-  transition: transform 0.1s linear;
   will-change: transform;          /* add */
   backface-visibility: hidden;     /* add */
 }
@@ -1161,6 +1160,7 @@ _result = _buffer.getvalue()`;
         : 1;
 
       let offset = 0;
+      let virtualOffset = 0;
       let loopWidth = 0;
       let hasOverflow = false;
       const scrollSpeed = 1.7;    // pixels per frame
@@ -1174,24 +1174,16 @@ _result = _buffer.getvalue()`;
       let startOffset = 0;
       let isLoopAligned = false;
 
-      const wrapOffset = value => {
-        if (!hasOverflow || loopWidth <= 0) {
-          return 0;
-        }
-        const min = -loopWidth * (totalSets - 1);
-        let current = value;
-        while (current < min) current += loopWidth;
-        while (current > 0) current -= loopWidth;
-        return current;
-      };
-
       const applyOffset = value => {
         if (!hasOverflow || loopWidth <= 0) {
+          virtualOffset = 0;
           offset = 0;
           track.style.transform = 'translateX(0)';
           return;
         }
-        offset = wrapOffset(value);
+        virtualOffset = value;
+        const normalized = ((value % loopWidth) + loopWidth) % loopWidth;
+        offset = normalized - loopWidth;
         track.style.transform = `translateX(${offset}px)`;
       };
 
@@ -1202,12 +1194,16 @@ _result = _buffer.getvalue()`;
         hasOverflow = loopWidth > viewWidth;
         if (!hasOverflow) {
           isLoopAligned = false;
+          virtualOffset = 0;
           offset = 0;
-        } else if (!isLoopAligned && loopWidth > 0) {
-          offset = -loopWidth;
+          track.style.transform = 'translateX(0)';
+          return;
+        }
+        if (!isLoopAligned && loopWidth > 0) {
+          virtualOffset = -loopWidth;
           isLoopAligned = true;
         }
-        applyOffset(offset);
+        applyOffset(virtualOffset);
       };
 
       const temporarilyPauseAuto = (delay = 1800) => {
@@ -1222,7 +1218,7 @@ _result = _buffer.getvalue()`;
 
       const step = () => {
         if (shouldAutoScroll()) {
-          applyOffset(offset - scrollSpeed);
+          applyOffset(virtualOffset - scrollSpeed);
         }
         requestAnimationFrame(step);
       };
@@ -1233,7 +1229,7 @@ _result = _buffer.getvalue()`;
         collage.classList.add('active');
         startX = x;
         startY = y ?? 0;
-        startOffset = offset;
+        startOffset = virtualOffset;
         temporarilyPauseAuto(2000);
       };
 
@@ -1306,7 +1302,7 @@ _result = _buffer.getvalue()`;
         if (primaryDelta !== 0 && hasOverflow) {
           e.preventDefault();
           temporarilyPauseAuto();
-          applyOffset(offset - primaryDelta);
+          applyOffset(virtualOffset - primaryDelta);
         }
       }, { passive: false });
 
