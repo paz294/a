@@ -338,26 +338,9 @@
   box-shadow:none;
   transition:color .16s ease, transform .16s ease;
 }
-.start-button::after{
-  content:'';
-  position:absolute;
-  left:0;
-  right:0;
-  bottom:-6px;
-  height:1px;
-  background:linear-gradient(90deg,rgba(165,216,255,0),rgba(165,216,255,.6),rgba(165,216,255,0));
-  transform:scaleX(.4);
-  transform-origin:center;
-  transition:transform .18s ease, opacity .18s ease;
-  opacity:.7;
-}
 .start-button:hover{
   color:#d0ebff;
   transform:translateY(-2px);
-}
-.start-button:hover::after{
-  transform:scaleX(1);
-  opacity:1;
 }
 
 /* Continuous scrolling */
