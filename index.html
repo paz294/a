@@ -1221,7 +1221,7 @@ _result = _buffer.getvalue()`;
       let firstItemWidth = 0;
       let cachedGap = null;
       let targetProgress = 0;
-      const scrollSpeed = 1.9;    // pixels per frame
+      const scrollSpeed = 2;    // pixels per frame
       const pauseTargetIndex = 4; // zero-based index of image to center on pause
 
       let isHovering = false;
@@ -1362,10 +1362,10 @@ _result = _buffer.getvalue()`;
             let speed = scrollSpeed;
             if (distanceToTarget < loopWidth) {
               if (distanceToTarget < slowZone) {
-                const ratio = Math.max(Math.pow(distanceToTarget / slowZone, 0.8), 0.7);
+                const ratio = Math.max(Math.pow(distanceToTarget / slowZone, 0.7), 0.8);
                 speed = scrollSpeed * ratio;
               }
-              speed = Math.min(speed, Math.max(distanceToTarget, 0.18));
+              speed = Math.min(speed, Math.max(distanceToTarget, 0.2));
               applyOffset(virtualOffset - speed);
             } else {
               applyOffset(virtualOffset - scrollSpeed);
