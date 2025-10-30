@@ -1358,14 +1358,14 @@ _result = _buffer.getvalue()`;
           if (loopWidth > 0 && firstWidth > 0) {
             const progressed = ((-virtualOffset) % loopWidth + loopWidth) % loopWidth;
             const distanceToTarget = ((targetProgress - progressed) % loopWidth + loopWidth) % loopWidth;
-            const slowZone = firstWidth * 1.4;
+            const slowZone = firstWidth * 1.1;
             let speed = scrollSpeed;
             if (distanceToTarget < loopWidth) {
               if (distanceToTarget < slowZone) {
-                const ratio = Math.max(distanceToTarget / slowZone, 0.25);
+                const ratio = Math.max(distanceToTarget / slowZone, 0.5);
                 speed = scrollSpeed * ratio;
               }
-              speed = Math.min(speed, Math.max(distanceToTarget, 0.08));
+              speed = Math.min(speed, Math.max(distanceToTarget, 0.16));
               applyOffset(virtualOffset - speed);
             } else {
               applyOffset(virtualOffset - scrollSpeed);
