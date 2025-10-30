@@ -1218,7 +1218,17 @@ _result = _buffer.getvalue()`;
 
       const step = () => {
         if (shouldAutoScroll()) {
-          applyOffset(virtualOffset - scrollSpeed);
+          const firstImage = originalItems[0];
+          const firstWidth = firstImage ? firstImage.getBoundingClientRect().width + 6 : 0; // include gap
+          const relative = ((virtualOffset % loopWidth) + loopWidth) % loopWidth;
+          if (relative > loopWidth - firstWidth && firstWidth > 0) {
+            const distancePast = loopWidth - relative;
+            const pauseProgress = Math.min(distancePast / firstWidth, 1);
+            const eased = scrollSpeed * (1 - Math.pow(pauseProgress, 2));
+            applyOffset(virtualOffset - Math.max(0.15, eased));
+          } else {
+            applyOffset(virtualOffset - scrollSpeed);
+          }
         }
         requestAnimationFrame(step);
       };
