@@ -1140,14 +1140,20 @@ _result = _buffer.getvalue()`;
       let startY = 0;
       let startOffset = 0;
 
-      const clampOffset = value => {
-        if (value > maxOffset) return maxOffset;
-        if (value < minOffset) return minOffset;
-        return value;
+      const normalizeOffset = value => {
+        if (minOffset >= maxOffset) {
+          return maxOffset;
+        }
+        const range = maxOffset - minOffset;
+        let normalized = (value - minOffset) % range;
+        if (normalized < 0) {
+          normalized += range;
+        }
+        return minOffset + normalized;
       };
 
       const applyOffset = value => {
-        offset = clampOffset(value);
+        offset = normalizeOffset(value);
         track.style.transform = `translateX(${offset}px)`;
       };
 
@@ -1169,15 +1175,7 @@ _result = _buffer.getvalue()`;
 
       const step = () => {
         if (shouldAutoScroll()) {
-          let next = offset - scrollSpeed;
-          if (next <= minOffset) { // wrap seamlessly back to the start
-            const overflow = minOffset - next;
-            const range = maxOffset - minOffset;
-            next = range > 0
-              ? maxOffset - (overflow % range)
-              : maxOffset;
-          }
-          applyOffset(next);
+          applyOffset(offset - scrollSpeed);
         }
         requestAnimationFrame(step);
       };
