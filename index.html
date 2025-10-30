@@ -1127,9 +1127,42 @@ _result = _buffer.getvalue()`;
     const track = document.querySelector('.scroll-strip');
 
     if (collage && track) {
+      const PLACEHOLDER_SRC = 'data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
+      const LOOP_SET_COUNT = 3;
+      const baseCountAttr = track.dataset.loopBaseCount;
+      const baseCount = baseCountAttr ? parseInt(baseCountAttr, 10) || 0 : track.children.length;
+      const originalItems = Array.from(track.children).slice(0, baseCount);
+
+      if (!baseCountAttr) {
+        track.dataset.loopBaseCount = String(baseCount);
+      }
+
+      if (!track.dataset.loopInitialized && originalItems.length > 0) {
+        const fragment = document.createDocumentFragment();
+        for (let i = 1; i < LOOP_SET_COUNT; i++) {
+          originalItems.forEach(img => {
+            const clone = img.cloneNode(true);
+            clone.dataset.loaded = 'false';
+            if (!clone.dataset.src && clone.src && !clone.src.startsWith('data:image')) {
+              clone.dataset.src = clone.src;
+              clone.src = PLACEHOLDER_SRC;
+              clone.loading = 'lazy';
+              clone.removeAttribute('fetchpriority');
+            }
+            fragment.appendChild(clone);
+          });
+        }
+        track.appendChild(fragment);
+        track.dataset.loopInitialized = 'true';
+      }
+
+      const totalSets = originalItems.length > 0
+        ? Math.max(1, Math.round(track.children.length / originalItems.length))
+        : 1;
+
       let offset = 0;
-      let minOffset = 0;          // negative value once images overflow the frame
-      const maxOffset = 0;
+      let loopWidth = 0;
+      let hasOverflow = false;
       const scrollSpeed = 1.7;    // pixels per frame
 
       let isHovering = false;
@@ -1141,25 +1174,28 @@ _result = _buffer.getvalue()`;
       let startOffset = 0;
 
       const normalizeOffset = value => {
-        if (minOffset >= maxOffset) {
-          return maxOffset;
+        if (!hasOverflow || loopWidth <= 0) {
+          return 0;
         }
-        const range = maxOffset - minOffset;
-        let normalized = (value - minOffset) % range;
-        if (normalized < 0) {
-          normalized += range;
-        }
-        return minOffset + normalized;
+        const normalized = ((value % loopWidth) + loopWidth) % loopWidth;
+        return normalized === 0 ? 0 : normalized - loopWidth;
       };
 
       const applyOffset = value => {
+        if (!hasOverflow || loopWidth <= 0) {
+          offset = 0;
+          track.style.transform = 'translateX(0)';
+          return;
+        }
         offset = normalizeOffset(value);
         track.style.transform = `translateX(${offset}px)`;
       };
 
       const updateBounds = () => {
-        const overflow = track.scrollWidth - collage.clientWidth;
-        minOffset = overflow > 0 ? -overflow : 0;
+        const totalWidth = track.scrollWidth;
+        const viewWidth = collage.clientWidth;
+        loopWidth = totalSets > 0 ? totalWidth / totalSets : totalWidth;
+        hasOverflow = loopWidth > viewWidth;
         applyOffset(offset);
       };
 
@@ -1171,7 +1207,7 @@ _result = _buffer.getvalue()`;
         }, delay);
       };
 
-      const shouldAutoScroll = () => minOffset < 0 && !isHovering && !isDragging && !isManualPause;
+      const shouldAutoScroll = () => hasOverflow && !isHovering && !isDragging && !isManualPause;
 
       const step = () => {
         if (shouldAutoScroll()) {
@@ -1181,6 +1217,7 @@ _result = _buffer.getvalue()`;
       };
 
       const beginDrag = (x, y = null) => {
+        if (!hasOverflow) return;
         isDragging = true;
         collage.classList.add('active');
         startX = x;
@@ -1190,7 +1227,7 @@ _result = _buffer.getvalue()`;
       };
 
       const moveDrag = (x, y = null) => {
-        if (!isDragging) return;
+        if (!isDragging || !hasOverflow) return;
         if (y !== null && Math.abs(y - startY) > Math.abs(x - startX)) {
           // User is scrolling vertically — end drag so page scroll feels natural.
           endDrag();
@@ -1255,7 +1292,7 @@ _result = _buffer.getvalue()`;
           ? e.deltaX
           : (e.shiftKey ? e.deltaY : 0);
 
-        if (primaryDelta !== 0) {
+        if (primaryDelta !== 0 && hasOverflow) {
           e.preventDefault();
           temporarilyPauseAuto();
           applyOffset(offset - primaryDelta);
