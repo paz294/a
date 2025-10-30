@@ -723,17 +723,15 @@ int main(){
     function fullReset(){
       if (!confirm("Are you sure you want to reset ALL progress, code, and notes? This cannot be undone.")) return;
 
-      // Keep player names
-      const names = getNames();
-
-      // Remove progress, code, notes, and scores
+      // Remove player names, progress, code, notes, and scores
+      localStorage.removeItem(PLAYER_KEY);
       localStorage.removeItem(PROGRESS_KEY);
       localStorage.removeItem(CODE_KEY);
       localStorage.removeItem(NOTES_KEY);
       resetScores(); // clears score and log
 
-      // Reapply names and refresh UI
-      saveNames(names);
+      // Refresh UI with defaults
+      updateNamesUI();
       setupSidebar();
       buildHome();
       updateProgress();
