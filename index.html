@@ -1220,6 +1220,7 @@ _result = _buffer.getvalue()`;
       let hasOverflow = false;
       let firstItemWidth = 0;
       let cachedGap = null;
+      let targetProgress = 0;
       const scrollSpeed = 1.7;    // pixels per frame
       const pauseTargetIndex = 4; // zero-based index of image to center on pause
 
@@ -1280,6 +1281,32 @@ _result = _buffer.getvalue()`;
         return firstItemWidth;
       };
 
+      const computeTargetProgress = () => {
+        const base = originalItems[0];
+        let target = originalItems[pauseTargetIndex];
+        if (!base) {
+          targetProgress = 0;
+          return;
+        }
+        if (!target) {
+          target = originalItems[originalItems.length - 1];
+        }
+        if (!target) {
+          targetProgress = 0;
+          return;
+        }
+        const baseLeft = base.offsetLeft;
+        const targetLeft = target.offsetLeft - baseLeft;
+        const targetWidth = target.getBoundingClientRect().width || firstItemWidth;
+        const centerOffset = collage.clientWidth / 2 - targetWidth / 2;
+        const raw = targetLeft - centerOffset;
+        if (loopWidth > 0) {
+          targetProgress = ((raw % loopWidth) + loopWidth) % loopWidth;
+        } else {
+          targetProgress = 0;
+        }
+      };
+
       const updateBounds = () => {
         const totalWidth = track.scrollWidth;
         const viewWidth = collage.clientWidth;
@@ -1288,6 +1315,11 @@ _result = _buffer.getvalue()`;
         cachedGap = null;
         firstItemWidth = 0;
         measureFirstItemWidth();
+        if (loopWidth > 0) {
+          computeTargetProgress();
+        } else {
+          targetProgress = 0;
+        }
         if (!hasOverflow) {
           isLoopAligned = false;
           virtualOffset = 0;
@@ -1323,16 +1355,21 @@ _result = _buffer.getvalue()`;
       const step = () => {
         if (shouldAutoScroll()) {
           const firstWidth = firstItemWidth > 0 ? firstItemWidth : measureFirstItemWidth();
-          const progressed = ((-virtualOffset) % loopWidth + loopWidth) % loopWidth;
-          if (firstWidth > 0) {
-            const targetProgress = firstWidth * pauseTargetIndex;
+          if (loopWidth > 0 && firstWidth > 0) {
+            const progressed = ((-virtualOffset) % loopWidth + loopWidth) % loopWidth;
             const distanceToTarget = ((targetProgress - progressed) % loopWidth + loopWidth) % loopWidth;
-            if (distanceToTarget < firstWidth) {
-              const pauseProgress = Math.min(distanceToTarget / firstWidth, 1);
-              const eased = scrollSpeed * (1 - Math.pow(pauseProgress, 1.8));
-              applyOffset(virtualOffset - Math.max(0.2, eased));
-            } else {
-              applyOffset(virtualOffset - scrollSpeed);
+            if (distanceToTarget < loopWidth) {
+              if (distanceToTarget < firstWidth * 0.8) {
+                const eased = Math.max(0.18, distanceToTarget * 0.28);
+                const stepDistance = Math.min(distanceToTarget, eased);
+                if (stepDistance > 0.01) {
+                  applyOffset(virtualOffset - stepDistance);
+                } else if (distanceToTarget > 0.001) {
+                  applyOffset(virtualOffset - distanceToTarget);
+                }
+              } else {
+                applyOffset(virtualOffset - scrollSpeed);
+              }
             }
           } else {
             applyOffset(virtualOffset - scrollSpeed);
