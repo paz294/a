@@ -1172,13 +1172,17 @@ _result = _buffer.getvalue()`;
       let startX = 0;
       let startY = 0;
       let startOffset = 0;
+      let isLoopAligned = false;
 
-      const normalizeOffset = value => {
+      const wrapOffset = value => {
         if (!hasOverflow || loopWidth <= 0) {
           return 0;
         }
-        const normalized = ((value % loopWidth) + loopWidth) % loopWidth;
-        return normalized === 0 ? 0 : normalized - loopWidth;
+        const min = -loopWidth * (totalSets - 1);
+        let current = value;
+        while (current < min) current += loopWidth;
+        while (current > 0) current -= loopWidth;
+        return current;
       };
 
       const applyOffset = value => {
@@ -1187,7 +1191,7 @@ _result = _buffer.getvalue()`;
           track.style.transform = 'translateX(0)';
           return;
         }
-        offset = normalizeOffset(value);
+        offset = wrapOffset(value);
         track.style.transform = `translateX(${offset}px)`;
       };
 
@@ -1196,6 +1200,13 @@ _result = _buffer.getvalue()`;
         const viewWidth = collage.clientWidth;
         loopWidth = totalSets > 0 ? totalWidth / totalSets : totalWidth;
         hasOverflow = loopWidth > viewWidth;
+        if (!hasOverflow) {
+          isLoopAligned = false;
+          offset = 0;
+        } else if (!isLoopAligned && loopWidth > 0) {
+          offset = -loopWidth;
+          isLoopAligned = true;
+        }
         applyOffset(offset);
       };
 
