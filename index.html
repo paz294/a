@@ -105,10 +105,15 @@
     .section-content{max-height:0;overflow:hidden;transition:max-height .28s ease}
     .section-accordion.active .section-content{max-height:600px}
     .section-content ul{list-style:none}
-    .section-content li{display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer}
+    .section-content li{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer}
     .section-content li:hover{background:#333}
     .section-content li.active{background:#404040;color:#a5d8ff}
     .section-content li.completed::after{content:"✓";margin-left:auto;color:#2e7d32}
+    .difficulty-dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+    .difficulty-dot.easy{background:#2e7d32}
+    .difficulty-dot.medium{background:#ff9800}
+    .difficulty-dot.hard{background:#ef5350}
+    .challenge-title{flex:1}
 
     /* Mobile sidebar toggle */
     .sidebar-toggle{display:none;position:fixed;left:12px;top:64px;z-index:1100;background:#a5d8ff;border:none;border-radius:50%;width:40px;height:40px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.25)}
@@ -740,10 +745,8 @@ int main(){
             <ul>
               ${items.map(c=>`
                 <li data-id="${c.id}" class="${progress[c.id]?.completed?'completed':''}">
-                  <span class="material-icons">
-                    ${c.difficulty==='Easy'?'assignment':(c.difficulty==='Medium'?'assignment_late':'assignment_turned_in')}
-                  </span>
-                  ${c.title}
+                  <span class="difficulty-dot ${c.difficulty.toLowerCase()}"></span>
+                  <span class="challenge-title">${c.title}</span>
                 </li>`).join('')}
             </ul>
           </div>
