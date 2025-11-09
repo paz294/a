@@ -145,6 +145,10 @@
     .problem-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #404040;padding-bottom:10px;margin-bottom:16px}
     .header-actions{display:flex;align-items:center;gap:10px}
     .completed-badge{background:#2e7d32;color:#fff;padding:4px 8px;border-radius:6px;display:inline-flex;gap:6px;align-items:center}
+    .difficulty-pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 12px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border:1px solid #444;background:#1f1f1f;color:#bbb}
+    .difficulty-pill.easy{border-color:#2e7d32;color:#a5d6a7}
+    .difficulty-pill.medium{border-color:#ff9800;color:#ffcc80}
+    .difficulty-pill.hard{border-color:#ef5350;color:#ffb4b4}
     .mode-bar{display:flex;gap:10px;margin:10px 0}
     .mode-button{padding:8px 14px;border-radius:20px;border:1px solid #404040;background:#282828;color:#bbb;cursor:pointer}
     .mode-button.active{background:#60a5fa;color:#111;border-color:#60a5fa}
@@ -564,65 +568,59 @@
 
     const challenges = [
       { id:'penalty-shootout', category:'Football', difficulty:'Medium', title:'1. penaltyShootout',
-        description:'Simulate a 5-shot duel between Paula FC and Ruben CF with alternating kicks and snack-stakes drama.',
-        problem:'Input: two length-5 lists (1 for goal, 0 for miss).\nOutput: per-round commentary plus a final verdict string.\nIf totals tie after five kicks, continue into sudden death until someone leads.',
-        hint:'Iterate through both arrays together, update running totals, and short-circuit when a lead becomes unreachable.',
-        bonus:'Implement sudden death output and append "Snacks pending" whenever Paula FC wins.',
-        example:'Example Input:\nPaula: ⚽⚽⚽❌⚽\nRuben: ⚽❌⚽❌⚽\nExample Output:\nPaula wins — snacks pending 🍫', languages:['python','c'] },
+        description:'Simulate a 5-shot penalty shootout between Paula FC and Ruben CF. Each team alternates shots; whoever scores more wins (Ruben always cheats somehow). If Paula FC wins, Ruben must fetch snacks immediately.',
+        problem:'Write a function that compares two penalty lists (1 for goal, 0 for miss) and prints the round results and final outcome.',
+        hint:'Iterate through both lists simultaneously and keep score until one side leads decisively.',
+        bonus:'Add "sudden-death" logic if totals are equal after 5 rounds.',
+        example:'Paula: ⚽⚽⚽❌⚽\nRuben: ⚽❌⚽❌⚽\n=> Paula wins — snacks pending 🍫', languages:['python','c'] },
       { id:'ruben-coach-simulator', category:'Football', difficulty:'Easy', title:'2. rubenCoachSimulator',
-        description:'Log Ruben\'s sideline rants whenever a miss happens so he has receipts.',
-        problem:'Input: a string or list of commentary events describing the match.\nOutput: repeat `Ruben: "unbelievable man!"` 100 times for every miss you detect (print or collect in a log).',
-        hint:'Count occurrences of the word "miss" (or a structured flag), then use a simple loop to emit the catchphrase the required number of times.',
-        bonus:'Let Ruben configure new phrases mid-season so his tactical vocabulary stays fresh.',
-        example:'Example Input: "Real Madrid miss goal"\nExample Output: Ruben: "unbelievable man!" x100', languages:['python','c'] },
+        description:'Every time Ruben watches a match, simulate his instant transformation into a head coach. For every missed goal, print his tactical commentary 100 times.',
+        problem:'Parse the commentary feed, detect every missed goal, and output Ruben\'s reaction 100 times so post-match analysts can study his rage.',
+        hint:'Use a loop or log() function to record every reaction for post-match analysis.',
+        example:'Input: "Real Madrid miss goal"\nOutput: "Ruben: \'unbelievable man!\' x100"', languages:['python','c'] },
       { id:'football-translator', category:'Football', difficulty:'Easy', title:'3. footballTranslator',
-        description:'Translate intimidating football jargon into Paula-friendly sentences.',
-        problem:'Input: phrase such as "They were offside", "high press", "counter-attack", or "VAR check".\nOutput: mapped plain-language explanation, with a default fallback when the phrase is unknown.',
-        hint:'Build a dictionary covering the required phrases and sprinkle in emojis for flavor.',
-        bonus:'Track when Paula finally nods along so you can unlock bonus vocabulary.',
-        example:'Example Input: "They were offside"\nExample Output: "He ran too far ahead apparently 🥴"', languages:['python','c'] },
+        description:'Translate football jargon into terms Paula actually understands.',
+        problem:'Goal: Map common phrases to plain-language equivalents Paula can remember.',
+        bonus:'Include "high press," "counter-attack," and "VAR check" for advanced vocabulary.',
+        example:'Input: "They were offside"\nOutput: "He ran too far ahead apparently 🥴"', languages:['python','c'] },
       { id:'offside-rule-simulator', category:'Football', difficulty:'Medium', title:'4. offsideRuleSimulator',
-        description:'Explain the offside rule by comparing attacker, defender, and ball positions plus involvement.',
-        problem:'Signature: offsideRuleSimulator(player_pos, defender_pos, ball_pos, active_play).\nReturn "Offside!" or "Onside" with reasoning whenever the attacker is closer to goal than both defender and ball while actively involved.',
-        hint:'Treat the pitch as a number line, combine boolean checks, and narrate which condition triggered the verdict.',
-        bonus:'Toggle paula_understands = snacks_provided to boost comprehension inside your output.',
-        example:'Example Input: player_pos=85, defender_pos=82, ball_pos=80, active_play=True\nExample Output: "Offside! ⚽ But at least now Paula gets it."', languages:['python','c'] },
+        description:'Paula is still confused about the offside rule (same). Ruben’s mission: code a simplified match scenario that decides whether a player is offside — and explain each condition while coding.',
+        problem:'A player is offside if 1) They are closer to the opponent’s goal than both the ball and the second-to-last defender at the moment the ball is played, and 2) They are actively involved in play. Write offsideRuleSimulator(player_pos, defender_pos, ball_pos, active_play) that returns whether the player is offside.',
+        hint:'player_pos → attacker location, defender_pos → last defender line, ball_pos → pass position, active_play → involvement flag.',
+        bonus:'Add paula_understands = snacks_provided — comprehension improves with snacks.',
+        example:'Input:\nplayer_pos = 85\ndefender_pos = 82\nball_pos = 80\nactive_play = True\nOutput:\n"Offside! ⚽ But at least now Paula gets it."', languages:['python','c'] },
       { id:'ball-possession-analyzer', category:'Football', difficulty:'Medium', title:'5. ballPossessionAnalyzer',
-        description:'Teach Paula what possession percentages mean by summing who held the ball longer.',
-        problem:'Input: list of {"team","duration"} events.\nOutput: {"Paula_FC":"XX%","Ruben_CF":"YY%"} with rounded shares totaling 100.',
-        hint:'Accumulate duration per team, divide by total match time, and format as strings with percent signs.',
-        bonus:'If Paula FC exceeds 60%, append "Paula FC dominates with {x}% possession 💪".',
-        example:'Example Input: [{"team":"Paula","duration":45},{"team":"Ruben","duration":60},{"team":"Paula","duration":30},{"team":"Ruben","duration":15}]\nExample Output: {"Paula_FC":"33%","Ruben_CF":"67%"}', languages:['python','c'] },
+        description:'Paula keeps hearing commentators say “Ruben’s team had 5% possession” but has no idea what that actually means. Build a simple simulator to track who controls the ball more during a match.',
+        problem:'Each event contains {"team": "Paula" or "Ruben", "duration": seconds}. Return both teams’ possession percentages.',
+        hint:'Sum durations by team and divide by total time — basically tracking who keeps control longer.',
+        bonus:'If Paula FC > 60%, print "Paula FC dominates with {x}% possession 💪".',
+        example:'Input:\nevents = [\n  {"team": "Paula", "duration": 45},\n  {"team": "Ruben", "duration": 60},\n  {"team": "Paula", "duration": 30},\n  {"team": "Ruben", "duration": 15}\n]\nOutput:\n{"Paula_FC": "33%", "Ruben_CF": "67%"}', languages:['python','c'] },
       { id:'var-decision-system', category:'Football', difficulty:'Hard', title:'6. VARDecisionSystem',
-        description:'Build a mini VAR booth that decides to uphold, overturn, or shrug at on-field calls.',
-        problem:'Input: list of {"event","impact","clearEvidence"} objects.\nOutput: "Play on ⚽", "Decision overturned 🚫", or "Review inconclusive 🤷‍♂️" plus optional reasoning.\nHigh-impact events with clear evidence should overturn; low-impact with no evidence should stand.',
-        hint:'Treat clearEvidence as the decisive flag and short-circuit the review once an overturn is justified.',
-        bonus:'Return "Understanding achieved" when ruben_explains_with_patience and snacks_provided both evaluate true.',
-        example:'Example Input: [{"event":"goal","impact":"high","clearEvidence":false},{"event":"offside","impact":"high","clearEvidence":true}]\nExample Output: "Decision overturned 🚫 (Offside confirmed)"', languages:['python','c'] },
+        description:'Simulate the Video Assistant Referee process. Given match events, decide whether to uphold, overturn, or leave a call inconclusive.',
+        problem:'Each event has "event" → "goal" | "foul" | "handball" | "offside", "impact" → "high" | "low", and "clearEvidence" → True | False. Return "Play on ⚽", "Decision overturned 🚫", or "Review inconclusive 🤷‍♂️".',
+        hint:'Treat clearEvidence as a boolean flag for reversing a decision — debugging for referees.',
+        bonus:'paula_understands = ruben_explains_with_patience and snacks_provided. Return "Understanding achieved" if True.',
+        example:'Input:\n[\n  {"event":"goal","impact":"high","clearEvidence":False},\n  {"event":"offside","impact":"high","clearEvidence":True}\n]\nOutput:\n"Decision overturned 🚫 (Offside confirmed)"', languages:['python','c'] },
       { id:'ronaldo-efficiency-tracker', category:'Football', difficulty:'Medium', title:'7. ronaldoEfficiencyTracker',
-        description:'Track Ronaldo\'s conversion rate, siuuu frequency, and GOAT status from season stats.',
-        problem:'Input: {"shots","goals","games","siuuus"}.\nOutput: {"conversion":"XX%","siuuu_rate":float,"comment":text} with tiers: <10% crisis, 10-20% mortal, >=20% GOAT confirmed.',
-        hint:'Use floats, guard against divide-by-zero, and round to tidy decimals.',
-        bonus:'Add seasonal trend notes whenever conversion climbs above earlier attempts.',
-        example:'Example Input: {"shots":60,"goals":15,"games":10,"siuuus":20}\nExample Output: {"conversion":"25%","siuuu_rate":2.0,"comment":"Elite form 🐐🔥"}', languages:['python','c'] },
+        description:'Track Cristiano Ronaldo’s efficiency through a season. Given data for shots, goals, and games, calculate his conversion rate and “Siuuu” frequency.',
+        problem:'ronaldoEfficiencyTracker(stats) returns {"conversion": %, "siuuu_rate": value, "comment": text}. Rules: < 10 % → "Form crisis detected", 10–20 % → "Average mortal", 20 % → "GOAT confirmed".',
+        hint:'Use floats and rounding for clean output.',
+        example:'Input:\n{"shots":60,"goals":15,"games":10,"siuuus":20}\nOutput:\n{"conversion":"25%","siuuu_rate":2.0,"comment":"Elite form 🐐🔥"}', languages:['python','c'] },
       { id:'corner-kick-simulator', category:'Football', difficulty:'Hard', title:'8. cornerKickSimulator',
-        description:'Model corner chaos with a lightweight probability formula plus commentary.',
-        problem:'Input: attackers, defenders, cross_quality (0-100), header_power (0-100).\nCompute chance = (cross_quality*0.5 + header_power*0.3 + attackers*2) - defenders*3.\nOutput "Goal ⚽ (...)" if chance > 50, otherwise "Cleared 🙅".',
-        hint:'Clamp inputs to expected ranges, show intermediate math, and explain which factor swung the result.',
-        bonus:'Surface the breakdown so Paula sees why Ruben screamed at the near post.',
-        example:'Example Input: attackers=6, defenders=7, cross_quality=80, header_power=90\nExample Output: "Goal ⚽ (unstoppable header!)"', languages:['python','c'] },
+        description:'Corners are controlled chaos. Simulate a corner using simple probability logic combining cross accuracy, header power, and player counts.',
+        problem:'Given attackers, defenders, cross_quality (0–100), header_power (0–100) compute chance = (cross_quality*0.5 + header_power*0.3 + attackers*2) - defenders*3. If chance > 50, goal; else, cleared.',
+        hint:'Demonstrates how small margins decide outcomes — timing, positioning, and luck.',
+        example:'Input: attackers=6, defenders=7, cross_quality=80, header_power=90\nOutput: "Goal ⚽ (unstoppable header!)"', languages:['python','c'] },
       { id:'expected-goals-model', category:'Football', difficulty:'Hard', title:'9. expectedGoalsModel',
-        description:'Build a toy expected-goals calculator that rates each shot and sums the danger.',
-        problem:'Input: shots with distance, angle, and type ("right_foot","left_foot","header").\nOutput: total xG rounded to 2 decimals plus optional per-shot breakdown.\nCloser distance boosts probability, wider angles or headers reduce it.',
-        hint:'Normalize distance/angle, apply type multipliers, and accumulate across shots.',
-        bonus:'Include per-shot notes so Paula can gloat over high-xG misses.',
-        example:'Example Input: [{"distance":10,"angle":25,"type":"right_foot"},{"distance":25,"angle":10,"type":"header"},{"distance":5,"angle":50,"type":"left_foot"}]\nExample Output: xG = 1.73', languages:['python','c'] },
+        description:'Build a simplified expected-goals (xG) model. Each shot has distance, angle, and type. Assign probabilities and sum them for match xG.',
+        problem:'xG = Σ(prob_each_shot). Shorter distance → higher xG. Wider angle or header → lower probability.',
+        hint:'Use weighting logic: xG = Σ(prob_each_shot).',
+        example:'Input:\n[\n  {"distance":10,"angle":25,"type":"right_foot"},\n  {"distance":25,"angle":10,"type":"header"},\n  {"distance":5,"angle":50,"type":"left_foot"}\n]\nOutput:\nxG = 1.73', languages:['python','c'] },
       { id:'match-momentum-graph', category:'Football', difficulty:'Hard', title:'10. matchMomentumGraph',
-        description:'Track which club owns the vibes using +1/-1 attack events and rolling averages.',
-        problem:'Input: list of integers (e.g., +1 for Ruben CF, -1 for Paula FC) and optional window size.\nOutput: string summarizing Ruben CF vs Paula FC momentum percentages plus notes on swings.',
-        hint:'Use sliding or exponential moving averages to smooth streaks, then convert to percentages.',
-        bonus:'Detect sign flips to celebrate comebacks and encourage the underdog.',
-        example:'Example Input: [+1,+1,-1,+1,+1,-1,-1,-1]\nExample Output: "Ruben CF momentum: 62% ⚡ Paula FC: regaining control"', languages:['python','c'] },
+        description:'Create a momentum tracker showing which team dominates across a match. Compute rolling averages of positive (Ruben CF) and negative (Paula FC) attack events.',
+        problem:'Given attack_events = [+1, +1, -1, +1, +1, -1, -1, -1], return which side has greater momentum.',
+        hint:'Use moving averages over last N events. Momentum often flips — track resilience as well as dominance.',
+        example:'Output:\n"Ruben CF momentum: 62% ⚡ Paula FC: regaining control"', languages:['python','c'] },
       { id:'love-encoder', category:'Relationship', difficulty:'Easy', title:'Love Message Encoder',
         description:'Encode a secret message only you two can read.',
         example:'Input: I love you\nOutput: ❤️🌹#you#love#I', languages:['python','c'] },
@@ -685,6 +683,11 @@ int main(){
           </details>
         `;
       }).join('');
+    }
+    function buildDifficultyPill(diff){
+      if(!diff) return '';
+      const cls = diff.toLowerCase();
+      return `<span class="difficulty-pill ${cls}">${diff}</span>`;
     }
 
     /* ========= Player Names ========= */
@@ -1004,6 +1007,7 @@ _result = _buffer.getvalue()`;
         <div class="problem-header">
           <h2>${ch.title}</h2>
           <div class="header-actions">
+            ${buildDifficultyPill(ch.difficulty)}
             <div id="completed-badge-wrap">${completed ? '<span class="completed-badge"><span class="material-icons" style="font-size:18px;">check_circle</span> Completed</span>' : ''}</div>
             <button class="run-button" onclick="goHome()">← Back</button>
           </div>
