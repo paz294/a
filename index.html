@@ -667,7 +667,10 @@ int main(){
         .replace(/'/g,'&#39;');
     }
     function formatMultiline(str){
-      return escapeHtml(str).replace(/\n/g,'<br>');
+      if(typeof str !== 'string') return '';
+      const segments = str.split('`');
+      const html = segments.map((seg, idx)=> idx % 2 ? `<code>${escapeHtml(seg)}</code>` : escapeHtml(seg)).join('');
+      return html.replace(/\n/g,'<br>');
     }
     const detailSections = [
       { key:'problem', label:'Problem Statement' },
